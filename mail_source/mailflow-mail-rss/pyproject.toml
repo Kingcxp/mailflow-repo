@@ -1,0 +1,16 @@
+[project]
+name = "mailflow-mail-rss"
+version = "0.1.0"
+description = "MailFlow RSS/Atom source: feed entries as mail items"
+requires-python = ">=3.11"
+dependencies = ["mailflow-core"]
+
+[project.entry-points."mailflow.plugins"]
+mailflow-mail-rss = "mailflow_mail_rss.plugin:plugin"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mailflow_mail_rss"]

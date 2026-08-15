@@ -1,0 +1,13 @@
+{
+  "id": "mailflow-mail-rss",
+  "name": "RSS/Atom Source",
+  "version": "0.1.0",
+  "description": "Turns RSS/Atom feeds into mail items (newsletters, blogs, release notes)",
+  "categories": ["mail_source"],
+  "package": "mailflow-mail-rss",
+  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=mail_source/mailflow-mail-rss",
+  "author": "MailFlow community",
+  "license": "MIT",
+  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/mail_source/mailflow-mail-rss",
+  "readme": "## RSS/Atom Source\n\nTurns any RSS or Atom feed into mail items, so newsletters, blogs, release notes and CI feeds flow through the same pipeline (classification, summaries, reminders).\n\n### Features\n\n- Multiple feeds per account; configurable poll interval\n- Deduplication by entry id/link; entries seen once stay seen\n- Standard library only (urllib + xml.etree)\n- Read-only: replies are rejected with a clear error\n\n### Usage\n\n```toml\n[[accounts]]\naccount_id = \"news\"\nprovider = \"rss\"\nenabled = true\n[accounts.options]\nfeeds = [\n  \"https://example.com/feed.xml\",\n  \"https://another.example/atom.xml\",\n]\ninterval_seconds = 900   # poll interval (default 900)\n```\n\n### License\n\nMIT — contributions welcome."
+}

@@ -1,0 +1,13 @@
+{
+  "id": "mailflow-processor-blocklist",
+  "name": "Sender Blocklist Processor",
+  "version": "0.1.0",
+  "description": "Marks mail from blocked senders or domains as junk (gray)",
+  "categories": ["processor"],
+  "package": "mailflow-processor-blocklist",
+  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=processor/mailflow-processor-blocklist",
+  "author": "MailFlow community",
+  "license": "MIT",
+  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/processor/mailflow-processor-blocklist",
+  "readme": "## Sender Blocklist Processor\n\nA cheap, deterministic pre-filter that marks mail from unwanted senders or domains as junk (gray / `ad`) before any LLM work — exact sender addresses and full domains are matched case-insensitively.\n\n### Features\n\n- Exact sender-address matches and domain-suffix matches\n- No LLM involved; runs in milliseconds\n\n### Usage\n\n```toml\n[[processors]]\nprocessor_id = \"blocklist\"\nprovider = \"blocklist\"\npriority = 5              # run before the rules processor\nretries = 0\n[processors.options]\nsenders = [\"spam@example.com\"]\ndomains = [\"spammy-newsletter.example\"]\n```\n\n### License\n\nMIT — contributions welcome."
+}
