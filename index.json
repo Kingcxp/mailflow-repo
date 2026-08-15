@@ -1,0 +1,11 @@
+{
+  "name": "mailflow-repo",
+  "schema": 2,
+  "categories": [
+    { "id": "mail_source", "path": "mail_source" },
+    { "id": "processor", "path": "processor" },
+    { "id": "llm_backend", "path": "llm_backend" },
+    { "id": "notifier", "path": "notifier" },
+    { "id": "storage", "path": "storage" }
+  ]
+}
