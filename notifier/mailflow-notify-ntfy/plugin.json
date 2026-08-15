@@ -1,0 +1,13 @@
+{
+  "id": "mailflow-notify-ntfy",
+  "name": "ntfy Notifier",
+  "version": "0.1.0",
+  "description": "Push mail alerts to any ntfy.sh topic (or self-hosted ntfy server)",
+  "categories": ["notifier"],
+  "package": "mailflow-notify-ntfy",
+  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=notifier/mailflow-notify-ntfy",
+  "author": "MailFlow community",
+  "license": "MIT",
+  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-ntfy",
+  "readme": "## ntfy Notifier\n\nPushes mail alerts to [ntfy](https://ntfy.sh) topics — works with the public ntfy.sh service or any self-hosted ntfy server, so alerts land on your phone via the ntfy app.\n\n### Features\n\n- Optional auth token for private topics (`Authorization: Bearer`)\n- Urgency mapped to ntfy priorities (ad=min, info=default, important=high, urgent=urgent)\n- Standard library only (urllib)\n\n### Usage\n\n```toml\n[[notifiers]]\nnotifier_id = \"ntfy\"\nprovider = \"ntfy\"\nenabled = true\nminimum_urgency = \"important\"\n[notifiers.options]\nbase_url = \"https://ntfy.sh\"      # or your self-hosted server\n# token = \"${NTFY_TOKEN}\"         # optional, for private topics\n```\n\n### License\n\nMIT — contributions welcome."
+}

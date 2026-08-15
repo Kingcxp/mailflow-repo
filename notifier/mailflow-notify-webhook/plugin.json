@@ -1,0 +1,13 @@
+{
+  "id": "mailflow-notify-webhook",
+  "name": "Webhook Notifier",
+  "version": "0.1.0",
+  "description": "POSTs computed mail analyses and reminders to any HTTP webhook",
+  "categories": ["notifier"],
+  "package": "mailflow-notify-webhook",
+  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=notifier/mailflow-notify-webhook",
+  "author": "MailFlow community",
+  "license": "MIT",
+  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-webhook",
+  "readme": "## Webhook Notifier\n\nDelivers computed mail analyses to any HTTP webhook — a practical starting point for chat bridges, team dashboards and home automation.\n\n### Features\n\n- POSTs a JSON payload per processed mail (mail id, urgency, subject, summary, sender, reply flag)\n- Standard-library only (urllib): no extra dependencies beyond mailflow-core\n- Failure-tolerant: delivery errors are logged and never fail processing\n\n### Usage\n\n```toml\n[[notifiers]]\nnotifier_id = \"webhook\"\nprovider = \"webhook\"\nenabled = true\nminimum_urgency = \"important\"\n[notifiers.options]\nurl = \"https://your-webhook.example/hook\"\ntimeout_seconds = 10\n```\n\n### License\n\nMIT — contributions welcome."
+}

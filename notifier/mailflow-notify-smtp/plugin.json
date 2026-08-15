@@ -1,0 +1,13 @@
+{
+  "id": "mailflow-notify-smtp",
+  "name": "SMTP Notifier",
+  "version": "0.1.0",
+  "description": "Forward important mail alerts as emails via any SMTP server",
+  "categories": ["notifier"],
+  "package": "mailflow-notify-smtp",
+  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=notifier/mailflow-notify-smtp",
+  "author": "MailFlow community",
+  "license": "MIT",
+  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-smtp",
+  "readme": "## SMTP Notifier\n\nForwards important mail alerts as emails through any SMTP server (Gmail, Outlook, self-hosted). Useful when the final alert channel is plain email — e.g. forwarding to a team list.\n\n### Features\n\n- STARTTLS and SSL connection modes\n- Optional username/password authentication (env-var or config token)\n- Plain-text and HTML parts, urgency label in the subject\n\n### Usage\n\n```toml\n[[notifiers]]\nnotifier_id = \"smtp\"\nprovider = \"smtp\"\nenabled = true\nminimum_urgency = \"urgent\"\n[notifiers.options]\nhost = \"smtp.example.com\"\nport = 587\nuse_tls = true            # false + port 465 uses implicit SSL\nusername = \"alerts@example.com\"\npassword = \"${SMTP_PASSWORD}\"\nfrom_addr = \"alerts@example.com\"\nto = [\"ops@example.com\"]\n```\n\n### License\n\nMIT — contributions welcome."
+}
