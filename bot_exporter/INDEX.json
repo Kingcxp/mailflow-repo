@@ -1,0 +1,7 @@
+{
+  "category": "bot_exporter",
+  "plugins": [
+    "mailflow-export-nonebot",
+    "mailflow-export-astrbot"
+  ]
+}

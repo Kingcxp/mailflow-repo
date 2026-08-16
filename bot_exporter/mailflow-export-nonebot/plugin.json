@@ -1,0 +1,21 @@
+{
+  "id": "mailflow-export-nonebot",
+  "name": "NoneBot Exporter",
+  "version": "0.1.0",
+  "description": "Exports a configured MailFlow instance as a NoneBot2 plugin",
+  "categories": [
+    "bot_exporter"
+  ],
+  "package": "mailflow-export-nonebot",
+  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=bot_exporter/mailflow-export-nonebot",
+  "author": "MailFlow community",
+  "license": "MIT",
+  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/bot_exporter/mailflow-export-nonebot",
+  "readme": "## NoneBot Exporter\n\nRegisters the `nonebot` framework exporter: `mailflow export --framework nonebot` (or the TUI export wizard) generates a ready-to-install `nonebot-plugin-mailflow` package — pyproject, driver startup/shutdown hooks and the resolved `config.toml` — from your configured MailFlow instance.\n\n### Features\n\n- Embeds the resolved configuration; secrets stay `\\${ENV_VAR}`-replaceable\n- Declares `nonebot2` plus every enabled MailFlow plugin as dependencies\n- No chat commands: the engine boots with the bot lifecycle\n\n### Usage\n\n```bash\nuv run mailflow export --framework nonebot --output dist/nonebot_plugin_mailflow -c configs/development.toml\n# or: make bot-plugin-nonebot\n```\n\nSee the [bot-exporter development guide](../docs/bot-exporter.md).\n\n### License\n\nMIT — contributions welcome.",
+  "descriptions": {
+    "zh-CN": "将配置好的 MailFlow 实例导出为 NoneBot2 插件"
+  },
+  "readmes": {
+    "zh-CN": "## mailflow-export-nonebot\n\n注册 `nonebot` 框架导出器：`mailflow export --framework nonebot`（或 TUI 导出向导）会从你配置好的 MailFlow 实例生成一个可直接安装的 `nonebot-plugin-mailflow` 包——包含 pyproject、驱动启动/关闭钩子与解析后的 `config.toml`。\n\n### 特性\n\n- 内嵌解析后的配置；密钥仍可用 `\\${ENV_VAR}` 占位符替换\n- 自动声明 `nonebot2` 与所有已启用的 MailFlow 插件为依赖\n- 不包含聊天命令：引擎随机器人生命周期启停\n\n### 使用\n\n```bash\nuv run mailflow export --framework nonebot --output dist/nonebot_plugin_mailflow -c configs/development.toml\n# 或：make bot-plugin-nonebot\n```\n\n参见[机器人导出插件开发指南](../docs/bot-exporter.md)。\n\n### 协议\n\nMIT — 欢迎贡献。"
+  }
+}

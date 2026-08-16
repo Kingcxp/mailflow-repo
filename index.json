@@ -6,6 +6,7 @@
     { "id": "processor", "path": "processor" },
     { "id": "llm_backend", "path": "llm_backend" },
     { "id": "notifier", "path": "notifier" },
-    { "id": "storage", "path": "storage" }
+    { "id": "storage", "path": "storage" },
+    { "id": "bot_exporter", "path": "bot_exporter" }
   ]
 }

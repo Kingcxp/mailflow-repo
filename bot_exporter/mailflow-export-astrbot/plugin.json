@@ -1,0 +1,21 @@
+{
+  "id": "mailflow-export-astrbot",
+  "name": "AstrBot Exporter",
+  "version": "0.1.0",
+  "description": "Exports a configured MailFlow instance as an AstrBot plugin",
+  "categories": [
+    "bot_exporter"
+  ],
+  "package": "mailflow-export-astrbot",
+  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=bot_exporter/mailflow-export-astrbot",
+  "author": "MailFlow community",
+  "license": "MIT",
+  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/bot_exporter/mailflow-export-astrbot",
+  "readme": "## AstrBot Exporter\n\nRegisters the `astrbot` framework exporter: `mailflow export --framework astrbot` (or the TUI export wizard) generates an AstrBot plugin folder (`main.py` + `metadata.yaml` + `config.toml` + `requirements.txt`) that boots the MailFlow service with the plugin lifecycle (`initialize` / `terminate`).\n\n### Features\n\n- Embeds the resolved configuration; secrets stay `\\${ENV_VAR}`-replaceable\n- `requirements.txt` declares `mailflow-core`, `mailflow-bundled` and every enabled MailFlow plugin\n- No chat commands: the engine boots with the plugin lifecycle\n\n### Usage\n\n```bash\nuv run mailflow export --framework astrbot --output dist/astrbot_plugin_mailflow -c configs/development.toml\n# or: make bot-plugin-astrbot\n```\n\nDrop the generated folder into AstrBot's `plugins/` directory.\n\nSee the [bot-exporter development guide](../docs/bot-exporter.md).\n\n### License\n\nMIT — contributions welcome.",
+  "descriptions": {
+    "zh-CN": "将配置好的 MailFlow 实例导出为 AstrBot 插件"
+  },
+  "readmes": {
+    "zh-CN": "## mailflow-export-astrbot\n\n注册 `astrbot` 框架导出器：`mailflow export --framework astrbot`（或 TUI 导出向导）会生成一个 AstrBot 插件目录（`main.py` + `metadata.yaml` + `config.toml` + `requirements.txt`），随插件生命周期（`initialize` / `terminate`）启动 MailFlow 服务。\n\n### 特性\n\n- 内嵌解析后的配置；密钥仍可用 `\\${ENV_VAR}` 占位符替换\n- `requirements.txt` 声明 `mailflow-core`、`mailflow-bundled` 与所有已启用的 MailFlow 插件\n- 不包含聊天命令：引擎随插件生命周期启停\n\n### 使用\n\n```bash\nuv run mailflow export --framework astrbot --output dist/astrbot_plugin_mailflow -c configs/development.toml\n# 或：make bot-plugin-astrbot\n```\n\n将生成的目录放入 AstrBot 的 `plugins/` 目录即可。\n\n参见[机器人导出插件开发指南](../docs/bot-exporter.md)。\n\n### 协议\n\nMIT — 欢迎贡献。"
+  }
+}

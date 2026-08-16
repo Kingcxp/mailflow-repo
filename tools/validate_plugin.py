@@ -25,7 +25,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-CATEGORIES = ("mail_source", "processor", "llm_backend", "notifier", "storage")
+CATEGORIES = ("mail_source", "processor", "llm_backend", "notifier", "storage", "bot_exporter")
 ROOT = Path(__file__).resolve().parent.parent
 
 
@@ -78,11 +78,15 @@ def _install_and_run(folder: Path) -> list[str]:
     with tempfile.TemporaryDirectory(prefix="mailflow-validate-") as _scratch:
         python = Path(sys.executable).resolve()
         pip = [str(python), "-m", "pip", "install", "--quiet", "--disable-pip-version-check"]
+        # --force-reinstall: a same-version core already present (e.g. from a
+        # previous run) must not shadow the freshly published HEAD.
         core = subprocess.run(
             pip
             + [
+                "--force-reinstall",
+                "--no-deps",
                 "mailflow-core@git+https://github.com/Kingcxp/mailflow.git"
-                "#subdirectory=packages/mailflow-core"
+                "#subdirectory=packages/mailflow-core",
             ],
             cwd=ROOT,
             capture_output=True,
@@ -141,6 +145,17 @@ def make_factory_arg(kind):
         return (NotifierConfig(notifier_id="validation", provider="validation"),)
     if kind is ComponentKind.STORAGE:
         return (StorageConfig(provider="validation"),)
+    if kind is ComponentKind.BOT_EXPORTER:
+        from pathlib import Path
+        import tempfile as _scratch_dir
+        from mailflow.bot_export import BotExportContext
+        return (
+            BotExportContext(
+                config=MailFlowConfig(),
+                plugin_ids=[],
+                output_dir=Path(_scratch_dir.mkdtemp()),
+            ),
+        )
     return ()
 
 for kind, component_id in registered:

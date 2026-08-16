@@ -15,6 +15,7 @@ pull request that never touches anyone else's files.
 | [LLM backends](llm_backend/) | _yours could be the first_ |
 | [Notifiers](notifier/) | [mailflow-notify-webhook](notifier/mailflow-notify-webhook/) · [mailflow-notify-ntfy](notifier/mailflow-notify-ntfy/) · [mailflow-notify-smtp](notifier/mailflow-notify-smtp/) |
 | [Storage backends](storage/) | _yours could be the first_ |
+| [Bot exporters](bot_exporter/) | [mailflow-export-nonebot](bot_exporter/mailflow-export-nonebot/) — NoneBot2 plugin · [mailflow-export-astrbot](bot_exporter/mailflow-export-astrbot/) — AstrBot plugin |
 
 Each category folder has a README listing its plugins and an `INDEX.json`
 that generic HTTP mirrors use. Each plugin folder contains `plugin.json`
@@ -40,7 +41,7 @@ docs/            ← plugin development documentation (start here)
 ├── 00-getting-started.md
 ├── 01-marketplace-metadata.md
 ├── 02-categories.md
-├── mail-source.md · processor.md · llm-backend.md · notifier.md · storage.md
+├── mail-source.md · processor.md · llm-backend.md · notifier.md · storage.md · bot-exporter.md
 ├── 05-localization.md
 └── 06-validation.md
 index.json       ← the category list (nothing else — one file, rarely touched)
@@ -49,6 +50,7 @@ processor/
 llm_backend/
 notifier/
 storage/
+bot_exporter/
 tools/           ← validation script used by CI
 .github/workflows/validate-plugins.yml
 ```
@@ -84,5 +86,6 @@ python tools/validate_plugin.py notifier/mailflow-notify-slack
 | [LLM backends](docs/llm-backend.md) | `LLMBackend` + `LLMCompletion` |
 | [Notifiers](docs/notifier.md) | `Notifier` + `MailRecord` payload |
 | [Storage backends](docs/storage.md) | full `StorageBackend` API |
+| [Bot exporters](docs/bot-exporter.md) | `BotExportContext`/`BotExportResult`, framework ids |
 | [Localization](docs/05-localization.md) | translated descriptions/readmes |
 | [Validation](docs/06-validation.md) | what CI checks and why |
