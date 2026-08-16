@@ -79,12 +79,12 @@ def _install_and_run(folder: Path) -> list[str]:
         python = Path(sys.executable).resolve()
         pip = [str(python), "-m", "pip", "install", "--quiet", "--disable-pip-version-check"]
         # --force-reinstall: a same-version core already present (e.g. from a
-        # previous run) must not shadow the freshly published HEAD.
+        # previous run) must not shadow the freshly published HEAD. Deps are
+        # reinstalled too so a fresh CI environment gets everything.
         core = subprocess.run(
             pip
             + [
                 "--force-reinstall",
-                "--no-deps",
                 "mailflow-core@git+https://github.com/Kingcxp/mailflow.git"
                 "#subdirectory=packages/mailflow-core",
             ],
