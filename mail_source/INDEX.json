@@ -1,6 +1,7 @@
 {
   "category": "mail_source",
   "plugins": [
+    "mailflow-mail-imap",
     "mailflow-mail-rss"
   ]
 }

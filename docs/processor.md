@@ -53,3 +53,33 @@ blocked = ["spammer@example.com"]
 [`mailflow-processor-blocklist`](../processor/mailflow-processor-blocklist/)
 — marks mail from blocked senders/domains as `ad`, with wildcard domain
 support and a clean audit note.
+
+## Built-in processors
+
+The deterministic `rules` pre-filter and the LLM `llm-importance` classifier
+are part of `mailflow-core` — no plugin install is needed (a plugin
+registering the same component id overrides the built-in).
+
+## LLM enhancers (the processor-plugin extension point)
+
+Processor plugins extend the built-in LLM analysis through
+`registrar.add_llm_enhancer(id, factory)`. An enhancer implements the
+optional hooks:
+
+```python
+class MyEnhancer:
+    def system_prompt(self, base: str) -> str:            # append guidance
+        return base + "\nOutput summaries in Chinese."
+
+    def extra_messages(self, mail, context) -> list[dict[str, str]]:  # extra chat turns
+        return [{"role": "user", "content": "Be very concise."}]
+
+    def post_process(self, analysis, mail, context):      # adjust the result
+        return analysis.model_copy(update={"notes": "adjusted"})  # or None
+```
+
+The built-in `llm-importance` processor aggregates every registered
+enhancer: system prompts are chained, extra messages are appended after the
+user message, and post-processors run in order over the parsed analysis.
+Each enhancer receives its `[processors]` config section. Use the
+`llm_enhancer` scaffold template to start one.

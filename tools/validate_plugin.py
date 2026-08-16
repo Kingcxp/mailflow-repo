@@ -25,7 +25,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-CATEGORIES = ("mail_source", "processor", "llm_backend", "notifier", "storage", "bot_exporter")
+CATEGORIES = ("mail_source", "processor", "llm_backend", "llm_enhancer", "notifier", "storage", "bot_exporter")
 ROOT = Path(__file__).resolve().parent.parent
 
 
@@ -72,6 +72,20 @@ def _failures(folder: Path) -> list[str]:
     return errors
 
 
+def _third_party_deps(folder: Path) -> list[str]:
+    """Names from [project].dependencies that are not mailflow workspace packages."""
+    pyproject = folder / "pyproject.toml"
+    text = pyproject.read_text(encoding="utf-8")
+    match = re.search(r"dependencies = \[(.*?)\]", text, re.DOTALL)
+    if not match:
+        return []
+    return [
+        name.strip().strip("\"'")
+        for name in match.group(1).split(",")
+        if name.strip() and not name.strip().strip("\"'").startswith("mailflow-")
+    ]
+
+
 def _install_and_run(folder: Path) -> list[str]:
     """Install into a scratch environment and run the mailflow checks."""
     errors: list[str] = []
@@ -96,8 +110,15 @@ def _install_and_run(folder: Path) -> list[str]:
         if core.returncode != 0:
             return [f"{folder.name}: could not install mailflow-core: {core.stderr[-400:]}"]
 
+        # Third-party dependencies (e.g. httpx in llm backends) are absent
+        # from the scratch env; install them too when the plugin declares any.
+        declared = _third_party_deps(folder)
         install = subprocess.run(
-            pip + ["--no-deps", "."], cwd=folder, capture_output=True, text=True, timeout=600
+            pip + ([], ["--no-deps"])[not declared] + ["."],
+            cwd=folder,
+            capture_output=True,
+            text=True,
+            timeout=600,
         )
         if install.returncode != 0:
             return [f"{folder.name}: pip install failed: {install.stderr[-400:]}"]

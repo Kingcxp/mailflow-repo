@@ -1,0 +1,22 @@
+{
+  "id": "mailflow-mail-imap",
+  "name": "IMAP Mail Source",
+  "version": "0.1.0",
+  "description": "IMAP/SMTP mail source with presets for QQ, 163, Outlook, Gmail and generic hosts",
+  "categories": [
+    "mail_source"
+  ],
+  "package": "mailflow-mail-imap",
+  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=mail_source/mailflow-mail-imap",
+  "author": "MailFlow community",
+  "license": "MIT",
+  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/mail_source/mailflow-mail-imap",
+  "updated": "2026-08-16",
+  "readme": "## IMAP Mail Source\n\nThe built-in IMAP/SMTP mail source. Choose a provider preset (QQ, 163, Outlook, Gmail) or configure a generic school/work server — it ships with every MailFlow install, so no install step is needed.\n\n### Provider presets\n\nSet `options.preset` to one of:\n\n- `qq` — imap.qq.com / smtp.qq.com (authorization code)\n- `163` — imap.163.com / smtp.163.com (authorization code)\n- `outlook` — outlook.office365.com / smtp.office365.com\n- `gmail` — imap.gmail.com / smtp.gmail.com (app password)\n- *(omit)* — provide `imap_host`/`imap_port`/`smtp_host`/`smtp_port` for your school/work server\n\n### Usage\n\n```toml\n[[accounts]]\naccount_id = \"school\"\nprovider = \"imap\"\nemail = \"student@university.edu\"\nenabled = true\n[accounts.options]\npreset = \"generic\"            # or qq/163/outlook/gmail\nusername = \"student@university.edu\"\npassword = \"${MAIL_PASSWORD}\"  # IMAP authorization code / app password\n# imap_host = \"imap.university.edu\"   # generic only\n# smtp_host = \"smtp.university.edu\"\n# smtp_port = 465\n# limit = 20        # mails fetched per poll\n# interval_seconds = 300\n```\n\nReplies are sent over SMTP with the same credentials (SSL on 465, STARTTLS on 587).\n\n### License\n\nMIT — contributions welcome.",
+  "descriptions": {
+    "zh-CN": "内置 IMAP/SMTP 邮件源，预设 QQ、163、Outlook、Gmail 与通用服务器"
+  },
+  "readmes": {
+    "zh-CN": "## mailflow-mail-imap\n\n内置的 IMAP/SMTP 邮件源。选择提供商预设（QQ、163、Outlook、Gmail）或配置通用学校/单位服务器——随每个 MailFlow 安装自带，无需安装步骤。\n\n### 提供商预设\n\n在 `options.preset` 中设置：\n\n- `qq` — imap.qq.com / smtp.qq.com（授权码）\n- `163` — imap.163.com / smtp.163.com（授权码）\n- `outlook` — outlook.office365.com / smtp.office365.com\n- `gmail` — imap.gmail.com / smtp.gmail.com（应用专用密码）\n- *（省略）* — 为学校/单位服务器提供 `imap_host`/`imap_port`/`smtp_host`/`smtp_port`\n\n### 使用\n\n```toml\n[[accounts]]\naccount_id = \"school\"\nprovider = \"imap\"\nemail = \"student@university.edu\"\nenabled = true\n[accounts.options]\npreset = \"generic\"            # 或 qq/163/outlook/gmail\nusername = \"student@university.edu\"\npassword = \"${MAIL_PASSWORD}\"  # IMAP 授权码 / 应用专用密码\n# imap_host = \"imap.university.edu\"   # 仅通用\n# smtp_host = \"smtp.university.edu\"\n# smtp_port = 465\n# limit = 20        # 每次轮询拉取的邮件数\n# interval_seconds = 300\n```\n\n回复通过 SMTP 使用相同凭据发送（465 用 SSL，587 用 STARTTLS）。\n\n### 协议\n\nMIT — 欢迎贡献。"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "mailflow-llm-anthropic",
+  "name": "Anthropic LLM Backend",
+  "version": "0.1.0",
+  "description": "Chat-completions transport for Anthropic Claude (Messages API)",
+  "categories": [
+    "llm_backend"
+  ],
+  "package": "mailflow-llm-anthropic",
+  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=llm_backend/mailflow-llm-anthropic",
+  "author": "MailFlow community",
+  "license": "MIT",
+  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/llm_backend/mailflow-llm-anthropic",
+  "updated": "2026-08-16",
+  "readme": "## Anthropic LLM Backend\n\nThe built-in Anthropic Messages API backend (Claude). Ships with every MailFlow install alongside the OpenAI-compatible backend.\n\n### Usage\n\n```toml\n[[llms]]\nllm_id = \"claude\"\nprovider = \"anthropic\"\nmodel = \"claude-3-5-sonnet-latest\"\napi_key = \"${ANTHROPIC_API_KEY}\"\n```\n\nThe system prompt travels in the Anthropic `system` field and the remaining messages keep their roles; retries use bounded backoff and error text is sanitized so URLs or keys never leak.\n\n### License\n\nMIT — contributions welcome.",
+  "descriptions": {
+    "zh-CN": "内置 Anthropic Messages API 后端（Claude）"
+  },
+  "readmes": {
+    "zh-CN": "## mailflow-llm-anthropic\n\n内置 Anthropic Messages API 后端（Claude）。随每个 MailFlow 安装自带，与 OpenAI 兼容后端并列。\n\n### 使用\n\n```toml\n[[llms]]\nllm_id = \"claude\"\nprovider = \"anthropic\"\nmodel = \"claude-3-5-sonnet-latest\"\napi_key = \"${ANTHROPIC_API_KEY}\"\n```\n\n系统提示词放入 Anthropic `system` 字段，其余消息保留角色；重试使用有界退避，错误文本经过消毒，URL 与密钥不会泄漏。\n\n### 协议\n\nMIT — 欢迎贡献。"
+  }
+}

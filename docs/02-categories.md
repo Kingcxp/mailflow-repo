@@ -9,6 +9,7 @@ load, so each category has one contract and one registration call.
 | `mail_source/` | `MAIL_SOURCE` | `registrar.add_source(id, factory)` | [mail-source.md](mail-source.md) |
 | `processor/` | `MAIL_PROCESSOR` | `registrar.add_processor(id, factory)` | [processor.md](processor.md) |
 | `llm_backend/` | `LLM_BACKEND` | `registrar.add_llm(id, factory)` | [llm-backend.md](llm-backend.md) |
+| `llm_enhancer/` | `LLM_ENHANCER` | `registrar.add_llm_enhancer(id, factory)` | [llm-enhancer.md](llm-enhancer.md) |
 | `notifier/` | `NOTIFIER` | `registrar.add_notifier(id, factory)` | [notifier.md](notifier.md) |
 | `storage/` | `STORAGE` | `registrar.add_storage(id, factory)` | [storage.md](storage.md) |
 | `bot_exporter/` | `BOT_EXPORTER` | `registrar.add_bot_exporter(id, factory)` | [bot-exporter.md](bot-exporter.md) |

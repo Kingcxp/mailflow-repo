@@ -1,4 +1,6 @@
 {
   "category": "llm_backend",
-  "plugins": []
+  "plugins": [
+    "mailflow-llm-anthropic"
+  ]
 }
