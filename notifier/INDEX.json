@@ -3,6 +3,7 @@
   "plugins": [
     "mailflow-notify-ntfy",
     "mailflow-notify-smtp",
+    "mailflow-notify-telegram",
     "mailflow-notify-webhook"
   ]
 }

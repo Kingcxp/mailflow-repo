@@ -7,6 +7,7 @@ Channels that deliver computed analyses and reminders: webhook, ntfy, SMTP…
 | [mailflow-notify-ntfy](mailflow-notify-ntfy/) | Push mail alerts to any ntfy.sh topic (or self-hosted ntfy server) |
 | [mailflow-notify-smtp](mailflow-notify-smtp/) | Forward important mail alerts as emails via any SMTP server |
 | [mailflow-notify-webhook](mailflow-notify-webhook/) | POSTs computed mail analyses and reminders to any HTTP webhook |
+| [mailflow-notify-telegram](mailflow-notify-telegram/) | Push mail alerts to a Telegram chat via the Bot API |
 
 ### Adding a plugin
 

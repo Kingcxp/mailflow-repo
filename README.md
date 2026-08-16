@@ -13,7 +13,7 @@ pull request that never touches anyone else's files.
 | [Mail sources](mail_source/) | [mailflow-mail-rss](mail_source/mailflow-mail-rss/) — RSS/Atom → inbox |
 | [Processors](processor/) | [mailflow-processor-blocklist](processor/mailflow-processor-blocklist/) — sender/domain blocklist |
 | [LLM backends](llm_backend/) | _yours could be the first_ |
-| [Notifiers](notifier/) | [mailflow-notify-webhook](notifier/mailflow-notify-webhook/) · [mailflow-notify-ntfy](notifier/mailflow-notify-ntfy/) · [mailflow-notify-smtp](notifier/mailflow-notify-smtp/) |
+| [Notifiers](notifier/) | [mailflow-notify-webhook](notifier/mailflow-notify-webhook/) · [mailflow-notify-ntfy](notifier/mailflow-notify-ntfy/) · [mailflow-notify-smtp](notifier/mailflow-notify-smtp/) · [mailflow-notify-telegram](notifier/mailflow-notify-telegram/) |
 | [Storage backends](storage/) | _yours could be the first_ |
 | [Bot exporters](bot_exporter/) | [mailflow-export-nonebot](bot_exporter/mailflow-export-nonebot/) — NoneBot2 plugin · [mailflow-export-astrbot](bot_exporter/mailflow-export-astrbot/) — AstrBot plugin |
 
