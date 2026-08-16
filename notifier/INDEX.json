@@ -1,0 +1,8 @@
+{
+  "category": "notifier",
+  "plugins": [
+    "mailflow-notify-ntfy",
+    "mailflow-notify-smtp",
+    "mailflow-notify-webhook"
+  ]
+}

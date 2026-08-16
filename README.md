@@ -1,44 +1,24 @@
 # MailFlow Plugin Repository
 
+[![validate-plugins](https://github.com/Kingcxp/mailflow-repo/actions/workflows/validate-plugins.yml/badge.svg)](https://github.com/Kingcxp/mailflow-repo/actions/workflows/validate-plugins.yml)
+
 The official plugin marketplace for [MailFlow](https://github.com/Kingcxp/mailflow).
+Every plugin is a folder under a category folder — adding a plugin is one
+pull request that never touches anyone else's files.
 
-Plugins are grouped by category, one folder per plugin. Each plugin folder
-contains `plugin.json` (the marketplace metadata, including the markdown
-readme) plus the plugin source.
+## Browse the catalog
 
-```
-mail_source/    mailbox and feed source adapters
-processor/      steps of the ordered classification chain
-llm_backend/    chat-completions transports
-notifier/       channels that deliver computed analyses and reminders
-storage/        durable persistence backends
-```
+| Category | Plugins |
+|---|---|
+| [Mail sources](mail_source/) | [mailflow-mail-rss](mail_source/mailflow-mail-rss/) — RSS/Atom → inbox |
+| [Processors](processor/) | [mailflow-processor-blocklist](processor/mailflow-processor-blocklist/) — sender/domain blocklist |
+| [LLM backends](llm_backend/) | _yours could be the first_ |
+| [Notifiers](notifier/) | [mailflow-notify-webhook](notifier/mailflow-notify-webhook/) · [mailflow-notify-ntfy](notifier/mailflow-notify-ntfy/) · [mailflow-notify-smtp](notifier/mailflow-notify-smtp/) |
+| [Storage backends](storage/) | _yours could be the first_ |
 
-## Adding a plugin (pull requests)
-
-1. Pick the category folder, create `<plugin-id>/`.
-2. Put `plugin.json` inside it with the plugin metadata:
-   ```json
-   {
-     "id": "mailflow-my-plugin",
-     "name": "My Plugin",
-     "version": "0.1.0",
-     "description": "one-line summary",
-     "categories": ["notifier"],
-     "package": "mailflow-my-plugin",
-     "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=notifier/mailflow-my-plugin",
-     "author": "you",
-     "license": "MIT",
-     "homepage": "https://github.com/you/mailflow-my-plugin",
-     "readme": "# My Plugin\n\nlong markdown description"
-   }
-   ```
-3. Add the plugin source (`pyproject.toml` with a `mailflow.plugins` entry
-   point + `src/...`), following the plugin-development guide in the main
-   repo (`docs/plugin-development/`).
-
-Because every plugin lives in its own folder with its own `plugin.json`,
-pull requests never touch other plugins' files.
+Each category folder has a README listing its plugins and an `INDEX.json`
+that generic HTTP mirrors use. Each plugin folder contains `plugin.json`
+(marketplace metadata), a human-readable `README.md`, and the plugin source.
 
 ## Using the marketplace
 
@@ -48,3 +28,61 @@ uv run mailflow plugin market list
 uv run mailflow plugin market show mailflow-notify-ntfy
 uv run mailflow plugin install mailflow-notify-ntfy   # restart to load
 ```
+
+`market show` renders the plugin readme with markdown effects — **bold**,
+~~strike~~, `<span style="color:#ff5500">colors</span>` — and shows the
+translation matching your app language when the plugin ships one.
+
+## Repository layout
+
+```
+docs/            ← plugin development documentation (start here)
+├── 00-getting-started.md
+├── 01-marketplace-metadata.md
+├── 02-categories.md
+├── mail-source.md · processor.md · llm-backend.md · notifier.md · storage.md
+├── 05-localization.md
+└── 06-validation.md
+index.json       ← the category list (nothing else — one file, rarely touched)
+mail_source/     ← category folder; one subfolder per plugin
+processor/
+llm_backend/
+notifier/
+storage/
+tools/           ← validation script used by CI
+.github/workflows/validate-plugins.yml
+```
+
+## Writing a plugin
+
+1. Use the **TUI wizard** (Market tab → New): pick a folder, optionally
+   create a subfolder, choose the template category, and MailFlow generates a
+   complete, loadable template. See
+   [docs/00-getting-started.md](docs/00-getting-started.md).
+2. Implement the stub and fill in `plugin.json`
+   ([reference](docs/01-marketplace-metadata.md), including multi-language
+   `descriptions` / `readmes`).
+3. Open a pull request — CI validates **exactly the plugins you changed**
+   (metadata consistency, install, entry-point load, component registration,
+   and a real `process()` run for processors). Unchanged plugins are never
+   re-validated. Details: [docs/06-validation.md](docs/06-validation.md).
+
+```bash
+# validate locally before pushing
+python tools/validate_plugin.py notifier/mailflow-notify-slack
+```
+
+## Development documentation
+
+| Guide | Contents |
+|---|---|
+| [Getting started](docs/00-getting-started.md) | wizard, layout, PR flow, local testing |
+| [Marketplace metadata](docs/01-marketplace-metadata.md) | `plugin.json` reference + CI rules |
+| [Categories](docs/02-categories.md) | contracts, registration, config access |
+| [Mail sources](docs/mail-source.md) | `MailSource` contract + reference plugin |
+| [Processors](docs/processor.md) | `MailProcessor` + `ProcessorResult` |
+| [LLM backends](docs/llm-backend.md) | `LLMBackend` + `LLMCompletion` |
+| [Notifiers](docs/notifier.md) | `Notifier` + `MailRecord` payload |
+| [Storage backends](docs/storage.md) | full `StorageBackend` API |
+| [Localization](docs/05-localization.md) | translated descriptions/readmes |
+| [Validation](docs/06-validation.md) | what CI checks and why |

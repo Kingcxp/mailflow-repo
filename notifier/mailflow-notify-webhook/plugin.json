@@ -3,11 +3,19 @@
   "name": "Webhook Notifier",
   "version": "0.1.0",
   "description": "POSTs computed mail analyses and reminders to any HTTP webhook",
-  "categories": ["notifier"],
+  "categories": [
+    "notifier"
+  ],
   "package": "mailflow-notify-webhook",
   "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=notifier/mailflow-notify-webhook",
   "author": "MailFlow community",
   "license": "MIT",
   "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-webhook",
-  "readme": "## Webhook Notifier\n\nDelivers computed mail analyses to any HTTP webhook — a practical starting point for chat bridges, team dashboards and home automation.\n\n### Features\n\n- POSTs a JSON payload per processed mail (mail id, urgency, subject, summary, sender, reply flag)\n- Standard-library only (urllib): no extra dependencies beyond mailflow-core\n- Failure-tolerant: delivery errors are logged and never fail processing\n\n### Usage\n\n```toml\n[[notifiers]]\nnotifier_id = \"webhook\"\nprovider = \"webhook\"\nenabled = true\nminimum_urgency = \"important\"\n[notifiers.options]\nurl = \"https://your-webhook.example/hook\"\ntimeout_seconds = 10\n```\n\n### License\n\nMIT — contributions welcome."
+  "readme": "## Webhook Notifier\n\nDelivers computed mail analyses to any HTTP webhook — a practical starting point for chat bridges, team dashboards and home automation.\n\n### Features\n\n- POSTs a JSON payload per processed mail (mail id, urgency, subject, summary, sender, reply flag)\n- Standard-library only (urllib): no extra dependencies beyond mailflow-core\n- Failure-tolerant: delivery errors are logged and never fail processing\n\n### Usage\n\n```toml\n[[notifiers]]\nnotifier_id = \"webhook\"\nprovider = \"webhook\"\nenabled = true\nminimum_urgency = \"important\"\n[notifiers.options]\nurl = \"https://your-webhook.example/hook\"\ntimeout_seconds = 10\n```\n\n### License\n\nMIT — contributions welcome.",
+  "descriptions": {
+    "zh-CN": "把邮件分析与提醒以 JSON 推送到任意 HTTP Webhook"
+  },
+  "readmes": {
+    "zh-CN": "## mailflow-notify-webhook\n\n把计算好的邮件分析与提醒以 JSON POST 到任意 HTTP Webhook——对接企业微信、钉钉、Slack 等机器人接口。\n\n### 特性\n\n- 支持 Bearer 鉴权头与自定义请求头\n- 幂等的 POST 负载（含 record_id），便于下游去重\n- 超时与失败重试次数可配置\n\n### 配置\n\n```toml\n[[notifiers]]\nnotifier_id = \"webhook\"\nprovider = \"webhook\"\nenabled = true\nminimum_urgency = \"important\"\n[notifiers.options]\nurl = \"https://hooks.example.com/...\"\n# token = \"${WEBHOOK_TOKEN}\"\n```\n\n### 协议\n\nMIT — 欢迎贡献。"
+  }
 }

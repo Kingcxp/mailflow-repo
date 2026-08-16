@@ -3,11 +3,19 @@
   "name": "RSS/Atom Source",
   "version": "0.1.0",
   "description": "Turns RSS/Atom feeds into mail items (newsletters, blogs, release notes)",
-  "categories": ["mail_source"],
+  "categories": [
+    "mail_source"
+  ],
   "package": "mailflow-mail-rss",
   "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=mail_source/mailflow-mail-rss",
   "author": "MailFlow community",
   "license": "MIT",
   "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/mail_source/mailflow-mail-rss",
-  "readme": "## RSS/Atom Source\n\nTurns any RSS or Atom feed into mail items, so newsletters, blogs, release notes and CI feeds flow through the same pipeline (classification, summaries, reminders).\n\n### Features\n\n- Multiple feeds per account; configurable poll interval\n- Deduplication by entry id/link; entries seen once stay seen\n- Standard library only (urllib + xml.etree)\n- Read-only: replies are rejected with a clear error\n\n### Usage\n\n```toml\n[[accounts]]\naccount_id = \"news\"\nprovider = \"rss\"\nenabled = true\n[accounts.options]\nfeeds = [\n  \"https://example.com/feed.xml\",\n  \"https://another.example/atom.xml\",\n]\ninterval_seconds = 900   # poll interval (default 900)\n```\n\n### License\n\nMIT — contributions welcome."
+  "readme": "## RSS/Atom Source\n\nTurns any RSS or Atom feed into mail items, so newsletters, blogs, release notes and CI feeds flow through the same pipeline (classification, summaries, reminders).\n\n### Features\n\n- Multiple feeds per account; configurable poll interval\n- Deduplication by entry id/link; entries seen once stay seen\n- Standard library only (urllib + xml.etree)\n- Read-only: replies are rejected with a clear error\n\n### Usage\n\n```toml\n[[accounts]]\naccount_id = \"news\"\nprovider = \"rss\"\nenabled = true\n[accounts.options]\nfeeds = [\n  \"https://example.com/feed.xml\",\n  \"https://another.example/atom.xml\",\n]\ninterval_seconds = 900   # poll interval (default 900)\n```\n\n### License\n\nMIT — contributions welcome.",
+  "descriptions": {
+    "zh-CN": "把 RSS/Atom 订阅源转成邮件进入收件箱（新闻通讯、博客等）"
+  },
+  "readmes": {
+    "zh-CN": "## mailflow-mail-rss\n\n把任意 RSS/Atom 订阅源变成普通邮件进入 MailFlow 流水线，方便集中阅读新闻通讯、博客更新和公告。\n\n### 特性\n\n- 标准库实现（urllib + xml.etree），无需第三方依赖\n- 基于内容的稳定 message-id，跨轮询去重，不会重复投递\n- 自动拒绝回复邮件（订阅源不支持回复）\n- 轮询间隔、超时与用户代理均可配置\n\n### 配置\n\n```toml\n[[sources]]\nsource_id = \"feeds\"\nprovider = \"rss\"\nenabled = true\n[sources.options]\nfeeds = [\"https://example.com/feed.xml\"]\npoll_seconds = 1800\n```\n\n### 协议\n\nMIT — 欢迎贡献。"
+  }
 }

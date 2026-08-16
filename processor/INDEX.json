@@ -1,0 +1,6 @@
+{
+  "category": "processor",
+  "plugins": [
+    "mailflow-processor-blocklist"
+  ]
+}

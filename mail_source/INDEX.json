@@ -1,0 +1,6 @@
+{
+  "category": "mail_source",
+  "plugins": [
+    "mailflow-mail-rss"
+  ]
+}
