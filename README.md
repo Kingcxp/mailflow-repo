@@ -20,7 +20,9 @@ pull request that never touches anyone else's files.
 
 Each category folder has a README listing its plugins and an `INDEX.json`
 that generic HTTP mirrors use. Each plugin folder contains `plugin.json`
-(marketplace metadata), a human-readable `README.md`, and the plugin source.
+(marketplace metadata, including the markdown readme MailFlow renders), a
+`README.md` **generated** from it by `tools/gen_plugin_readmes.py`, and the
+plugin source. Edit `plugin.json`; CI fails when the two disagree.
 
 ## Using the marketplace
 

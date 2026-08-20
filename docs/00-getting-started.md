@@ -25,15 +25,30 @@ mailflow-repo/
 │   ├── INDEX.json            ← structured index (generic HTTP servers)
 │   └── <plugin-id>/
 │       ├── plugin.json       ← marketplace metadata (incl. markdown readme)
-│       ├── README.md         ← human-readable copy of the readme
+│       ├── README.md         ← GENERATED from plugin.json; do not hand-edit
 │       ├── pyproject.toml    ← entry point into the plugin
 │       └── src/<package>/…
 ├── processor/
 ├── llm_backend/
+├── llm_enhancer/
 ├── notifier/
 ├── storage/
+├── bot_exporter/
 └── tools/
-    └── validate_plugin.py    ← the script CI runs on pull requests
+    ├── validate_plugin.py       ← the script CI runs on pull requests
+    └── gen_plugin_readmes.py    ← regenerates every plugin README.md
+```
+
+`plugin.json` is the single source of truth for a plugin's description:
+MailFlow renders its `readme` (and `readmes.<lang>`) in `plugin market show`
+and in the TUI detail view. The folder's `README.md` is derived from it so
+GitHub and MailFlow show the same text — after editing `plugin.json`, run:
+
+```bash
+python tools/gen_plugin_readmes.py
+```
+
+CI runs `--check` and fails the pull request when the two disagree.
 ```
 
 ## 1. Use the scaffolding wizard (recommended)

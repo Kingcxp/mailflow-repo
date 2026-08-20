@@ -21,6 +21,13 @@ jobs:
         with:
           python-version: "3.12"
 
+      # plugin.json is the single source of truth for a plugin's description:
+      # the marketplace renders it in `plugin market show` and in the TUI. The
+      # per-folder README.md is generated from it, so a PR that edits one but
+      # not the other must fail here rather than ship two different texts.
+      - name: Check plugin READMEs match plugin.json
+        run: python tools/gen_plugin_readmes.py --check
+
       # PRs: validate exactly the plugins this PR touched, so untouched
       # plugins are never re-tested. Pushes to main: full sweep.
       - name: Validate changed plugins (pull requests)

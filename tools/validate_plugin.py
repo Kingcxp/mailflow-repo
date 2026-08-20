@@ -92,20 +92,23 @@ def _install_and_run(folder: Path) -> list[str]:
     with tempfile.TemporaryDirectory(prefix="mailflow-validate-") as _scratch:
         python = Path(sys.executable).resolve()
         pip = [str(python), "-m", "pip", "install", "--quiet", "--disable-pip-version-check"]
+        # One spec, deliberately built from two literals: the fragment must stay
+        # attached to the URL. Adding a comma here would pass pip two arguments
+        # and break the install, so keep the parentheses.
+        core_spec = (
+            "mailflow-core@git+https://github.com/Kingcxp/mailflow.git"
+            "#subdirectory=packages/mailflow-core"
+        )
         # --force-reinstall: a same-version core already present (e.g. from a
         # previous run) must not shadow the freshly published HEAD. Deps are
         # reinstalled too so a fresh CI environment gets everything.
         core = subprocess.run(
-            pip
-            + [
-                "--force-reinstall",
-                "mailflow-core@git+https://github.com/Kingcxp/mailflow.git"
-                "#subdirectory=packages/mailflow-core",
-            ],
+            [*pip, "--force-reinstall", core_spec],
             cwd=ROOT,
             capture_output=True,
             text=True,
             timeout=900,
+            check=False,
         )
         if core.returncode != 0:
             return [f"{folder.name}: could not install mailflow-core: {core.stderr[-400:]}"]
@@ -119,6 +122,7 @@ def _install_and_run(folder: Path) -> list[str]:
             capture_output=True,
             text=True,
             timeout=600,
+            check=False,
         )
         if install.returncode != 0:
             return [f"{folder.name}: pip install failed: {install.stderr[-400:]}"]
@@ -202,6 +206,7 @@ for component_id in processors:
             capture_output=True,
             text=True,
             timeout=600,
+            check=False,
         )
         if run.returncode != 0:
             errors.append(f"{folder.name}: load/run check failed: {(run.stdout + run.stderr)[-600:]}")

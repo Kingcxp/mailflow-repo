@@ -8,15 +8,19 @@ plugins are never re-tested.
 
 ## What CI does
 
-1. **Detect changed plugins.** The workflow diffs the PR against `main`,
+1. **Check the generated READMEs.** `tools/gen_plugin_readmes.py --check`
+   fails when a plugin folder's `README.md` no longer matches the `readme`
+   in its `plugin.json`. This runs on every pull request, docs-only ones
+   included, because it is the cheapest way to catch two texts drifting apart.
+2. **Detect changed plugins.** The workflow diffs the PR against `main`,
    collects every changed path, and maps them to plugin folders. Only folders
    with actual changes are validated.
    - A PR that touches no plugin folder (e.g. docs only) is skipped — the
      check passes immediately.
    - A PR that updates an existing plugin re-validates exactly that plugin.
-2. **Install `mailflow-core`** (the version this repo pins) into a fresh
+3. **Install `mailflow-core`** (the version this repo pins) into a fresh
    Python environment.
-3. **Run `tools/validate_plugin.py <folder>…`** for each changed plugin.
+4. **Run `tools/validate_plugin.py <folder>…`** for each changed plugin.
 
 ## The script checks
 
@@ -45,6 +49,15 @@ python tools/validate_plugin.py notifier/mailflow-notify-slack
 python tools/validate_plugin.py --all
 ```
 
-The script needs a Python environment with `mailflow-core` importable
-(create one with `uv venv` + `uv pip install mailflow-core` from the repo
-git URL, or use your MailFlow workspace virtualenv).
+`validate_plugin.py` needs a Python environment with `mailflow-core`
+importable (create one with `uv venv` + `uv pip install mailflow-core` from
+the repo git URL, or use your MailFlow workspace virtualenv).
+
+Regenerate the plugin READMEs after editing any `plugin.json`:
+
+```bash
+python tools/gen_plugin_readmes.py          # write
+python tools/gen_plugin_readmes.py --check  # what CI runs
+```
+
+This one needs no `mailflow-core`: it only reads `plugin.json`.
