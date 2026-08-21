@@ -21,7 +21,7 @@ from email import message_from_bytes
 from email.header import decode_header
 from email.message import EmailMessage, Message
 from email.utils import formatdate, parseaddr, parsedate_to_datetime
-from typing import Any
+from typing import Any, cast
 
 from mailflow.config import MailAccountConfig
 from mailflow.contracts import MailEmitter
@@ -166,6 +166,7 @@ class IMAPSource:
         self._interval = int(account.options.get("interval_seconds", 300))
         self._limit = int(account.options.get("limit", 20))
         self._seen: set[str] = set()
+        self._last_uid: int | None = None
         self._username = str(account.options.get("username") or account.email)
         self._password = str(account.options.get("password") or "")
 
@@ -190,23 +191,65 @@ class IMAPSource:
     def _fetch_once(self) -> list[MailMessage]:
         client = self._imap_client()
         try:
-            _status, data = client.search(None, "ALL")
-            ids = (data[0] or b"").split()
-            wanted = ids[-self._limit :]
+            _status, data = client.uid("search", cast(Any, None), "ALL")
+            all_uids = sorted(
+                {int(u) for u in (data[0] or b"").split() if u.isdigit()},
+            )
+            if self._last_uid is not None:
+                # Incremental: only mails that arrived after the previous poll.
+                wanted = [u for u in all_uids if u > self._last_uid]
+            else:
+                # First poll: the most recent ``limit`` mails (avoid flooding;
+                # a non-positive limit would slice to the whole mailbox)
+                wanted = all_uids[-max(1, self._limit) :]
             messages: list[MailMessage] = []
-            for message_id in wanted:
-                _status, fetch = client.fetch(message_id.decode(), "(RFC822)")
+            for uid_int in wanted:
+                _status, fetch = client.uid("fetch", str(uid_int), "(RFC822)")
                 if not fetch or fetch[0] is None:
-                    continue
+                    # Leave the watermark behind this uid so a transient
+                    # server error does not drop the mail permanently.
+                    break
                 raw = fetch[0][1]
                 mail = parse_mime(bytes(raw), self._account.account_id, provider="imap")
+                # Advance only once the mail is in hand: an exception above
+                # retries the same uid on the next poll instead of skipping it.
+                self._last_uid = uid_int
                 if mail.normalized_message_id() not in self._seen:
                     self._seen.add(mail.normalized_message_id())
                     messages.append(mail)
+            if len(self._seen) > 10000:
+                # UID tracking already guarantees single fetch; the set is
+                # only a defense against servers that repeat UIDs.
+                self._seen.clear()
             return messages
         finally:
             with contextlib.suppress(Exception):
                 client.logout()
+
+    def _fetch_history(self, limit: int, offset: int) -> list[MailMessage]:
+        """Newest-first window over the mailbox, independent of the poll
+        watermark: browsing history must never consume the live stream."""
+        client = self._imap_client()
+        try:
+            _status, data = client.uid("search", cast(Any, None), "ALL")
+            all_uids = sorted({int(u) for u in (data[0] or b"").split() if u.isdigit()})
+            newest_first = list(reversed(all_uids))
+            window = newest_first[offset : offset + limit] if limit > 0 else []
+            messages: list[MailMessage] = []
+            for uid_int in window:
+                _status, fetch = client.uid("fetch", str(uid_int), "(RFC822)")
+                if not fetch or fetch[0] is None:
+                    continue
+                messages.append(
+                    parse_mime(bytes(fetch[0][1]), self._account.account_id, provider="imap")
+                )
+            return messages
+        finally:
+            with contextlib.suppress(Exception):
+                client.logout()
+
+    async def fetch_history(self, limit: int = 50, offset: int = 0) -> list[MailMessage]:
+        return await asyncio.to_thread(self._fetch_history, limit, offset)
 
     async def run(self, emit: MailEmitter, stop_event: asyncio.Event) -> None:
         while not stop_event.is_set():
@@ -232,8 +275,14 @@ class IMAPSource:
         message["Subject"] = draft.subject
         message["Date"] = formatdate(localtime=True)
         body = str(getattr(draft, "body", "") or "")
-        if "<" in body and ">" in body:
-            message.set_content("")
+        stripped = body.lstrip()
+        looks_like_html = stripped.startswith("<") and "</" in body
+        if looks_like_html:
+            # real HTML drafts ship with a plain-text alternative built from
+            # the same content, so non-HTML clients never see an empty body
+            from mailflow.letters import html_to_text
+
+            message.set_content(html_to_text(body) or "(see HTML version)")
             message.add_alternative(body, subtype="html")
         else:
             message.set_content(body)
