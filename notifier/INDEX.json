@@ -1,6 +1,7 @@
 {
   "category": "notifier",
   "plugins": [
+    "mailflow-notify-console",
     "mailflow-notify-ntfy",
     "mailflow-notify-smtp",
     "mailflow-notify-telegram",

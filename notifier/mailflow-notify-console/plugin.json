@@ -1,0 +1,21 @@
+{
+  "id": "mailflow-notify-console",
+  "name": "Console Notifier",
+  "version": "0.1.0",
+  "description": "Delivers processed mail alerts to the MailFlow logs",
+  "categories": [
+    "notifier"
+  ],
+  "package": "mailflow-notify-console",
+  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=notifier/mailflow-notify-console",
+  "author": "MailFlow community",
+  "license": "MIT",
+  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-console",
+  "readme": "## Console Notifier\n\nSurfaces already-computed mail analyses through MailFlow's log system\n(terminal + file sinks): every alert above the threshold shows up in the rich\nlog output you are already watching — no additional transport is needed and\nthe message content stays visible where the rest of MailFlow logs.\n\nRegisters the notifier component id `console`.\n\n### How it works\n\nEach notification is one warning-level log line:\n\n```\nNOTIFY [urgent] Collect your student ID card — Pick up the card before 17:00. (office@example.edu)\n```\n\ni.e. urgency level, subject, summary and sender address. Delivery goes through\nthe standard logging system, so it lands in the same terminal and file sinks\nthe rest of MailFlow uses — including the TUI's log view.\n\n### Options\n\nNone. Any `[[notifiers]]` entry with `provider = \"console\"` works as-is;\nthe standard threshold fields still apply:\n\n| Option | Required | Default | Meaning |\n| ------ | -------- | ------- | ------- |\n| `minimum_urgency` | no | — | Standard notifier field: lowest urgency that triggers delivery. |\n\n### Usage\n\n```toml\n[[notifiers]]\nnotifier_id = \"console\"\nprovider = \"console\"\nenabled = true\nminimum_urgency = \"important\"\n```\n\n### Notes\n\n- Delivery cannot fail: writing a log line has no network dependency, which\n  makes this the safest notifier for exercising a pipeline end to end.\n- Pair it with the webhook or Telegram notifiers while developing and keep\n  console enabled as the always-on fallback channel.\n\n### Requirements\n\nStandard library only (`logging`), plus `mailflow-core`.\n\n### License\n\nMIT — contributions welcome.",
+  "descriptions": {
+    "zh-CN": "把已计算的邮件提醒输出到 MailFlow 日志"
+  },
+  "readmes": {
+    "zh-CN": "## 控制台通知器\n\n把已经计算好的邮件分析结果通过 MailFlow 的日志系统（终端与文件 sink）呈现出来：\n超过阈值的每条提醒都会出现在你本来就在查看的富文本日志里 —— 无需任何额外\n传输通道，消息内容也始终保留在 MailFlow 其他日志旁边。\n\n注册的通知器组件 id 为 `console`。\n\n### 工作方式\n\n每条通知就是一行 warning 级别的日志：\n\n```\nNOTIFY [urgent] Collect your student ID card — Pick up the card before 17:00. (office@example.edu)\n```\n\n即紧急程度、主题、摘要与发件人地址。投递走标准日志系统，因此会落入 MailFlow\n其余部分共用的终端与文件 sink —— 包括 TUI 的日志视图。\n\n### 配置项\n\n无需配置。任何 `provider = \"console\"` 的 `[[notifiers]]` 条目开箱即用；\n标准的阈值字段仍然生效：\n\n| 配置项 | 必填 | 默认值 | 说明 |\n| ------ | ---- | ------ | ---- |\n| `minimum_urgency` | 否 | — | 标准通知器字段：触发投递的最低紧急程度。 |\n\n### 用法\n\n```toml\n[[notifiers]]\nnotifier_id = \"console\"\nprovider = \"console\"\nenabled = true\nminimum_urgency = \"important\"\n```\n\n### 说明\n\n- 投递不可能失败：写一行日志没有任何网络依赖，这使它成为端到端演练流水线时\n  最稳妥的通知器。\n- 开发阶段可以与 webhook 或 Telegram 通知器搭配使用，并保持 console 作为\n  永远在线的兜底通道。\n\n### 依赖\n\n仅使用标准库（`logging`），以及 `mailflow-core`。\n\n### 协议\n\nMIT —— 欢迎贡献。"
+  }
+}

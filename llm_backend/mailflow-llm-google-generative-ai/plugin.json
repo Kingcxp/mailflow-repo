@@ -1,0 +1,21 @@
+{
+  "id": "mailflow-llm-google-generative-ai",
+  "name": "Google Generative AI Backend",
+  "version": "0.1.0",
+  "description": "Google Gemini API transport (component id: google-generative-ai)",
+  "categories": [
+    "llm_backend"
+  ],
+  "package": "mailflow-llm-google-generative-ai",
+  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=llm_backend/mailflow-llm-google-generative-ai",
+  "author": "MailFlow community",
+  "license": "MIT",
+  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/llm_backend/mailflow-llm-google-generative-ai",
+  "readme": "## Google Generative AI Backend\n\nThe public Gemini API backend: talks to\n`https://generativelanguage.googleapis.com` out of the box, and to any\nself-hosted proxy through `base_url`.\n\nRegisters the LLM backend component id `google-generative-ai`.\n\n### How it works\n\nMailFlow's processors speak one chat format; this backend translates it to\nGemini's shape: system prompts travel in `systemInstruction`, assistant turns\nbecome `model` role turns, and everything posts to\n\n```\nPOST {base_url}/v1beta/models/{model}:generateContent\nx-goog-api-key: <api key>\n```\n\nOnly transient failures — timeouts, transport errors, HTTP 408/429/5xx — are\nretried up to three times with exponential backoff capped at 5 s. Error text\nis sanitized before it surfaces (no URLs, no key material); the core router\nadditionally redacts the configured key from aggregated failures.\n\n### Authentication\n\nSet the key through the standard fields: `api_key` inline or, preferably,\n`api_key_env = \"GEMINI_API_KEY\"`. The value is sent only as the\n`x-goog-api-key` header and is never written back into the config file.\n(Vertex AI users need `mailflow-llm-google-vertex` instead.)\n\n### Options\n\nStandard `[[llms]]` fields apply (`model`, `api_key`, `api_key_env`,\n`base_url`, `headers`, `timeout_seconds`, `max_retries`, `fallback`).\n\n| Option | Default | Meaning |\n| ------ | ------- | ------- |\n| `base_url` | `https://generativelanguage.googleapis.com` | Override for a self-hosted proxy. |\n| `extra_body.generationConfig` | — | Merged into the request's `generationConfig` (e.g. temperature presets). |\n| `extra_body.*` | — | Any other keys go straight into the request body. |\n\n### Usage\n\n```toml\n[[llms]]\nllm_id = \"gemini\"\nprovider = \"google-generative-ai\"\nmodel = \"gemini-2.0-flash\"\napi_key_env = \"GEMINI_API_KEY\"\ntimeout_seconds = 60\n```\n\nIn the TUI's **LLMs** tab the list order is the fallback chain: put Gemini\nfirst to make it the default, or below another entry to use it only as a\nfallback.\n\n### Requirements\n\n`httpx`, plus `mailflow-core`.\n\n### License\n\nMIT — contributions welcome.",
+  "descriptions": {
+    "zh-CN": "Google Gemini API 传输层(组件 id:google-generative-ai)"
+  },
+  "readmes": {
+    "zh-CN": "## Google Generative AI 后端\n\n公开的 Gemini API 后端：默认直连\n`https://generativelanguage.googleapis.com`，也可通过 `base_url` 指向\n自建代理。\n\n注册的大模型后端组件 id 为 `google-generative-ai`。\n\n### 工作方式\n\nMailFlow 的处理器只使用一种对话格式，本后端负责把它翻译成 Gemini 的结构：\n系统提示词放入 `systemInstruction`，assistant 回合转为 `model` 角色，请求\n发往：\n\n```\nPOST {base_url}/v1beta/models/{model}:generateContent\nx-goog-api-key: <api key>\n```\n\n只有瞬时故障 —— 超时、传输错误、HTTP 408/429/5xx —— 会重试，最多三次，\n指数退避上限 5 秒。错误文本在暴露前会被净化（不含 URL、不含密钥材料），\n核心路由器还会从汇总的失败信息中抹去已配置的密钥。\n\n### 认证方式\n\n通过标准字段提供密钥：内联 `api_key`，或更推荐的\n`api_key_env = \"GEMINI_API_KEY\"`。该值只通过 `x-goog-api-key` 请求头发送，\n绝不会被写回配置文件。（Vertex AI 用户请改用 `mailflow-llm-google-vertex`。）\n\n### 配置项\n\n标准的 `[[llms]]` 字段均适用（`model`、`api_key`、`api_key_env`、`base_url`、\n`headers`、`timeout_seconds`、`max_retries`、`fallback`）。\n\n| 配置项 | 默认值 | 说明 |\n| ------ | ------ | ---- |\n| `base_url` | `https://generativelanguage.googleapis.com` | 自建代理时覆盖。 |\n| `extra_body.generationConfig` | — | 合并进请求的 `generationConfig`（如预设温度等生成参数）。 |\n| `extra_body.*` | — | 其余键直接进入请求体。 |\n\n### 用法\n\n```toml\n[[llms]]\nllm_id = \"gemini\"\nprovider = \"google-generative-ai\"\nmodel = \"gemini-2.0-flash\"\napi_key_env = \"GEMINI_API_KEY\"\ntimeout_seconds = 60\n```\n\n在 TUI 的**大模型**标签页中，列表顺序即回退链：把 Gemini 放在第一位即设为\n默认，放在其他条目之后则只作为后备使用。\n\n### 依赖\n\n`httpx`，以及 `mailflow-core`。\n\n### 协议\n\nMIT —— 欢迎贡献。"
+  }
+}

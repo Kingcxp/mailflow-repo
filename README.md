@@ -10,10 +10,10 @@ pull request that never touches anyone else's files.
 
 | Category | Plugins |
 |---|---|
-| [Mail sources](mail_source/) | [mailflow-mail-rss](mail_source/mailflow-mail-rss/) — RSS/Atom → inbox · [mailflow-mail-imap](mail_source/mailflow-mail-imap/) — IMAP/SMTP with QQ/163/Outlook/Gmail presets |
+| [Mail sources](mail_source/) | [mailflow-mail-fake](mail_source/mailflow-mail-fake/) — deterministic local mails for dev/demo · [mailflow-mail-rss](mail_source/mailflow-mail-rss/) — RSS/Atom → inbox · [mailflow-mail-imap](mail_source/mailflow-mail-imap/) — IMAP/SMTP with QQ/163/Outlook/Gmail presets |
 | [Processors](processor/) | [mailflow-processor-blocklist](processor/mailflow-processor-blocklist/) — sender/domain blocklist |
-| [LLM backends](llm_backend/) | [mailflow-llm-anthropic](llm_backend/mailflow-llm-anthropic/) — Anthropic Messages API (Claude) |
-| [Notifiers](notifier/) | [mailflow-notify-webhook](notifier/mailflow-notify-webhook/) · [mailflow-notify-ntfy](notifier/mailflow-notify-ntfy/) · [mailflow-notify-smtp](notifier/mailflow-notify-smtp/) · [mailflow-notify-telegram](notifier/mailflow-notify-telegram/) |
+| [LLM backends](llm_backend/) | [mailflow-llm-anthropic](llm_backend/mailflow-llm-anthropic/) — Anthropic Messages API (Claude) · [mailflow-llm-openai-compatible](llm_backend/mailflow-llm-openai-compatible/) — OpenAI Completions/Responses family incl. Azure · [mailflow-llm-google-generative-ai](llm_backend/mailflow-llm-google-generative-ai/) — Gemini API · [mailflow-llm-google-vertex](llm_backend/mailflow-llm-google-vertex/) — Gemini on Vertex AI |
+| [Notifiers](notifier/) | [mailflow-notify-webhook](notifier/mailflow-notify-webhook/) · [mailflow-notify-ntfy](notifier/mailflow-notify-ntfy/) · [mailflow-notify-smtp](notifier/mailflow-notify-smtp/) · [mailflow-notify-telegram](notifier/mailflow-notify-telegram/) · [mailflow-notify-console](notifier/mailflow-notify-console/) |
 | [Storage backends](storage/) | _yours could be the first_ |
 | [LLM enhancers](llm_enhancer/) | _yours could be the first_ — bounded customization of the built-in LLM analysis (system prompt, extra messages, post-processing) |
 | [Bot exporters](bot_exporter/) | [mailflow-export-nonebot](bot_exporter/mailflow-export-nonebot/) — NoneBot2 plugin · [mailflow-export-astrbot](bot_exporter/mailflow-export-astrbot/) — AstrBot plugin |

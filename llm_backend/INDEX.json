@@ -1,6 +1,9 @@
 {
   "category": "llm_backend",
   "plugins": [
-    "mailflow-llm-anthropic"
+    "mailflow-llm-anthropic",
+    "mailflow-llm-google-generative-ai",
+    "mailflow-llm-google-vertex",
+    "mailflow-llm-openai-compatible"
   ]
 }

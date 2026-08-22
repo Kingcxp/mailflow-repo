@@ -1,4 +1,6 @@
 {
   "category": "storage",
-  "plugins": []
+  "plugins": [
+    "mailflow-storage-sqlite"
+  ]
 }
