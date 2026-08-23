@@ -1,0 +1,15 @@
+{
+  "id": "mailflow-notify-openclaw-weixin",
+  "name": "WeChat Notifier (OpenClaw)",
+  "version": "0.1.0",
+  "description": "Pushes mail alerts via Tencent's OpenClaw WeChat channel (ClawBot/iLink) through an OpenClaw gateway",
+  "categories": [
+    "notifier"
+  ],
+  "package": "mailflow-notify-openclaw-weixin",
+  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=notifier/mailflow-notify-openclaw-weixin",
+  "author": "MailFlow community",
+  "license": "MIT",
+  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-openclaw-weixin",
+  "readme": "## OpenClaw WeChat (ClawBot) Notifier\n\nSends MailFlow alerts through an [OpenClaw](https://openclaw.ai) gateway\nwith Tencent's official `@tencent-weixin/openclaw-weixin` channel plugin\n(iLink protocol).\n\n### Options\n\n| Option | Required | Description |\n|---|---|---|\n| `base_url` | yes | OpenClaw gateway root URL |\n| `endpoint` | no | Send endpoint path, default `/v1/messages` |\n| `api_key` | yes | Gateway API key (`api_key_env` also accepted) |\n| `targets` | yes | List of WeChat user ids |\n\n### Notes\n\n- Experimental: the upstream iLink API is still evolving; adjust\n  `endpoint` when your gateway version differs."
+}

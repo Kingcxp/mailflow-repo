@@ -1,0 +1,15 @@
+{
+  "id": "mailflow-notify-wechaty",
+  "name": "WeChat Notifier (WeChaty)",
+  "version": "0.1.0",
+  "description": "Pushes mail alerts to WeChat contacts/rooms via a WeChaty HTTP gateway",
+  "categories": [
+    "notifier"
+  ],
+  "package": "mailflow-notify-wechaty",
+  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=notifier/mailflow-notify-wechaty",
+  "author": "MailFlow community",
+  "license": "MIT",
+  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-wechaty",
+  "readme": "## WeChaty Gateway Notifier\n\nDelivers MailFlow alerts to WeChat contacts and group rooms through a\nsmall HTTP gateway in front of [WeChaty](https://github.com/wechaty/wechaty).\n\n### Options\n\n| Option | Required | Description |\n|---|---|---|\n| `gateway_url` | yes | Gateway root implementing `POST /send` + `GET /health` |\n| `token` | no | Bearer token forwarded to the gateway |\n| `targets` | yes | List of `contact:<name>` / `room:<topic>` recipients |\n\n### Notes\n\n- WeChat login (QR scanning) is performed by the WeChaty puppet runtime;\n  the gateway exposes health for MailFlow to verify the session."
+}

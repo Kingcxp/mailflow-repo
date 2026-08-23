@@ -3,8 +3,11 @@
   "plugins": [
     "mailflow-notify-console",
     "mailflow-notify-ntfy",
+    "mailflow-notify-onebot",
+    "mailflow-notify-openclaw-weixin",
     "mailflow-notify-smtp",
     "mailflow-notify-telegram",
-    "mailflow-notify-webhook"
+    "mailflow-notify-webhook",
+    "mailflow-notify-wechaty"
   ]
 }

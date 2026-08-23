@@ -1,0 +1,15 @@
+{
+  "id": "mailflow-notify-onebot",
+  "name": "OneBot (QQ) Notifier",
+  "version": "0.1.0",
+  "description": "Pushes mail alerts to QQ users/groups via an OneBot v11 HTTP server (NapCat, go-cqhttp)",
+  "categories": [
+    "notifier"
+  ],
+  "package": "mailflow-notify-onebot",
+  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=notifier/mailflow-notify-onebot",
+  "author": "MailFlow community",
+  "license": "MIT",
+  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-onebot",
+  "readme": "## OneBot v11 (QQ) Notifier\n\nPushes MailFlow mail alerts to QQ users and group chats through an\n[OneBot v11](https://github.com/botuniverse/onebot-11) HTTP server such as\n[NapCat](https://github.com/NapNeko/NapCatQQ) or go-cqhttp.\n\n### Options\n\n| Option | Required | Description |\n|---|---|---|\n| `http_url` | yes | OneBot HTTP server root, e.g. `http://127.0.0.1:3000` |\n| `access_token` | no | Shared secret sent as `Authorization: Bearer …` |\n| `targets` | yes | List of `user:<qq>` / `group:<group_id>` recipients |\n\n### Notes\n\n- QR login happens in NapCat/go-cqhttp itself; this plugin only sends\n  messages over the standard HTTP API."
+}
