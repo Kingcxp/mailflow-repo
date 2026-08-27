@@ -11,5 +11,11 @@
   "author": "MailFlow community",
   "license": "MIT",
   "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-openclaw-weixin",
-  "readme": "## OpenClaw WeChat (ClawBot) Notifier\n\nSends MailFlow alerts through an [OpenClaw](https://openclaw.ai) gateway\nwith Tencent's official `@tencent-weixin/openclaw-weixin` channel plugin\n(iLink protocol).\n\n### Options\n\n| Option | Required | Description |\n|---|---|---|\n| `base_url` | yes | OpenClaw gateway root URL |\n| `endpoint` | no | Send endpoint path, default `/v1/messages` |\n| `api_key` | yes | Gateway API key (`api_key_env` also accepted) |\n| `targets` | yes | List of WeChat user ids |\n\n### Notes\n\n- Experimental: the upstream iLink API is still evolving; adjust\n  `endpoint` when your gateway version differs."
+  "readme": "## OpenClaw WeChat (ClawBot) Notifier\n\nSends MailFlow alerts through an [OpenClaw](https://openclaw.ai) gateway\nwith Tencent's official `@tencent-weixin/openclaw-weixin` channel plugin\n(iLink protocol).\n\n### Options\n\n| Option | Required | Description |\n|---|---|---|\n| `base_url` | yes | OpenClaw gateway root URL |\n| `endpoint` | no | Send endpoint path, default `/v1/messages` |\n| `api_key` | yes | Gateway API key (`api_key_env` also accepted) |\n| `targets` | yes | List of WeChat user ids |\n\n### Notes\n\n- Experimental: the upstream iLink API is still evolving; adjust\n  `endpoint` when your gateway version differs.",
+  "descriptions": {
+    "zh-CN": "通过腾讯 OpenClaw 微信渠道（ClawBot/iLink）经 OpenClaw 网关推送邮件提醒"
+  },
+  "readmes": {
+    "zh-CN": "## OpenClaw 微信（ClawBot）通知器\n\n通过 [OpenClaw](https://openclaw.ai) 网关与腾讯官方的 `@tencent-weixin/openclaw-weixin` 渠道插件（iLink 协议）发送 MailFlow 提醒。\n\n### 配置项\n\n| 选项 | 必填 | 说明 |\n|---|---|---|\n| `base_url` | 是 | OpenClaw 网关根地址 |\n| `endpoint` | 否 | 发送接口路径，默认 `/v1/messages` |\n| `api_key` | 是 | 网关 API 密钥（也接受 `api_key_env` 环境变量） |\n| `targets` | 是 | 微信用户 id 列表 |\n\n### 说明\n\n- 实验性：上游 iLink API 仍在演进；网关版本不同时可调整 `endpoint`。"
+  }
 }

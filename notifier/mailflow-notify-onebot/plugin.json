@@ -11,5 +11,11 @@
   "author": "MailFlow community",
   "license": "MIT",
   "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-onebot",
-  "readme": "## OneBot v11 (QQ) Notifier\n\nPushes MailFlow mail alerts to QQ users and group chats through an\n[OneBot v11](https://github.com/botuniverse/onebot-11) HTTP server such as\n[NapCat](https://github.com/NapNeko/NapCatQQ) or go-cqhttp.\n\n### Options\n\n| Option | Required | Description |\n|---|---|---|\n| `http_url` | yes | OneBot HTTP server root, e.g. `http://127.0.0.1:3000` |\n| `access_token` | no | Shared secret sent as `Authorization: Bearer …` |\n| `targets` | yes | List of `user:<qq>` / `group:<group_id>` recipients |\n\n### Notes\n\n- QR login happens in NapCat/go-cqhttp itself; this plugin only sends\n  messages over the standard HTTP API."
+  "readme": "## OneBot v11 (QQ) Notifier\n\nPushes MailFlow mail alerts to QQ users and group chats through an\n[OneBot v11](https://github.com/botuniverse/onebot-11) HTTP server such as\n[NapCat](https://github.com/NapNeko/NapCatQQ) or go-cqhttp.\n\n### Options\n\n| Option | Required | Description |\n|---|---|---|\n| `http_url` | yes | OneBot HTTP server root, e.g. `http://127.0.0.1:3000` |\n| `access_token` | no | Shared secret sent as `Authorization: Bearer …` |\n| `targets` | yes | List of `user:<qq>` / `group:<group_id>` recipients |\n\n### Notes\n\n- QR login happens in NapCat/go-cqhttp itself; this plugin only sends\n  messages over the standard HTTP API.",
+  "descriptions": {
+    "zh-CN": "通过 OneBot v11 HTTP 服务器（NapCat、go-cqhttp）向 QQ 用户/群聊推送邮件提醒"
+  },
+  "readmes": {
+    "zh-CN": "## OneBot v11（QQ）通知器\n\n通过 [OneBot v11](https://github.com/botuniverse/onebot-11) HTTP 服务器（如 [NapCat](https://github.com/NapNeko/NapCatQQ) 或 go-cqhttp）把 MailFlow 邮件提醒推送到 QQ 用户与群聊。\n\n### 配置项\n\n| 选项 | 必填 | 说明 |\n|---|---|---|\n| `http_url` | 是 | OneBot HTTP 服务器根地址，如 `http://127.0.0.1:3000` |\n| `access_token` | 否 | 共享密钥，以 `Authorization: Bearer …` 发送 |\n| `targets` | 是 | 接收人列表：`user:<QQ号>` / `group:<群号>` |\n\n### 说明\n\n- 扫码登录在 NapCat / go-cqhttp 自身完成；本插件只通过标准 HTTP API 发送消息。"
+  }
 }
