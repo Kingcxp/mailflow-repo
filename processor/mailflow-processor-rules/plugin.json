@@ -1,0 +1,21 @@
+{
+  "id": "mailflow-processor-rules",
+  "name": "Rule Templates Processor",
+  "version": "0.1.0",
+  "description": "Applies the first matching rule template to each mail",
+  "categories": [
+    "processor"
+  ],
+  "package": "mailflow-processor-rules",
+  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=processor/mailflow-processor-rules",
+  "author": "MailFlow community",
+  "license": "MIT",
+  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/processor/mailflow-processor-rules",
+  "readme": "# Rule Templates Processor\n\nRegisters the processor component id `rules`. Options: `rules` as a list of `{match: {field, contains}, action: {urgency, summary}}` dicts; the first match wins.\n",
+  "descriptions": {
+    "zh-CN": "Applies the first matching rule template to each mail"
+  },
+  "readmes": {
+    "zh-CN": "# Rule Templates Processor\n\nRegisters the processor component id `rules`. Options: `rules` as a list of `{match: {field, contains}, action: {urgency, summary}}` dicts; the first match wins.\n"
+  }
+}

@@ -1,0 +1,16 @@
+[project]
+name = "mailflow-llm-deepseek"
+version = "0.1.0"
+description = "MailFlow LLM backend: DeepSeek (OpenAI-compatible chat completions)"
+requires-python = ">=3.11"
+dependencies = ["mailflow-core"]
+
+[project.entry-points."mailflow.plugins"]
+mailflow-llm-deepseek = "mailflow_llm_deepseek.plugin:plugin"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mailflow_llm_deepseek"]

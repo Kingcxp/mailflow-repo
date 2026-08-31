@@ -1,0 +1,21 @@
+{
+  "id": "mailflow-mail-gmail",
+  "name": "Gmail Mail Source",
+  "version": "0.1.0",
+  "description": "IMAP/SMTP mail source for Gmail with app-password auth",
+  "categories": [
+    "mail_source"
+  ],
+  "package": "mailflow-mail-gmail",
+  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=mail_source/mailflow-mail-gmail",
+  "author": "MailFlow community",
+  "license": "MIT",
+  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/mail_source/mailflow-mail-gmail",
+  "readme": "# Gmail Mail Source\n\nRegisters the mail source component id `gmail`. IMAP to imap.gmail.com:993 (SSL), SMTP via smtp.gmail.com:587 (STARTTLS). Options: `username`, `password` (**an app password, not your account password** — enable 2-Step Verification then create one under Google Account → Security → App passwords), `imap_folder` (default INBOX), `interval_seconds` (default 300), `limit` (default 20), `analyze_backlog` (default false). Native OAuth is planned; today the adapter uses IMAP with an app password.\n",
+  "descriptions": {
+    "zh-CN": "IMAP/SMTP mail source for Gmail with app-password auth"
+  },
+  "readmes": {
+    "zh-CN": "# Gmail Mail Source\n\nRegisters the mail source component id `gmail`. IMAP to imap.gmail.com:993 (SSL), SMTP via smtp.gmail.com:587 (STARTTLS). Options: `username`, `password` (**an app password, not your account password** — enable 2-Step Verification then create one under Google Account → Security → App passwords), `imap_folder` (default INBOX), `interval_seconds` (default 300), `limit` (default 20), `analyze_backlog` (default false). Native OAuth is planned; today the adapter uses IMAP with an app password.\n"
+  }
+}

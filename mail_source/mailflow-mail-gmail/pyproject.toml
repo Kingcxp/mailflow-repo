@@ -1,0 +1,16 @@
+[project]
+name = "mailflow-mail-gmail"
+version = "0.1.0"
+description = "IMAP/SMTP mail source for Gmail with app-password auth"
+requires-python = ">=3.11"
+dependencies = ["mailflow-core"]
+
+[project.entry-points."mailflow.plugins"]
+mailflow-mail-gmail = "mailflow_mail_gmail.plugin:plugin"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mailflow_mail_gmail"]

@@ -2,7 +2,9 @@
   "category": "mail_source",
   "plugins": [
     "mailflow-mail-fake",
+    "mailflow-mail-gmail",
     "mailflow-mail-imap",
+    "mailflow-mail-outlook",
     "mailflow-mail-rss"
   ]
 }

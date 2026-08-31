@@ -1,0 +1,21 @@
+{
+  "id": "mailflow-notify-discord",
+  "name": "Discord Notifier",
+  "version": "0.1.0",
+  "description": "Push mail alerts to a Discord webhook",
+  "categories": [
+    "notifier"
+  ],
+  "package": "mailflow-notify-discord",
+  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=notifier/mailflow-notify-discord",
+  "author": "MailFlow community",
+  "license": "MIT",
+  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-discord",
+  "readme": "# Discord Notifier\n\nRegisters the notifier component id `discord`. Options: `webhook_url`, optional `username`, `timeout_seconds`. Sends `{content, username?}` JSON.\n",
+  "descriptions": {
+    "zh-CN": "Push mail alerts to a Discord webhook"
+  },
+  "readmes": {
+    "zh-CN": "# Discord Notifier\n\nRegisters the notifier component id `discord`. Options: `webhook_url`, optional `username`, `timeout_seconds`. Sends `{content, username?}` JSON.\n"
+  }
+}

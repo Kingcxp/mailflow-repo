@@ -1,0 +1,1 @@
+"""ServerChan Notifier package."""

@@ -2,8 +2,12 @@
   "category": "llm_backend",
   "plugins": [
     "mailflow-llm-anthropic",
+    "mailflow-llm-deepseek",
     "mailflow-llm-google-generative-ai",
     "mailflow-llm-google-vertex",
-    "mailflow-llm-openai-compatible"
+    "mailflow-llm-moonshot",
+    "mailflow-llm-openai-compatible",
+    "mailflow-llm-qwen",
+    "mailflow-llm-zhipu"
   ]
 }

@@ -1,6 +1,9 @@
 {
   "category": "processor",
   "plugins": [
-    "mailflow-processor-blocklist"
+    "mailflow-processor-archive",
+    "mailflow-processor-blocklist",
+    "mailflow-processor-filter",
+    "mailflow-processor-rules"
   ]
 }

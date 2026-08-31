@@ -1,0 +1,21 @@
+{
+  "id": "mailflow-processor-archive",
+  "name": "Auto-Archive Processor",
+  "version": "0.1.0",
+  "description": "Flags mail from matching senders/domains as info + auto-archived",
+  "categories": [
+    "processor"
+  ],
+  "package": "mailflow-processor-archive",
+  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=processor/mailflow-processor-archive",
+  "author": "MailFlow community",
+  "license": "MIT",
+  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/processor/mailflow-processor-archive",
+  "readme": "# Auto-Archive Processor\n\nRegisters the processor component id `archive`. Options: `senders` (list), `domains` (list of domain suffixes). Matched mail is `info` with an 'auto-archived' note.\n",
+  "descriptions": {
+    "zh-CN": "Flags mail from matching senders/domains as info + auto-archived"
+  },
+  "readmes": {
+    "zh-CN": "# Auto-Archive Processor\n\nRegisters the processor component id `archive`. Options: `senders` (list), `domains` (list of domain suffixes). Matched mail is `info` with an 'auto-archived' note.\n"
+  }
+}

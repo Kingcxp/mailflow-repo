@@ -1,0 +1,21 @@
+{
+  "id": "mailflow-processor-filter",
+  "name": "Rule Filter Processor",
+  "version": "0.1.0",
+  "description": "Marks mail matching sender/subject/keyword rules as junk (gray)",
+  "categories": [
+    "processor"
+  ],
+  "package": "mailflow-processor-filter",
+  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=processor/mailflow-processor-filter",
+  "author": "MailFlow community",
+  "license": "MIT",
+  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/processor/mailflow-processor-filter",
+  "readme": "# Rule Filter Processor\n\nRegisters the processor component id `filter`. Options: `senders` (list), `subjects` (list of substrings), `keywords` (list of body substrings). Matches are classified `ad`.\n",
+  "descriptions": {
+    "zh-CN": "Marks mail matching sender/subject/keyword rules as junk (gray)"
+  },
+  "readmes": {
+    "zh-CN": "# Rule Filter Processor\n\nRegisters the processor component id `filter`. Options: `senders` (list), `subjects` (list of substrings), `keywords` (list of body substrings). Matches are classified `ad`.\n"
+  }
+}

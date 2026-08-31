@@ -1,0 +1,21 @@
+{
+  "id": "mailflow-notify-dingtalk",
+  "name": "DingTalk Notifier",
+  "version": "0.1.0",
+  "description": "Push mail alerts to a DingTalk group robot webhook",
+  "categories": [
+    "notifier"
+  ],
+  "package": "mailflow-notify-dingtalk",
+  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=notifier/mailflow-notify-dingtalk",
+  "author": "MailFlow community",
+  "license": "MIT",
+  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-dingtalk",
+  "readme": "# DingTalk Notifier\n\nRegisters the notifier component id `dingtalk`. Options: `access_token` (robot webhook token) or `webhook_url` (full URL), optional `secret` (sign), `timeout_seconds`. Sends `msgtype=text` with the mail summary.\n",
+  "descriptions": {
+    "zh-CN": "Push mail alerts to a DingTalk group robot webhook"
+  },
+  "readmes": {
+    "zh-CN": "# DingTalk Notifier\n\nRegisters the notifier component id `dingtalk`. Options: `access_token` (robot webhook token) or `webhook_url` (full URL), optional `secret` (sign), `timeout_seconds`. Sends `msgtype=text` with the mail summary.\n"
+  }
+}

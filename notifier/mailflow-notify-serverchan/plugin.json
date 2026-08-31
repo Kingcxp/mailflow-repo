@@ -1,0 +1,21 @@
+{
+  "id": "mailflow-notify-serverchan",
+  "name": "ServerChan Notifier",
+  "version": "0.1.0",
+  "description": "Push mail alerts via ServerChan (方糖)",
+  "categories": [
+    "notifier"
+  ],
+  "package": "mailflow-notify-serverchan",
+  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=notifier/mailflow-notify-serverchan",
+  "author": "MailFlow community",
+  "license": "MIT",
+  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-serverchan",
+  "readme": "# ServerChan Notifier\n\nRegisters the notifier component id `serverchan`. Options: `send_key`, optional `title`, `timeout_seconds`. POSTs to `https://sctapi.ftqq.com/<send_key>.send`.\n",
+  "descriptions": {
+    "zh-CN": "Push mail alerts via ServerChan (方糖)"
+  },
+  "readmes": {
+    "zh-CN": "# ServerChan Notifier\n\nRegisters the notifier component id `serverchan`. Options: `send_key`, optional `title`, `timeout_seconds`. POSTs to `https://sctapi.ftqq.com/<send_key>.send`.\n"
+  }
+}
