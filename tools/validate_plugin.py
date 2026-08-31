@@ -25,7 +25,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-CATEGORIES = ("mail_source", "processor", "llm_backend", "llm_enhancer", "notifier", "storage", "bot_exporter")
+CATEGORIES = ("mail_source", "processor", "llm_backend", "llm_enhancer", "notifier", "storage", "bot_exporter", "gateway")
 ROOT = Path(__file__).resolve().parent.parent
 
 

@@ -17,6 +17,7 @@ pull request that never touches anyone else's files.
 | [Storage backends](storage/) | _yours could be the first_ |
 | [LLM enhancers](llm_enhancer/) | _yours could be the first_ — bounded customization of the built-in LLM analysis (system prompt, extra messages, post-processing) |
 | [Bot exporters](bot_exporter/) | [mailflow-export-nonebot](bot_exporter/mailflow-export-nonebot/) — NoneBot2 plugin · [mailflow-export-astrbot](bot_exporter/mailflow-export-astrbot/) — AstrBot plugin |
+| [Gateways](gateway/) | _yours could be the first_ — auto-install + supervise chat-platform bot runtimes (NapCat for QQ, WeChaty/OpenWeChat for WeChat) |
 
 Each category folder has a README listing its plugins and an `INDEX.json`
 that generic HTTP mirrors use. Each plugin folder contains `plugin.json`
@@ -45,6 +46,7 @@ docs/            ← plugin development documentation (start here)
 ├── 01-marketplace-metadata.md
 ├── 02-categories.md
 ├── mail-source.md · processor.md · llm-backend.md · llm-enhancer.md · notifier.md · storage.md · bot-exporter.md
+├── gateway.md
 ├── 05-localization.md
 └── 06-validation.md
 index.json       ← the category list (nothing else — one file, rarely touched)
@@ -55,6 +57,7 @@ llm_enhancer/
 notifier/
 storage/
 bot_exporter/
+gateway/
 tools/           ← validation script used by CI
 .github/workflows/validate-plugins.yml
 ```
@@ -89,7 +92,6 @@ python tools/validate_plugin.py notifier/mailflow-notify-slack
 | [Processors](docs/processor.md) | `MailProcessor` + `ProcessorResult` |
 | [LLM backends](docs/llm-backend.md) | `LLMBackend` + `LLMCompletion` |
 | [Notifiers](docs/notifier.md) | `Notifier` + `MailRecord` payload |
-| [Storage backends](docs/storage.md) | full `StorageBackend` API |
-| [Bot exporters](docs/bot-exporter.md) | `BotExportContext`/`BotExportResult`, framework ids |
+| [Gateways](docs/gateway.md) | `GatewayProvisioner` (install/start/stop/qr), instance lifecycle |
 | [Localization](docs/05-localization.md) | translated descriptions/readmes |
 | [Validation](docs/06-validation.md) | what CI checks and why |

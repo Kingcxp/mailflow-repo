@@ -18,6 +18,7 @@ mailflow-repo/
 │   ├── llm-backend.md
 │   ├── notifier.md
 │   ├── storage.md
+│   ├── gateway.md
 │   ├── 05-localization.md
 │   └── 06-validation.md
 ├── mail_source/              ← category folder, one subfolder per plugin
@@ -34,6 +35,7 @@ mailflow-repo/
 ├── notifier/
 ├── storage/
 ├── bot_exporter/
+├── gateway/
 └── tools/
     ├── validate_plugin.py       ← the script CI runs on pull requests
     └── gen_plugin_readmes.py    ← regenerates every plugin README.md
@@ -142,3 +144,6 @@ Pick the guide for the category you are implementing:
 | `llm_backend` | `LLMBackend` (chat → `LLMCompletion`) | [docs/llm-backend.md](llm-backend.md) |
 | `notifier` | `Notifier` (notify → `None`) | [docs/notifier.md](notifier.md) |
 | `storage` | `StorageBackend` (full persistence API) | [docs/storage.md](storage.md) |
+| `llm_enhancer` | `LLMEnhancer` (system_prompt / extra_messages / post_process) | [docs/llm-enhancer.md](llm-enhancer.md) |
+| `bot_exporter` | `BotExporter` (export → `BotExportResult`) | [docs/bot-exporter.md](bot-exporter.md) |
+| `gateway` | `GatewayProvisioner` (install / start / stop / qr) | [docs/gateway.md](gateway.md) |

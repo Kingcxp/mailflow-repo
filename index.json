@@ -29,6 +29,10 @@
     {
       "id": "llm_enhancer",
       "path": "llm_enhancer"
+    },
+    {
+      "id": "gateway",
+      "path": "gateway"
     }
   ]
 }

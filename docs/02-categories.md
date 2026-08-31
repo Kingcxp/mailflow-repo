@@ -13,6 +13,7 @@ load, so each category has one contract and one registration call.
 | `notifier/` | `NOTIFIER` | `registrar.add_notifier(id, factory)` | [notifier.md](notifier.md) |
 | `storage/` | `STORAGE` | `registrar.add_storage(id, factory)` | [storage.md](storage.md) |
 | `bot_exporter/` | `BOT_EXPORTER` | `registrar.add_bot_exporter(id, factory)` | [bot-exporter.md](bot-exporter.md) |
+| `gateway/` | `GATEWAY_PROVISIONER` | `registrar.add_gateway_provisioner(id, factory)` | [gateway.md](gateway.md) |
 
 ## Plugin anatomy (all categories)
 
