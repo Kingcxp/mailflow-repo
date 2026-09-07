@@ -78,9 +78,6 @@ uses; a plugin usually registers both the `GATEWAY_PROVISIONER` and the
   `napcat` provisioner: pinned GitHub release download (Windows zip / Linux
   AppImage), OneBot v11 HTTP config generation, QR-file → base64, login
   probe via `get_login_info`.
-- [`mailflow-notify-wechaty`](../notifier/mailflow-notify-wechaty/) — the
-  `wechaty` provisioner: `npm install` + a Node gateway bridge exposing
-  `/health`, `/qr` and `/send`.
 - [`mailflow-notify-openwechat`](../notifier/mailflow-notify-openwechat/) —
   the `openwechat` provisioner: builds a Go bridge (scan-to-login, session
   hot-reload).

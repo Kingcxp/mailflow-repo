@@ -7,13 +7,11 @@
     "mailflow-notify-feishu",
     "mailflow-notify-ntfy",
     "mailflow-notify-onebot",
-    "mailflow-notify-openclaw-weixin",
     "mailflow-notify-serverchan",
     "mailflow-notify-slack",
     "mailflow-notify-smtp",
     "mailflow-notify-telegram",
     "mailflow-notify-webhook",
-    "mailflow-notify-wechaty",
     "mailflow-notify-wecom"
   ]
 }
