@@ -6,7 +6,9 @@ Pushes processed mail alerts into a Telegram chat through the Bot API. Create a
 bot with [@BotFather](https://t.me/BotFather), copy its token, tell the plugin
 which chat to post into, and triage from your phone.
 
-Registers the notifier component id `telegram`.
+Registers the notifier component id `telegram` and the `telegram` gateway
+provisioner: the guided setup validates the token and runs the in-process
+long-poll bridge, so chats can drive MailFlow commands directly.
 
 ### How it works
 
