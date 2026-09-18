@@ -12,6 +12,7 @@
     "mailflow-notify-smtp",
     "mailflow-notify-telegram",
     "mailflow-notify-webhook",
-    "mailflow-notify-wecom"
+    "mailflow-notify-wecom",
+    "mailflow-notify-whatsapp"
   ]
 }
