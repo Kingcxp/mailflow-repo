@@ -13,7 +13,7 @@ from contextlib import ExitStack
 from datetime import UTC, datetime, timedelta
 from importlib import metadata
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 from unittest.mock import patch
 
 from mailflow.bot_export import BotExportContext
@@ -40,7 +40,7 @@ from mailflow.llm import LLMRouterImpl
 from mailflow.plugin_validation import validate_result
 from mailflow.plugins import PluginManager
 
-TOOLS = [
+TOOLS: list[dict[str, Any]] = [
     {
         "type": "function",
         "function": {
@@ -55,7 +55,7 @@ TOOL_CALL = {
     "type": "function",
     "function": {"name": "find_mail", "arguments": "{}"},
 }
-PAYLOAD = {
+PAYLOAD: dict[str, Any] = {
     "ok": True,
     "code": 0,
     "errcode": 0,
@@ -138,6 +138,8 @@ class _SMTP:
 
     login = starttls
     send_message = starttls
+    quit = starttls
+    close = starttls
 
 
 def fake_io(stack: ExitStack) -> list[dict[str, Any]]:
@@ -151,23 +153,17 @@ def fake_io(stack: ExitStack) -> list[dict[str, Any]]:
         client = httpx.AsyncClient
 
         def respond(request: Any) -> Any:
-            body = json.loads(request.content) if request.content else {}
+            body: Any = json.loads(request.content) if request.content else {}
             requests.append({"body": body, "headers": request.headers, "url": request.url})
             return httpx.Response(200, json=PAYLOAD)
 
-        stack.enter_context(
-            patch.object(
-                httpx,
-                "AsyncClient",
-                side_effect=lambda **kw: client(
-                    **{
-                        **kw,
-                        "transport": httpx.MockTransport(respond),
-                        "trust_env": False,
-                    }
-                ),
-            )
-        )
+        def fake_client(**kwargs: Any) -> httpx.AsyncClient:
+            kwargs["transport"] = httpx.MockTransport(respond)
+            kwargs["trust_env"] = False
+            return client(**kwargs)
+
+        stack.enter_context(patch.object(httpx, "AsyncClient", side_effect=fake_client))
+
     feed_reads: dict[str, int] = {}
 
     def url_reply(url: Any, *args: Any, **kwargs: Any) -> _URLReply:
@@ -193,10 +189,17 @@ def fake_io(stack: ExitStack) -> list[dict[str, Any]]:
         return _URLReply(outer[0] + b"".join(entries) + outer[1])
 
     stack.enter_context(patch("urllib.request.urlopen", side_effect=url_reply))
-    stack.enter_context(patch("imaplib.IMAP4_SSL", side_effect=lambda *a, **kw: _IMAP()))
-    stack.enter_context(patch("imaplib.IMAP4", side_effect=lambda *a, **kw: _IMAP()))
-    stack.enter_context(patch("smtplib.SMTP", side_effect=lambda *a, **kw: _SMTP()))
-    stack.enter_context(patch("smtplib.SMTP_SSL", side_effect=lambda *a, **kw: _SMTP()))
+
+    def fake_imap(*_: Any, **__: Any) -> _IMAP:
+        return _IMAP()
+
+    def fake_smtp(*_: Any, **__: Any) -> _SMTP:
+        return _SMTP()
+
+    stack.enter_context(patch("imaplib.IMAP4_SSL", side_effect=fake_imap))
+    stack.enter_context(patch("imaplib.IMAP4", side_effect=fake_imap))
+    stack.enter_context(patch("smtplib.SMTP", side_effect=fake_smtp))
+    stack.enter_context(patch("smtplib.SMTP_SSL", side_effect=fake_smtp))
     return requests
 
 
@@ -216,7 +219,7 @@ async def check_source_delivery(instance: Any, config: MailAccountConfig) -> Non
     if hasattr(instance, "set_watermark_store"):
         instance.set_watermark_store(lambda: None, checkpoints.append)
 
-    async def emit(mail: MailMessage) -> None:
+    async def emit(mail: Any) -> None:
         nonlocal attempts, rejected
         validate_result(ComponentKind.MAIL_SOURCE, "fetch_history", [mail])
         attempts += 1
@@ -230,7 +233,7 @@ async def check_source_delivery(instance: Any, config: MailAccountConfig) -> Non
             stop.set()
 
     await asyncio.wait_for(instance.run(emit, stop), timeout=2)
-    if attempts != expected + 1 or len(set(received)) != expected or rejected not in received:
+    if int(attempts) != expected + 1 or len(set(received)) != expected or rejected not in received:
         raise AssertionError("source lost a rejected mail or repeated an accepted mail")
     if checkpoints and json.loads(checkpoints[-1])["uid"] != 2:
         raise AssertionError("source did not save the accepted UID")
@@ -277,11 +280,25 @@ async def check_component(
         stop = asyncio.Event()
         stop.set()
 
-        async def emit(mail: MailMessage) -> None:
+        async def emit(mail: Any) -> None:
             if not isinstance(mail, MailMessage):
                 raise TypeError("run emitted something other than MailMessage")
 
         await call("run", emit, stop)
+        if hasattr(instance, "check_reply_ready"):
+            await call("check_reply_ready")
+            await call(
+                "send_reply",
+                record.record_id,
+                ReplyDraft(
+                    draft_id="validation-reply",
+                    mail_id=record.record_id,
+                    account_id=config.account_id,
+                    to=record.mail.sender,
+                    subject="Validation",
+                    body="Validation reply",
+                ),
+            )
         if config.provider in {"imap", "gmail", "outlook", "rss"}:
             await check_source_delivery(instance, config)
         if hasattr(instance, "fetch_history"):
@@ -368,7 +385,7 @@ async def validate(
     if source:
         ep = metadata.EntryPoint(name=plugin_id, value=entry, group="mailflow.plugins")
         module = importlib.import_module(ep.module)
-        if not Path(module.__file__).resolve().is_relative_to(folder / "src"):  # noqa: ASYNC240
+        if not Path(module.__file__ or "").resolve().is_relative_to(folder / "src"):  # noqa: ASYNC240
             raise TypeError(f"{plugin_id}: an installed copy shadowed the requested source")
     else:
         ep = next(
@@ -405,6 +422,12 @@ async def validate(
     options = {
         "host": "imap.example.test",
         "imap_host": "imap.example.test",
+        "smtp_host": "smtp.example.test",
+        "username": "sender@example.test",
+        "password": "fake-password",
+        "http_url": "https://example.test",
+        "gateway_url": "https://example.test",
+        "targets": ["user:123"],
         "project": "validation",
         "token": "validation",
         "bot_token": "validation",
@@ -455,11 +478,13 @@ async def validate(
         if kind is ComponentKind.MAIL_PROCESSOR:
             args = (config, NullRouter())
         try:
-            instance = registry.factory(kind, component_id)(*args)
+            factory: Any = registry.factory(kind, component_id)
+            instance: Any = factory(*args)
             if kind is ComponentKind.BOT_EXPORTER:
                 validate_result(kind, "export", instance)
                 if not instance.created or not all(
-                    (config.output_dir / f).is_file() for f in instance.created
+                    (cast(BotExportContext, config).output_dir / f).is_file()
+                    for f in instance.created
                 ):
                     raise TypeError("exporter result does not identify its generated files")
             else:

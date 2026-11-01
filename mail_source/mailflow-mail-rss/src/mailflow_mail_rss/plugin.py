@@ -63,6 +63,8 @@ def _entry_parts(entry: ET.Element, tag: str) -> list[str]:
 
 
 class RssSource:
+    supports_reply = False
+
     def __init__(self, account: MailAccountConfig) -> None:
         self._account_id = account.account_id
         self._feeds = [str(url) for url in account.options.get("feeds", [])]
