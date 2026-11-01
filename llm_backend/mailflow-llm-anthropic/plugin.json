@@ -1,7 +1,7 @@
 {
   "id": "mailflow-llm-anthropic",
   "name": "Anthropic LLM Backend",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Chat-completions transport for Anthropic Claude (Messages API)",
   "categories": [
     "llm_backend"

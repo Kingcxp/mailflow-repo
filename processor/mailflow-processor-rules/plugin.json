@@ -11,11 +11,11 @@
   "author": "MailFlow community",
   "license": "MIT",
   "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/processor/mailflow-processor-rules",
-  "readme": "# Rule Templates Processor\n\nRegisters the processor component id `rules`. Options: `rules` as a list of `{match: {field, contains}, action: {urgency, summary}}` dicts; the first match wins.\n",
+  "readme": "# Rule Templates Processor\n\nRegisters the processor component id `rule-templates`. Options: `rules` as a list of `{match: {field, contains}, action: {urgency, summary}}` dicts; the first match wins.\n\n\nUses `rule-templates` to keep the core `rules` processor available. Existing template configurations should select `provider = \"rule-templates\"`.",
   "descriptions": {
     "zh-CN": "Applies the first matching rule template to each mail"
   },
   "readmes": {
-    "zh-CN": "# Rule Templates Processor\n\nRegisters the processor component id `rules`. Options: `rules` as a list of `{match: {field, contains}, action: {urgency, summary}}` dicts; the first match wins.\n"
+    "zh-CN": "# Rule Templates Processor\n\nRegisters the processor component id `rule-templates`. Options: `rules` as a list of `{match: {field, contains}, action: {urgency, summary}}` dicts; the first match wins.\n\n\n组件使用 `rule-templates`，避免覆盖核心内置的 `rules`。已有规则模板配置请改用 `provider = \"rule-templates\"`。"
   }
 }

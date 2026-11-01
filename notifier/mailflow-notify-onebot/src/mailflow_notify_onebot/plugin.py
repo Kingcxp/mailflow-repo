@@ -48,11 +48,73 @@ class OneBotNotifier:
                 continue
             self._targets.append((kind, identifier.strip()))
 
+    async def push_text(self, text: str) -> None:
+        """Push a plain-text message (schedule reminders, daily digest)
+        to every configured target through the OneBot HTTP API."""
+        if not self._url or not self._targets:
+            return
+        headers = {"Content-Type": "application/json"}
+        if self._token:
+            headers["Authorization"] = f"Bearer {self._token}"
+        async with httpx.AsyncClient(timeout=15.0) as client:
+            for kind, identifier in self._targets:
+                endpoint = (
+                    f"{self._url}/send_private_msg"
+                    if kind == "user"
+                    else f"{self._url}/send_group_msg"
+                )
+                payload = (
+                    {"user_id": int(identifier), "message": text}
+                    if kind == "user"
+                    else {"group_id": int(identifier), "message": text}
+                )
+                try:
+                    resp = await client.post(endpoint, json=payload, headers=headers)
+                    if resp.status_code >= 400:
+                        logger.warning(
+                            "onebot notifier: text push to %s:%s rejected: HTTP %d",
+                            kind,
+                            identifier,
+                            resp.status_code,
+                        )
+                except Exception as exc:
+                    logger.warning(
+                        "onebot notifier: text push to %s:%s failed: %s", kind, identifier, exc
+                    )
+
+    async def push_to_target(self, target: str, text: str) -> None:
+        """Push one plain-text message to a single ``user:<id>`` or
+        ``group:<id>`` target (per-chat hourly-summary delivery)."""
+        kind, _, identifier = target.partition(":")
+        kind = kind.strip().lower()
+        identifier = identifier.strip() or target.strip()
+        if kind not in ("user", "group"):
+            kind, identifier = "user", target.strip()
+        headers = {"Content-Type": "application/json"}
+        if self._token:
+            headers["Authorization"] = f"Bearer {self._token}"
+        endpoint = (
+            f"{self._url}/send_private_msg" if kind == "user" else f"{self._url}/send_group_msg"
+        )
+        payload = (
+            {"user_id": int(identifier), "message": text}
+            if kind == "user"
+            else {"group_id": int(identifier), "message": text}
+        )
+        async with httpx.AsyncClient(timeout=15.0) as client:
+            resp = await client.post(endpoint, json=payload, headers=headers)
+            if resp.status_code >= 400:
+                logger.warning(
+                    "onebot notifier: targeted push to %s rejected: HTTP %d",
+                    target,
+                    resp.status_code,
+                )
+
     async def notify(self, record: MailRecord) -> None:
         if not self._url or not self._targets:
             logger.warning(
-                "onebot notifier %r: http_url/targets not configured; skipping",
-                getattr(self, "_config_id", "<onebot>"),
+                "onebot notifier: http_url/targets not configured; skipping (record %s)",
+                record.record_id,
             )
             return
         text = format_message(record)
@@ -87,6 +149,11 @@ def format_message(record: MailRecord) -> str:
     summary = record.summary
     if summary:
         lines.append(summary[:500])
+    attachments = [a.filename for a in record.mail.attachments if a.filename]
+    if attachments:
+        shown = ", ".join(attachments[:4])
+        more = f" (+{len(attachments) - 4})" if len(attachments) > 4 else ""
+        lines.append(f"Attachments: {shown}{more}")
     return "\n".join(lines)
 
 
@@ -97,7 +164,7 @@ PLUGIN_INFO = PluginInfo(
     description=(
         "Pushes mail alerts to QQ users/groups via an OneBot v11 HTTP server (NapCat, go-cqhttp)"
     ),
-    kinds=[ComponentKind.NOTIFIER],
+    kinds=[ComponentKind.NOTIFIER, ComponentKind.GATEWAY_PROVISIONER],
 )
 
 
@@ -107,6 +174,9 @@ class NotifierPlugin:
 
     def mailflow_register(self, registrar: PluginRegistrar, config: Any) -> None:
         registrar.add_notifier("onebot", OneBotNotifier)
+        from mailflow_notify_onebot.gateway import NapCatProvisioner
+
+        registrar.add_gateway_provisioner("napcat", NapCatProvisioner)
 
 
 plugin = NotifierPlugin()

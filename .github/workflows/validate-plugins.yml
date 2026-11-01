@@ -28,6 +28,9 @@ jobs:
       - name: Check plugin READMEs match plugin.json
         run: python tools/gen_plugin_readmes.py --check
 
+      - name: Test validator isolation and change selection
+        run: python -m unittest discover -s tests
+
       # PRs: validate exactly the plugins this PR touched, so untouched
       # plugins are never re-tested. Pushes to main: full sweep.
       - name: Validate changed plugins (pull requests)

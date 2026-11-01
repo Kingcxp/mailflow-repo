@@ -49,8 +49,9 @@ with the bot and stops on shutdown. Configure it by editing
 ``config.toml`` next to this module.
 
 Chat commands are prefixed with ``mailflow`` (``mailflow mail list``,
-``mailflow help``) so they never collide with other plugins\' commands.
-Long replies and the daily digest are split into separate messages.
+``mailflow help``) or ``/mailflow`` (``/mailflow help``) so they never
+collide with other plugins\' commands. Long replies and the daily digest
+are split into separate messages.
 """
 
 from __future__ import annotations
@@ -65,25 +66,6 @@ driver = get_driver()
 _service: Any = None
 _router: Any = None
 
-_PAGE_CHARS = 3500
-_PAGE_ROWS = 10
-
-
-def _chunk(text: str, limit: int = _PAGE_CHARS) -> list[str]:
-    """Split a reply into messages that stay under ``limit`` characters,
-    preferring line boundaries (each row is one chat-friendly line)."""
-    lines = text.splitlines() or [""]
-    chunks: list[str] = []
-    current = ""
-    for line in lines:
-        if current and len(current) + len(line) + 1 > limit:
-            chunks.append(current)
-            current = line
-        else:
-            current = f"{current}\\n{line}" if current else line
-    if current:
-        chunks.append(current)
-    return chunks
 
 
 @driver.on_startup
@@ -98,7 +80,9 @@ async def _start_mailflow() -> None:
     from mailflow_bundled import create_plugin_manager
 
     config = load_config(Path(__file__).resolve().parent / "config.toml")
-    _service = await start_service(config, plugin_manager=create_plugin_manager(config))
+    _service = await start_service(
+        config, plugin_manager=create_plugin_manager(config), discover_plugins=False
+    )
     _router = CommandRouter(_service)
     _service.on("mailflow.action.digest", _send_digest)
 
@@ -120,11 +104,19 @@ _mailflow_matcher = on_message(priority=10, block=False)
 async def _handle_mailflow(event: Any) -> None:
     """Dispatch ``mailflow ...`` chat messages to the shared command router."""
     text = str(event.get_plaintext() or "").strip()
-    if not text.startswith("mailflow ") or _router is None:
+    if _router is None:
         return
-    response = await _router.execute(text[len("mailflow "):].strip())
-    for chunk in _chunk(response.text):
-        await _mailflow_matcher.send(chunk)
+    if text.startswith("/mailflow"):
+        line = text[len("/mailflow"):].strip()
+    elif text.startswith("mailflow "):
+        line = text[len("mailflow "):].strip()
+    else:
+        return
+    response = await _router.execute(line)
+    reply = response.text if response.ok else _service.t("chat.command_error") + chr(10) + response.text
+    pages = _service.chat_reply_chunks(reply)
+    for page in pages if isinstance(pages, list) else [pages]:
+        await _mailflow_matcher.send(page)
 
 
 async def _send_digest(event: str, **payload: Any) -> None:

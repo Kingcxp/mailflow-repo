@@ -58,16 +58,20 @@ async def _call(token: str, method: str, payload: dict[str, Any] | None = None) 
     try:
         body: Any = response.json()
     except ValueError as exc:
-        raise RuntimeError(f"telegram {method}: non-JSON reply (HTTP {response.status_code})") from exc
+        raise RuntimeError(
+            f"telegram {method}: non-JSON reply (HTTP {response.status_code})"
+        ) from exc
     result = as_object(body)
     if not result:
         raise RuntimeError(f"telegram {method}: unexpected reply shape")
     if not result.get("ok"):
-        raise RuntimeError(f"telegram {method}: {as_text(result.get('description')) or 'request rejected'}")
+        raise RuntimeError(
+            f"telegram {method}: {as_text(result.get('description')) or 'request rejected'}"
+        )
     return result
 
 
-class _TelegramBridge:
+class TelegramBridge:
     """In-process getUpdates long-poll that feeds the MailFlow command router."""
 
     def __init__(self, instance_id: str, token: str, bot_url: str) -> None:
@@ -88,7 +92,9 @@ class _TelegramBridge:
             return
         self._stopping = False
         await self._load_identity()
-        self._task = asyncio.create_task(self._poll_loop(), name=f"telegram-bridge-{self._instance_id}")
+        self._task = asyncio.create_task(
+            self._poll_loop(), name=f"telegram-bridge-{self._instance_id}"
+        )
 
     async def stop(self) -> None:
         self._stopping = True
@@ -157,7 +163,9 @@ class _TelegramBridge:
             try:
                 await _call(self._token, "sendMessage", {"chat_id": chat_id, "text": page})
             except Exception as exc:
-                logger.warning("telegram %s: reply to %s failed: %s", self._instance_id, chat_id, exc)
+                logger.warning(
+                    "telegram %s: reply to %s failed: %s", self._instance_id, chat_id, exc
+                )
 
     async def _dispatch(self, text: str, sender: str, chat_id: str, chat_type: str) -> list[str]:
         """POST one inbound message to the MailFlow command endpoint."""
@@ -190,14 +198,14 @@ class _TelegramBridge:
 class TelegramProvisioner(GatewayProvisioner):
     provider = "telegram"
 
-    def _bridge(self, instance_id: str, options: dict[str, Any]) -> _TelegramBridge | None:
+    def _bridge(self, instance_id: str, options: dict[str, Any]) -> TelegramBridge | None:
         token = _token_of(options)
         if not token:
             return None
-        bridges: dict[str, _TelegramBridge] = getattr(self, "_bridges", {})
+        bridges: dict[str, TelegramBridge] = getattr(self, "_bridges", {})
         bridge = bridges.get(instance_id)
         if bridge is None or bridge._token != token:  # pyright: ignore[reportPrivateUsage]
-            bridge = _TelegramBridge(instance_id, token, str(options.get("bot_url") or ""))
+            bridge = TelegramBridge(instance_id, token, str(options.get("bot_url") or ""))
             bridges[instance_id] = bridge
             self._bridges = bridges
         return bridge
@@ -227,7 +235,9 @@ class TelegramProvisioner(GatewayProvisioner):
         username = as_text(as_object(result.get("result")).get("username"))
         logger.info("telegram %s: token accepted (@%s)", instance_id, username or "bot")
         if progress is not None:
-            progress.update(100.0, f"token accepted (@{username})" if username else "token accepted", "done")
+            progress.update(
+                100.0, f"token accepted (@{username})" if username else "token accepted", "done"
+            )
 
     async def start(self, instance_id: str, options: dict[str, Any]) -> GatewayInstance:
         token = _token_of(options)
@@ -263,13 +273,13 @@ class TelegramProvisioner(GatewayProvisioner):
         return bridge
 
     async def stop(self, instance_id: str) -> None:
-        bridges: dict[str, _TelegramBridge] = getattr(self, "_bridges", {})
+        bridges: dict[str, TelegramBridge] = getattr(self, "_bridges", {})
         bridge = bridges.pop(instance_id, None)
         if bridge is not None:
             await bridge.stop()
 
     async def status(self, instance_id: str) -> GatewayInstance:
-        bridges: dict[str, _TelegramBridge] = getattr(self, "_bridges", {})
+        bridges: dict[str, TelegramBridge] = getattr(self, "_bridges", {})
         bridge = bridges.get(instance_id)
         if bridge is None:
             return GatewayInstance(
@@ -315,4 +325,10 @@ def send_text(token: str, chat_id: str, text: str) -> None:
         response.read()
 
 
-__all__ = ["TelegramProvisioner", "as_object", "as_text", "send_text"]
+__all__ = [
+    "TelegramBridge",
+    "TelegramProvisioner",
+    "as_object",
+    "as_text",
+    "send_text",
+]

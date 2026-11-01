@@ -27,7 +27,7 @@ PLUGIN_INFO = PluginInfo(
 
 
 class RulesProcessor:
-    processor_id = "rules"
+    processor_id = "rule-templates"
 
     def __init__(self, config: ProcessorConfig, router: LLMRouter | None = None) -> None:
         self._rules: list[dict[str, Any]] = list(config.options.get("rules", []) or [])
@@ -71,7 +71,7 @@ class RulesPlugin:
         return PLUGIN_INFO
 
     def mailflow_register(self, registrar: PluginRegistrar, config: Any) -> None:
-        registrar.add_processor("rules", RulesProcessor)
+        registrar.add_processor("rule-templates", RulesProcessor)
 
 
 plugin = RulesPlugin()

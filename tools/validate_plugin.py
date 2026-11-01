@@ -1,280 +1,226 @@
 #!/usr/bin/env python3
-"""Validate one or more plugin folders of the MailFlow plugin marketplace.
+"""Check plugin metadata and core contracts with simulated, offline I/O.
 
-Run by the pull-request workflow (.github/workflows/validate-plugins.yml) and
-usable locally. Checks that a plugin is legal (metadata consistent), loadable
-(entry point imports, mailflow_plugin_info reports) and runnable (every
-registered factory instantiates; processors additionally process a sample
-mail).
-
-Usage:
-    python tools/validate_plugin.py notifier/mailflow-notify-ntfy
-    python tools/validate_plugin.py --all
-    python tools/validate_plugin.py --changed   # git diff against main (CI)
-
-The environment must have mailflow-core importable.
+Use --offline with an existing development environment (no installation), or
+omit it to install declared dependencies in a disposable virtual environment.
+--core can select a local mailflow-core folder instead of the Git source.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
-import re
+import os
 import subprocess
 import sys
 import tempfile
+import tomllib
+import venv
 from pathlib import Path
+from typing import Any
 
-CATEGORIES = ("mail_source", "processor", "llm_backend", "llm_enhancer", "notifier", "storage", "bot_exporter", "gateway")
+CATEGORIES = (
+    "mail_source",
+    "processor",
+    "llm_backend",
+    "llm_enhancer",
+    "notifier",
+    "storage",
+    "bot_exporter",
+    "gateway",
+)
 ROOT = Path(__file__).resolve().parent.parent
+CORE_SOURCE = (
+    "mailflow-core@git+https://github.com/Kingcxp/mailflow.git#subdirectory=packages/mailflow-core"
+)
+
+
+def _project(folder: Path) -> dict[str, Any]:
+    return tomllib.loads((folder / "pyproject.toml").read_text(encoding="utf-8"))["project"]
 
 
 def _failures(folder: Path) -> list[str]:
-    errors: list[str] = []
-    plugin_json = folder / "plugin.json"
-    if not plugin_json.is_file():
-        return [f"{folder.name}: plugin.json missing"]
     try:
-        metadata = json.loads(plugin_json.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        return [f"{folder.name}: plugin.json is not valid JSON: {exc}"]
-
-    plugin_id = str(metadata.get("id", ""))
-    if plugin_id != folder.name:
-        errors.append(f"{folder.name}: plugin.json id {plugin_id!r} != folder name")
-    categories = metadata.get("categories") or []
-    if len(categories) != 1 or categories[0] not in CATEGORIES:
-        errors.append(f"{folder.name}: categories must be exactly one of {CATEGORIES}")
-    if not metadata.get("package"):
-        errors.append(f"{folder.name}: package is required (must match pyproject name)")
-    if not metadata.get("source"):
-        errors.append(f"{folder.name}: source is required (where to install from)")
-    if not (metadata.get("readme") or metadata.get("readmes")):
-        errors.append(f"{folder.name}: readme (or readmes.*) is required")
-
-    pyproject = folder / "pyproject.toml"
-    if not pyproject.is_file():
-        return errors + [f"{folder.name}: pyproject.toml missing"]
-    text = pyproject.read_text(encoding="utf-8")
-    name_match = re.search(r'^name\s*=\s*"([^"]+)"', text, re.MULTILINE)
-    if not name_match or name_match.group(1) != metadata.get("package"):
-        errors.append(
-            f"{folder.name}: pyproject name {name_match and name_match.group(1)!r} "
-            f"!= plugin.json package {metadata.get('package')!r}"
-        )
-    entry = re.search(
-        r'\[\s*project\.entry-points\."mailflow\.plugins"\s*\](.*?)(?=\n\[|\Z)',
-        text,
-        re.DOTALL,
-    )
-    if not entry or plugin_id not in entry.group(1):
-        errors.append(f"{folder.name}: pyproject entry point for {plugin_id!r} missing")
-    return errors
-
-
-def _third_party_deps(folder: Path) -> list[str]:
-    """Names from [project].dependencies that are not mailflow workspace packages."""
-    pyproject = folder / "pyproject.toml"
-    text = pyproject.read_text(encoding="utf-8")
-    match = re.search(r"dependencies = \[(.*?)\]", text, re.DOTALL)
-    if not match:
-        return []
-    return [
-        name.strip().strip("\"'")
-        for name in match.group(1).split(",")
-        if name.strip() and not name.strip().strip("\"'").startswith("mailflow-")
-    ]
-
-
-def _install_and_run(folder: Path) -> list[str]:
-    """Install into a scratch environment and run the mailflow checks."""
+        metadata = json.loads((folder / "plugin.json").read_text(encoding="utf-8"))
+        project = _project(folder)
+    except (OSError, ValueError, KeyError) as exc:
+        return [f"{folder.name}: {exc}"]
     errors: list[str] = []
-    with tempfile.TemporaryDirectory(prefix="mailflow-validate-") as _scratch:
-        python = Path(sys.executable).resolve()
-        pip = [str(python), "-m", "pip", "install", "--quiet", "--disable-pip-version-check"]
-        # One spec, deliberately built from two literals: the fragment must stay
-        # attached to the URL. Adding a comma here would pass pip two arguments
-        # and break the install, so keep the parentheses.
-        core_spec = (
-            "mailflow-core@git+https://github.com/Kingcxp/mailflow.git"
-            "#subdirectory=packages/mailflow-core"
-        )
-        # --force-reinstall: a same-version core already present (e.g. from a
-        # previous run) must not shadow the freshly published HEAD. Deps are
-        # reinstalled too so a fresh CI environment gets everything.
-        core = subprocess.run(
-            [*pip, "--force-reinstall", core_spec],
-            cwd=ROOT,
-            capture_output=True,
-            text=True,
-            timeout=900,
-            check=False,
-        )
-        if core.returncode != 0:
-            return [f"{folder.name}: could not install mailflow-core: {core.stderr[-400:]}"]
+    plugin_id = metadata.get("id")
+    if plugin_id != folder.name:
+        errors.append("plugin.json id must match the folder name")
+    categories = metadata.get("categories", [])
+    if len(categories) != 1 or categories[0] not in CATEGORIES:
+        errors.append(f"categories must contain exactly one of {CATEGORIES}")
+    elif folder.parent.name != categories[0]:
+        errors.append("category must match the parent folder")
+    if not metadata.get("package") or project.get("name") != metadata["package"]:
+        errors.append("pyproject name must match plugin.json package")
+    if project.get("version") != metadata.get("version"):
+        errors.append("pyproject version must match plugin.json version")
+    if not metadata.get("source"):
+        errors.append("source is required")
+    if not (metadata.get("readme") or metadata.get("readmes")):
+        errors.append("readme or readmes is required")
+    entries = project.get("entry-points", {}).get("mailflow.plugins", {})
+    if plugin_id not in entries:
+        errors.append(f"mailflow.plugins entry point {plugin_id!r} is missing")
+    dependencies = project.get("dependencies", [])
+    if not any(dependency.startswith("mailflow-core") for dependency in dependencies):
+        errors.append("mailflow-core must be a declared dependency")
+    return [f"{folder.name}: {error}" for error in errors]
 
-        # Third-party dependencies (e.g. httpx in llm backends) are absent
-        # from the scratch env; install them too when the plugin declares any.
-        declared = _third_party_deps(folder)
-        install = subprocess.run(
-            pip + ([], ["--no-deps"])[not declared] + ["."],
-            cwd=folder,
-            capture_output=True,
-            text=True,
-            timeout=600,
-            check=False,
-        )
-        if install.returncode != 0:
-            return [f"{folder.name}: pip install failed: {install.stderr[-400:]}"]
 
-        script = """
-import asyncio
-import sys
-from datetime import datetime, timezone
+def all_folders() -> list[Path]:
+    return sorted(p.parent for c in CATEGORIES for p in (ROOT / c).glob("*/plugin.json"))
 
-from mailflow.config import (
-    LLMConfig, MailAccountConfig, MailFlowConfig, NotifierConfig,
-    ProcessorConfig, StorageConfig,
-)
-from mailflow.contracts import ProcessingContext
-from mailflow.domain import ComponentKind, MailAddress, MailMessage
-from mailflow.plugins import make_manager
 
-plugin_id = sys.argv[1]
-manager = make_manager(discover_plugins=True)
-infos = {i.plugin_id: i for i in manager.enabled_infos()}
-if plugin_id not in infos:
-    sys.exit("plugin not discovered via the mailflow.plugins entry point")
-info = infos[plugin_id]
-if not info.kinds:
-    sys.exit("plugin reports no component kinds")
-print("discovered:", info.plugin_id, [k.value for k in info.kinds])
-
-registry = manager.build_registry()
-config = MailFlowConfig()
-registered = [(s.kind, s.component_id) for s in registry.snapshots() if s.plugin_id == plugin_id]
-if not registered:
-    sys.exit("plugin registered no components")
-
-def make_factory_arg(kind):
-    if kind is ComponentKind.MAIL_SOURCE:
-        return (MailAccountConfig(account_id="validation", provider="validation"),)
-    if kind is ComponentKind.LLM_BACKEND:
-        return (LLMConfig(llm_id="validation", provider="validation"),)
-    if kind is ComponentKind.MAIL_PROCESSOR:
-        class NullRouter:
-            async def chat(self, messages, **kwargs):
-                raise RuntimeError("router not available during validation")
-        return (ProcessorConfig(processor_id="validation", provider="validation"), NullRouter())
-    if kind is ComponentKind.NOTIFIER:
-        return (NotifierConfig(notifier_id="validation", provider="validation"),)
-    if kind is ComponentKind.STORAGE:
-        return (StorageConfig(provider="validation"),)
-    if kind is ComponentKind.BOT_EXPORTER:
-        from pathlib import Path
-        import tempfile as _scratch_dir
-        from mailflow.bot_export import BotExportContext
-        return (
-            BotExportContext(
-                config=MailFlowConfig(),
-                plugin_ids=[],
-                output_dir=Path(_scratch_dir.mkdtemp()),
-            ),
-        )
-    return ()
-
-for kind, component_id in registered:
-    instance = registry.factory(kind, component_id)(*make_factory_arg(kind))
-    if instance is None:
-        sys.exit(f"factory for {component_id} returned None")
-    print("instantiated:", kind.value, component_id)
-
-processors = [cid for k, cid in registered if k is ComponentKind.MAIL_PROCESSOR]
-for component_id in processors:
-    proc = registry.processor_factory(component_id)(*make_factory_arg(ComponentKind.MAIL_PROCESSOR))
-    mail = MailMessage(
-        message_id="validation-sample", account_id="validation",
-        subject="Validation mail", sender=MailAddress(address="sender@example.com"),
-        recipients=[MailAddress(address="me@example.com")],
-        date=datetime.now(timezone.utc), received_at=datetime.now(timezone.utc),
+def _run(python: Path, folder: Path, *, offline: bool, core: Path | None) -> list[str]:
+    env = os.environ.copy()
+    if not offline:
+        env.pop("PYTHONPATH", None)
+    paths: list[str] = []
+    if core is not None:
+        paths.append(str(core / "src"))
+    if offline:
+        # Local peers resolve shared transports without downloading the market.
+        paths.extend(str(p / "src") for p in all_folders())
+        paths.insert(0, str(folder / "src"))
+    if paths:
+        env["PYTHONPATH"] = os.pathsep.join([*paths, env.get("PYTHONPATH", "")])
+    result = subprocess.run(
+        [
+            str(python),
+            "-X",
+            "utf8",
+            "-B",
+            str(ROOT / "tools/plugin_smoke.py"),
+            str(folder),
+            "--source" if offline else "--installed",
+        ],
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        timeout=60,
+        check=False,
     )
-    result = asyncio.run(proc.process(mail, ProcessingContext(account_id="validation")))
-    print("processor ran:", component_id, getattr(result, "notes", None))
-"""
-        run = subprocess.run(
-            [str(python), "-c", script, folder.name],
+    if result.returncode:
+        lines = (result.stdout + result.stderr).strip().splitlines()
+        reason = lines[-1] if lines else f"process exited with {result.returncode}"
+        return [f"{folder.name}: contract check failed: {reason}"]
+    return []
+
+
+def _install_and_run(folder: Path, *, offline: bool = False, core: Path | None = None) -> list[str]:
+    if offline:
+        return _run(Path(sys.executable), folder, offline=True, core=core)
+    with tempfile.TemporaryDirectory(prefix="mailflow-validate-") as scratch:
+        environment = Path(scratch) / "venv"
+        venv.EnvBuilder(with_pip=True).create(environment)
+        python = environment / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+        pip = [
+            str(python),
+            "-m",
+            "pip",
+            "install",
+            "--quiet",
+            "--disable-pip-version-check",
+        ]
+        # Both installs resolve dependencies; never modify the validator's own
+        # interpreter or infer that a mailflow-* dependency can be omitted.
+        for source in (str(core) if core else CORE_SOURCE, str(folder)):
+            result = subprocess.run(
+                [*pip, source],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                timeout=900,
+                check=False,
+            )
+            if result.returncode:
+                return [
+                    f"{folder.name}: install failed: {(result.stderr or result.stdout)[-1000:]}"
+                ]
+        check = subprocess.run(
+            [str(python), "-m", "pip", "check"],
             capture_output=True,
             text=True,
-            timeout=600,
             check=False,
         )
-        if run.returncode != 0:
-            errors.append(f"{folder.name}: load/run check failed: {(run.stdout + run.stderr)[-600:]}")
-    return errors
+        if check.returncode:
+            return [f"{folder.name}: dependency check failed: {check.stdout.strip()}"]
+        return _run(python, folder, offline=False, core=None)
 
 
 def changed_folders(base: str = "main") -> list[Path]:
-    """Folders touched by the working tree / PR head vs base."""
-    diff = subprocess.run(
-        ["git", "diff", "--name-only", f"{base}...HEAD"],
-        cwd=ROOT, capture_output=True, text=True, check=False,
-    )
-    if diff.returncode != 0:
-        # fall back to a full sweep
-        return [p for c in CATEGORIES for p in (ROOT / c).glob("*/") if (p / "plugin.json").is_file()]
-    folders: list[Path] = []
-    for line in diff.stdout.splitlines():
-        path = ROOT / line
-        if not path.exists():
-            continue
-        if (path / "plugin.json").is_file():
-            folders.append(path)
-        else:
-            parent = path.parent
-            if (parent / "plugin.json").is_file() and parent not in folders:
-                folders.append(parent)
-    return sorted(set(folders))
+    """Include nested source edits, local edits, and shared validator changes."""
+    names: set[str] = set()
+    for args in (
+        ["diff", "--name-only", f"{base}...HEAD"],
+        ["diff", "--name-only", "HEAD"],
+        ["ls-files", "--others", "--exclude-standard"],
+    ):
+        result = subprocess.run(
+            ["git", *args],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode:
+            return all_folders()
+        names.update(result.stdout.splitlines())
+    if any(name.startswith(("tools/", ".github/workflows/")) for name in names):
+        return all_folders()
+    folders: set[Path] = set()
+    for name in names:
+        parts = Path(name).parts
+        if len(parts) >= 2 and parts[0] in CATEGORIES:
+            folder = ROOT / parts[0] / parts[1]
+            if (folder / "plugin.json").is_file():
+                folders.add(folder)
+    return sorted(folders)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     group = parser.add_mutually_exclusive_group()
-    group.add_argument("--all", action="store_true", help="validate every plugin folder")
-    group.add_argument("--changed", action="store_true", help="validate only changed plugins")
-    parser.add_argument("folders", nargs="*", help="plugin folders to validate")
+    group.add_argument("--all", action="store_true")
+    group.add_argument("--changed", action="store_true")
+    parser.add_argument(
+        "--offline",
+        action="store_true",
+        help="use local sources; never install or download",
+    )
+    parser.add_argument("--core", type=Path, help="local mailflow-core project folder")
+    parser.add_argument("folders", nargs="*")
     args = parser.parse_args()
-
-    if args.all:
-        folders = [p for c in CATEGORIES for p in (ROOT / c).glob("*/") if (p / "plugin.json").is_file()]
-    elif args.changed:
-        folders = changed_folders()
-    else:
-        folders = [ROOT / f for f in args.folders]
-        if not folders:
-            parser.error("pass plugin folders, or use --all / --changed")
-
-    if not folders:
-        print("no plugin changes to validate")
-        return 0
-
-    failures: list[str] = []
-    for folder in folders:
-        print(f"validating {folder.relative_to(ROOT)}")
-        failures.extend(_failures(folder))
-    if failures:
-        print("\nFAILED:")
-        for error in failures:
-            print(" -", error)
-        return 1
-    for folder in folders:
-        failures.extend(_install_and_run(folder))
-    if failures:
-        print("\nFAILED:")
-        for error in failures:
-            print(" -", error)
-        return 1
-    print(f"\nok: {len(folders)} plugin(s) valid, loadable and runnable")
-    return 0
+    folders = (
+        all_folders()
+        if args.all
+        else changed_folders()
+        if args.changed
+        else [(ROOT / f).resolve() for f in args.folders]
+    )
+    if not folders and not (args.all or args.changed):
+        parser.error("pass folders, --all or --changed")
+    core = args.core.resolve() if args.core else None
+    failures = [error for folder in folders for error in _failures(folder)]
+    if not failures:
+        for folder in folders:
+            print(f"validating {folder.name}", flush=True)
+            try:
+                failures.extend(_install_and_run(folder, offline=args.offline, core=core))
+            except (OSError, subprocess.TimeoutExpired) as exc:
+                failures.append(f"{folder.name}: {exc}")
+    for error in failures:
+        print(error)
+    if not failures:
+        print(f"ok: {len(folders)} plugin(s); signatures, capabilities and offline results checked")
+    return int(bool(failures))
 
 
 if __name__ == "__main__":

@@ -13,23 +13,23 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import hashlib
 import html as html_lib
 import imaplib
+import importlib
 import logging
 import re
 import smtplib
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta, timezone
 from email import message_from_bytes
 from email.header import decode_header
 from email.message import EmailMessage, Message
-
-from mailflow.domain import Attachment
 from email.utils import formatdate, parseaddr, parsedate_to_datetime
 from typing import Any, cast
 
 from mailflow.config import MailAccountConfig
 from mailflow.contracts import MailEmitter
-from mailflow.domain import ComponentKind, MailAddress, MailMessage
+from mailflow.domain import Attachment, ComponentKind, MailAddress, MailMessage
 from mailflow.plugins import PluginInfo
 from mailflow.registry import PluginRegistrar
 
@@ -161,8 +161,125 @@ def _html_to_text(html: str) -> str:
     return text.strip()
 
 
-def parse_mime(raw: bytes, account_id: str, provider: str = "imap") -> MailMessage:
-    """Convert one raw RFC-822 message into a normalized MailMessage."""
+def _unparseable_mail(raw: bytes, account_id: str, provider: str, error: Exception) -> MailMessage:
+    """Retain a malformed RFC-822 payload instead of blocking later UIDs."""
+    now = datetime.now(UTC)
+    digest = hashlib.sha256(raw).hexdigest()[:24]
+    return MailMessage(
+        message_id=f"unparseable-{digest}",
+        account_id=account_id,
+        subject="(unparseable mail)",
+        sender=MailAddress(address=""),
+        recipients=[],
+        cc=[],
+        date=now,
+        received_at=now,
+        provider=provider,
+        parse_error=type(error).__name__,
+    )
+
+
+def _apply_image_text(mail: MailMessage, *, enabled: bool) -> MailMessage:
+    """Fill ``image_text`` from the mail's own posters when OCR is enabled.
+
+    Done here, in the parsing thread, because this is the only point where the
+    image bytes exist: the storage backend deliberately strips attachment
+    payloads, so a later stage has nothing to read. The work is optional and
+    failure-tolerant — a mail is always returned, with an empty ``image_text``
+    when OCR is off, unavailable, or cannot read the image.
+    """
+    if not enabled:
+        return mail
+    core_ocr: Any = importlib.import_module("mailflow.ocr")
+    if not core_ocr.is_available():
+        return mail
+    images = [
+        attachment
+        for attachment in mail.attachments
+        if core_ocr.should_attempt(
+            str(attachment.content_type),
+            int(attachment.size),
+            filename=str(attachment.filename),
+        )
+    ]
+    if not images:
+        return mail
+    text = core_ocr.extract_mail_images(images)
+    if not text.strip():
+        return mail
+    logger.debug("read %d char(s) of poster text from %r", len(text), mail.subject[:40])
+    return mail.model_copy(update={"image_text": text})
+
+
+_INTERNALDATE_MONTHS = {
+    "jan": 1,
+    "feb": 2,
+    "mar": 3,
+    "apr": 4,
+    "may": 5,
+    "jun": 6,
+    "jul": 7,
+    "aug": 8,
+    "sep": 9,
+    "oct": 10,
+    "nov": 11,
+    "dec": 12,
+}
+
+
+def _internal_date(response: Any) -> datetime | None:
+    """Extract INTERNALDATE from a UID FETCH response tuple.
+
+    imaplib returns the untagged data as ``(b'1234 (UID 5 INTERNALDATE
+    "01-Jan-2026 09:15:00 +0800" RFC822 {size})', b'...')``. The timestamp
+    is the server's arrival time — the honest `received_at` for mail
+    fetched long after delivery. Malformed or absent values return None
+    (the caller falls back to the fetch time).
+    """
+    try:
+        metadata = response[0][0]
+    except (IndexError, TypeError):
+        return None
+    if not isinstance(metadata, bytes):
+        return None
+    match = re.search(rb'INTERNALDATE\s+"([^"]+)"', metadata, re.IGNORECASE)
+    if match is None:
+        return None
+    tokens = match.group(1).decode("ascii", "replace").replace("-", " ").split()
+    if len(tokens) != 5:
+        return None
+    day, month_name, year, clock, offset = tokens
+    month = _INTERNALDATE_MONTHS.get(month_name[:3].casefold())
+    if month is None or offset[:1] not in {"+", "-"}:
+        return None
+    try:
+        hour, minute, second = (int(part) for part in clock.split(":"))
+        shift = timedelta(hours=int(offset[1:3]), minutes=int(offset[3:5]))
+        if offset[0] == "-":
+            shift = -shift
+        return datetime(
+            int(year), month, int(day), hour, minute, second, tzinfo=timezone(shift)
+        ).astimezone(UTC)
+    except (ValueError, IndexError):
+        return None
+
+
+def _parse_mime(
+    raw: bytes,
+    account_id: str,
+    provider: str,
+    *,
+    ocr_enabled: bool = False,
+    internal_date: datetime | None = None,
+) -> MailMessage:
+    """Convert one raw RFC-822 message into a normalized MailMessage.
+
+    ``internal_date`` is the IMAP server's own arrival timestamp
+    (INTERNALDATE) — the closest thing to "when this mail reached the
+    mailbox". Without it the fetch time is used: that is honest for live
+    polls (arrival ≈ fetch) but wrong for backfilled history, where it
+    would stamp every historical mail with today's import moment.
+    """
     message = message_from_bytes(raw)
     subject = _decode(message.get("Subject")) or "(no subject)"
     sender = _mail_address(message.get("From"))
@@ -176,21 +293,44 @@ def parse_mime(raw: bytes, account_id: str, provider: str = "imap") -> MailMessa
         date = datetime.now(UTC)
     if date.tzinfo is None:
         date = date.replace(tzinfo=UTC)
+    received_at = internal_date.astimezone(UTC) if internal_date is not None else datetime.now(UTC)
     body_text, body_html, attachments = _extract_body(message)
-    return MailMessage(
-        message_id=message_id,
-        account_id=account_id,
-        subject=subject,
-        sender=sender,
-        recipients=recipients,
-        cc=cc,
-        date=date,
-        received_at=datetime.now(UTC),
-        body_text=body_text,
-        body_html=body_html,
-        attachments=attachments,
-        provider=provider,
+    return _apply_image_text(
+        MailMessage(
+            message_id=message_id,
+            account_id=account_id,
+            subject=subject,
+            sender=sender,
+            recipients=recipients,
+            cc=cc,
+            date=date,
+            received_at=received_at,
+            body_text=body_text,
+            body_html=body_html,
+            attachments=attachments,
+            provider=provider,
+        ),
+        enabled=ocr_enabled,
     )
+
+
+def parse_mime(
+    raw: bytes,
+    account_id: str,
+    provider: str = "imap",
+    *,
+    ocr_enabled: bool = False,
+    internal_date: datetime | None = None,
+) -> MailMessage:
+    """Normalize raw RFC-822 data, retaining unexpected parser failures."""
+    try:
+        return _parse_mime(
+            raw, account_id, provider, ocr_enabled=ocr_enabled, internal_date=internal_date
+        )
+    except Exception as exc:
+        # Never log raw RFC-822 data: headers and bodies can contain secrets.
+        logger.warning("MIME parse fallback for account %r: %s", account_id, type(exc).__name__)
+        return _unparseable_mail(raw, account_id, provider, exc)
 
 
 def _settings_for(account: MailAccountConfig) -> dict[str, Any]:
@@ -220,13 +360,36 @@ class IMAPSource:
         self._limit = int(account.options.get("limit", 20))
         self._seen: set[str] = set()
         self._last_uid: int | None = None
+        self._watermark_save: Any | None = None
         # default behavior: seed the watermark at first poll WITHOUT emitting
         # the existing backlog — only mail arriving afterwards is analyzed.
         # Set options.analyze_backlog = true to restore legacy full-backlog
         # ingestion on the first poll.
         self._analyze_backlog = bool(account.options.get("analyze_backlog", False))
+        # posters carry the title/date/room a body often omits; opt-in because
+        # it costs a local model pass per image
+        self._ocr_images = bool(account.options.get("ocr_images", False))
         self._username = str(account.options.get("username") or account.email)
         self._password = str(account.options.get("password") or "")
+
+    def set_watermark_store(self, load: Any, save: Any) -> None:
+        """Inject a persistent watermark store (host-provided).
+
+        ``load() -> int | None`` restores the last seen UID across restarts;
+        ``save(uid)`` persists the watermark after every advance. Without a
+        store the watermark is in-memory only and a restart re-seeds it at
+        the newest UID — silently skipping every mail that arrived while the
+        service was down.
+        """
+        self._watermark_save = save
+        try:
+            stored = load()
+        except Exception:
+            stored = None
+        if isinstance(stored, int) and stored >= 0:
+            self._last_uid = stored
+        elif isinstance(stored, str) and stored.strip().isdigit():
+            self._last_uid = int(stored)
 
     def _imap_client(self) -> imaplib.IMAP4:
         host = str(self._settings.get("imap_host", ""))
@@ -268,18 +431,26 @@ class IMAPSource:
                 wanted = []
                 if all_uids:
                     self._last_uid = max(all_uids)
+                    self._persist_watermark()
             messages: list[MailMessage] = []
             for uid_int in wanted:
-                _status, fetch = client.uid("fetch", str(uid_int), "(RFC822)")
+                _status, fetch = client.uid("fetch", str(uid_int), "(INTERNALDATE RFC822)")
                 if not fetch or fetch[0] is None:
                     # Leave the watermark behind this uid so a transient
                     # server error does not drop the mail permanently.
                     break
                 raw = fetch[0][1]
-                mail = parse_mime(bytes(raw), self._account.account_id, provider="imap")
+                mail = parse_mime(
+                    bytes(raw),
+                    self._account.account_id,
+                    provider="imap",
+                    ocr_enabled=self._ocr_images,
+                    internal_date=_internal_date(fetch),
+                )
                 # Advance only once the mail is in hand: an exception above
                 # retries the same uid on the next poll instead of skipping it.
                 self._last_uid = uid_int
+                self._persist_watermark()
                 if mail.normalized_message_id() not in self._seen:
                     self._seen.add(mail.normalized_message_id())
                     messages.append(mail)
@@ -292,6 +463,15 @@ class IMAPSource:
             with contextlib.suppress(Exception):
                 client.logout()
 
+    def _persist_watermark(self) -> None:
+        """Persist the current watermark via the injected store (no-op when
+        no store was provided)."""
+        if self._watermark_save is not None and self._last_uid is not None:
+            try:
+                self._watermark_save(self._last_uid)
+            except Exception:
+                logger.warning("imap watermark save failed for %r", self._account.account_id)
+
     def _fetch_history(self, limit: int, offset: int) -> list[MailMessage]:
         """Newest-first window over the mailbox, independent of the poll
         watermark: browsing history must never consume the live stream."""
@@ -303,11 +483,20 @@ class IMAPSource:
             window = newest_first[offset : offset + limit] if limit > 0 else []
             messages: list[MailMessage] = []
             for uid_int in window:
-                _status, fetch = client.uid("fetch", str(uid_int), "(RFC822)")
+                _status, fetch = client.uid("fetch", str(uid_int), "(INTERNALDATE RFC822)")
                 if not fetch or fetch[0] is None:
                     continue
                 messages.append(
-                    parse_mime(bytes(fetch[0][1]), self._account.account_id, provider="imap")
+                    parse_mime(
+                        bytes(fetch[0][1]),
+                        self._account.account_id,
+                        provider="imap",
+                        ocr_enabled=self._ocr_images,
+                        # INTERNALDATE is the server's arrival time: without it
+                        # every historical mail would carry today's import
+                        # moment and the timeline would collapse into one stamp
+                        internal_date=_internal_date(fetch),
+                    )
                 )
             return messages
         finally:

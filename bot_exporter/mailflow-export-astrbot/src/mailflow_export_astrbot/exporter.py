@@ -53,23 +53,6 @@ logger = logging.getLogger("astrbot.plugin.mailflow")
 _service: Any = None
 _router: Any = None
 
-_PAGE_CHARS = 3500
-
-
-def _chunk(text: str, limit: int = _PAGE_CHARS) -> list[str]:
-    """Split a reply into messages that stay under ``limit`` characters."""
-    lines = text.splitlines() or [""]
-    chunks: list[str] = []
-    current = ""
-    for line in lines:
-        if current and len(current) + len(line) + 1 > limit:
-            chunks.append(current)
-            current = line
-        else:
-            current = f"{current}\\n{line}" if current else line
-    if current:
-        chunks.append(current)
-    return chunks
 
 
 class Main(Star):
@@ -89,7 +72,9 @@ class Main(Star):
         from mailflow_bundled import create_plugin_manager
 
         config = load_config(Path(__file__).resolve().parent / "config.toml")
-        _service = await start_service(config, plugin_manager=create_plugin_manager(config))
+        _service = await start_service(
+            config, plugin_manager=create_plugin_manager(config), discover_plugins=False
+        )
         _router = CommandRouter(_service)
         _service.on("mailflow.action.digest", self._on_digest)
 
@@ -113,8 +98,10 @@ class Main(Star):
         elif line.startswith("mailflow "):
             line = line[len("mailflow "):].strip()
         response = await _router.execute(line)
-        for chunk in _chunk(response.text):
-            yield event.plain_result(chunk)
+        reply = response.text if response.ok else _service.t("chat.command_error") + chr(10) + response.text
+        pages = _service.chat_reply_chunks(reply)
+        for page in pages if isinstance(pages, list) else [pages]:
+            yield event.plain_result(page)
 
     async def _on_digest(self, event: str, **payload: Any) -> None:
         """Daily digest arrives as an event; log it and point at the command."""

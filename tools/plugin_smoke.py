@@ -1,0 +1,422 @@
+"""Offline runtime samples for validate_plugin.py; no real accounts or models."""
+
+from __future__ import annotations
+
+import asyncio
+import importlib
+import inspect
+import json
+import sys
+import tempfile
+import tomllib
+from contextlib import ExitStack
+from datetime import UTC, datetime, timedelta
+from importlib import metadata
+from pathlib import Path
+from typing import Any
+from unittest.mock import patch
+
+from mailflow.bot_export import BotExportContext
+from mailflow.config import (
+    LLMConfig,
+    MailAccountConfig,
+    MailFlowConfig,
+    NotifierConfig,
+    ProcessorConfig,
+    StorageConfig,
+)
+from mailflow.contracts import LLMCompletion, ProcessingContext
+from mailflow.domain import (
+    ActionItem,
+    ComponentKind,
+    MailAddress,
+    MailAnalysis,
+    MailMessage,
+    MailRecord,
+    ReplyDraft,
+    Urgency,
+)
+from mailflow.llm import LLMRouterImpl
+from mailflow.plugin_validation import validate_result
+from mailflow.plugins import PluginManager
+
+TOOLS = [
+    {
+        "type": "function",
+        "function": {
+            "name": "find_mail",
+            "description": "Find a mail",
+            "parameters": {"type": "object", "properties": {}},
+        },
+    }
+]
+TOOL_CALL = {
+    "id": "call-1",
+    "type": "function",
+    "function": {"name": "find_mail", "arguments": "{}"},
+}
+PAYLOAD = {
+    "ok": True,
+    "code": 0,
+    "errcode": 0,
+    "model": "validation",
+    "output_text": "ok",
+    "choices": [{"message": {"content": "ok", "tool_calls": [TOOL_CALL]}}],
+    "content": [
+        {"type": "text", "text": "ok"},
+        {"type": "tool_use", "id": "call-1", "name": "find_mail", "input": {}},
+    ],
+    "candidates": [
+        {
+            "content": {
+                "parts": [
+                    {"text": "ok"},
+                    {"functionCall": {"name": "find_mail", "args": {}}},
+                ]
+            }
+        }
+    ],
+    "output": [
+        {"type": "message", "content": [{"type": "output_text", "text": "ok"}]},
+        {
+            "type": "function_call",
+            "call_id": "call-1",
+            "name": "find_mail",
+            "arguments": "{}",
+        },
+    ],
+}
+
+
+class _URLReply:
+    status = 200
+
+    def __enter__(self) -> _URLReply:
+        return self
+
+    def __exit__(self, *args: Any) -> None:
+        pass
+
+    def read(self) -> bytes:
+        return json.dumps(PAYLOAD).encode()
+
+
+class _IMAP:
+    def login(self, *args: Any) -> tuple[str, list[bytes]]:
+        return "OK", []
+
+    select = login
+    logout = login
+    close = login
+
+    def uid(self, *args: Any) -> tuple[str, list[bytes]]:
+        return "OK", [b""]
+
+
+class _SMTP:
+    def __enter__(self) -> _SMTP:
+        return self
+
+    def __exit__(self, *args: Any) -> None:
+        pass
+
+    def starttls(self, *args: Any, **kwargs: Any) -> None:
+        pass
+
+    login = starttls
+    send_message = starttls
+
+
+def fake_io(stack: ExitStack) -> list[dict[str, Any]]:
+    """Replace transports and reject any uncaught real connection/process."""
+    requests: list[dict[str, Any]] = []
+    try:
+        import httpx
+    except ImportError:
+        pass  # A plugin requiring httpx must declare/install it itself.
+    else:
+        client = httpx.AsyncClient
+
+        def respond(request: Any) -> Any:
+            body = json.loads(request.content) if request.content else {}
+            requests.append({"body": body, "headers": request.headers, "url": request.url})
+            return httpx.Response(200, json=PAYLOAD)
+
+        stack.enter_context(
+            patch.object(
+                httpx,
+                "AsyncClient",
+                side_effect=lambda **kw: client(
+                    **{
+                        **kw,
+                        "transport": httpx.MockTransport(respond),
+                        "trust_env": False,
+                    }
+                ),
+            )
+        )
+    stack.enter_context(patch("urllib.request.urlopen", return_value=_URLReply()))
+    stack.enter_context(patch("imaplib.IMAP4_SSL", side_effect=lambda *a, **kw: _IMAP()))
+    stack.enter_context(patch("imaplib.IMAP4", side_effect=lambda *a, **kw: _IMAP()))
+    stack.enter_context(patch("smtplib.SMTP", side_effect=lambda *a, **kw: _SMTP()))
+    stack.enter_context(patch("smtplib.SMTP_SSL", side_effect=lambda *a, **kw: _SMTP()))
+    return requests
+
+
+class NullRouter:
+    async def chat(self, messages: Any, **kwargs: Any) -> LLMCompletion:
+        return LLMCompletion(text=json.dumps({"urgency": "info", "summary": "validation"}))
+
+
+async def check_component(
+    kind: ComponentKind,
+    instance: Any,
+    record: MailRecord,
+    requests: list[dict[str, Any]],
+    config: Any,
+) -> None:
+    async def call(method: str, *args: Any, **kwargs: Any) -> Any:
+        result = getattr(instance, method)(*args, **kwargs)
+        if inspect.isawaitable(result):
+            result = await result
+        validate_result(kind, method, result)
+        return result
+
+    if kind is ComponentKind.LLM_BACKEND:
+        # Use the real router so a backend must accept the host's full call.
+        router = LLMRouterImpl({"validation": instance}, {"validation": config})
+        result = await router.chat(
+            [{"role": "user", "content": "Find mail"}],
+            primary="validation",
+            temperature=0.2,
+            options={"headers": {"x-validation": "yes"}, "max_tokens": 32},
+            tools=TOOLS,
+        )
+        validate_result(kind, "chat", result)
+        if not result.tool_calls or result.tool_calls[0].name != "find_mail":
+            raise TypeError("chat did not preserve the simulated tool call")
+        if not requests or not requests[-1]["body"].get("tools"):
+            raise TypeError("chat did not send tools to its transport")
+        if requests[-1]["headers"].get("x-validation") != "yes":
+            raise TypeError("chat ignored per-call options.headers")
+    elif kind is ComponentKind.MAIL_PROCESSOR:
+        await call("process", record.mail, ProcessingContext(account_id="validation"))
+    elif kind is ComponentKind.NOTIFIER:
+        await call("notify", record)
+        if hasattr(instance, "push_text"):
+            await call("push_text", "validation")
+    elif kind is ComponentKind.MAIL_SOURCE:
+        stop = asyncio.Event()
+        stop.set()
+
+        async def emit(mail: MailMessage) -> None:
+            if not isinstance(mail, MailMessage):
+                raise TypeError("run emitted something other than MailMessage")
+
+        await call("run", emit, stop)
+        if hasattr(instance, "fetch_history"):
+            await call("fetch_history", limit=2, offset=0)
+        await call("close")
+    elif kind is ComponentKind.GATEWAY_PROVISIONER:
+        # Installation/start/stop control real processes. Check those signatures
+        # via core, then sample read-only results with the network mocked.
+        await call("status", "validation")
+        await call("qr", "validation")
+    elif kind is ComponentKind.LLM_ENHANCER:
+        for method, args in (
+            ("system_prompt", ("base",)),
+            (
+                "extra_messages",
+                (record.mail, ProcessingContext(account_id="validation")),
+            ),
+            (
+                "post_process",
+                (
+                    record.analysis,
+                    record.mail,
+                    ProcessingContext(account_id="validation"),
+                ),
+            ),
+        ):
+            if hasattr(instance, method):
+                await call(method, *args)
+    elif kind is ComponentKind.STORAGE:
+        await call("initialize")
+        try:
+            await call("save_mail", record)
+            if await call("get_mail", record.record_id) != record:
+                raise TypeError("save_mail/get_mail did not round-trip the sample")
+            await call("list_mails", limit=2)
+            await call("count_mails")
+            await call("set_manual_urgency", record.record_id, Urgency.URGENT)
+            await call(
+                "update_mail_analysis",
+                record.record_id,
+                summary="updated",
+                reason="validation",
+            )
+            await call("delete_mail", record.record_id, refresh_deleted_at=True)
+            await call("list_trash")
+            await call("restore_from_trash", record.record_id)
+            await call("cleanup_mail", datetime.now(UTC) - timedelta(days=1))
+            await call("purge_trash", datetime.now(UTC))
+            draft = ReplyDraft(
+                draft_id="draft",
+                mail_id=record.record_id,
+                account_id="validation",
+                to=record.mail.sender,
+                subject="reply",
+                body="validation",
+            )
+            await call("save_draft", draft)
+            await call("get_draft", "draft")
+            await call("delete_draft", "draft")
+            await call("set_preference", "validation", "yes")
+            if await call("get_preference", "validation") != "yes":
+                raise TypeError("preferences did not round-trip")
+            action = ActionItem(
+                item_id="action",
+                mail_id=record.record_id,
+                summary="validation",
+                action_type="task",
+                due_at=datetime.now(UTC),
+            )
+            await call("save_custom_action", action)
+            await call("list_custom_actions")
+            await call("delete_custom_action", "action")
+        finally:
+            await call("close")
+
+
+async def validate(
+    folder: Path, scratch: Path, requests: list[dict[str, Any]], source: bool
+) -> None:
+    project = tomllib.loads((folder / "pyproject.toml").read_text(encoding="utf-8"))["project"]
+    manifest = json.loads((folder / "plugin.json").read_text(encoding="utf-8"))
+    plugin_id = manifest["id"]
+    entry = project["entry-points"]["mailflow.plugins"][plugin_id]
+    if source:
+        ep = metadata.EntryPoint(name=plugin_id, value=entry, group="mailflow.plugins")
+        module = importlib.import_module(ep.module)
+        if not Path(module.__file__).resolve().is_relative_to(folder / "src"):  # noqa: ASYNC240
+            raise TypeError(f"{plugin_id}: an installed copy shadowed the requested source")
+    else:
+        ep = next(
+            (e for e in metadata.entry_points(group="mailflow.plugins") if e.name == plugin_id),
+            None,
+        )
+        if ep is None:
+            raise TypeError(f"{plugin_id}: installed entry point is missing")
+    manager = PluginManager()
+    manager.load(plugin_id, ep.load)
+    registry = manager.build_registry()
+    if manager.status(plugin_id) != "enabled":
+        raise TypeError(manager.failures.get(plugin_id, "plugin was not registered"))
+    info = next(i for i in manager.enabled_infos() if i.plugin_id == plugin_id)
+    category_kind = {
+        "processor": "mail_processor",
+        "gateway": "gateway_provisioner",
+    }.get(manifest["categories"][0], manifest["categories"][0])
+    if info.version != manifest["version"] or category_kind not in info.kinds:
+        raise TypeError("runtime version/kinds differ from plugin.json")
+    mail = MailMessage(
+        message_id="validation",
+        account_id="validation",
+        subject="Validation",
+        sender=MailAddress(address="sender@example.test"),
+        date=datetime.now(UTC),
+        received_at=datetime.now(UTC),
+    )
+    record = MailRecord(
+        record_id="validation",
+        mail=mail,
+        analysis=MailAnalysis(summary="validation", urgency=Urgency.INFO),
+    )
+    options = {
+        "host": "imap.example.test",
+        "imap_host": "imap.example.test",
+        "project": "validation",
+        "token": "validation",
+        "bot_token": "validation",
+        "chat_id": "validation",
+        "url": "https://example.test",
+        "webhook_url": "https://example.test",
+        "endpoint": "https://example.test",
+        "feeds": [],
+        "stream": False,
+        "from_addr": "sender@example.test",
+        "to": ["receiver@example.test"],
+    }
+    for component in registry.snapshots():
+        kind, component_id = component.kind, component.component_id
+        if kind is ComponentKind.MAIL_SOURCE:
+            config = MailAccountConfig(
+                account_id="validation", provider=component_id, options=options
+            )
+        elif kind is ComponentKind.LLM_BACKEND:
+            config = LLMConfig(
+                llm_id="validation",
+                provider=component_id,
+                base_url="https://example.test",
+                api_key="fake-token",
+                model="validation",
+                max_retries=0,
+                options=options,
+            )
+        elif kind in (ComponentKind.MAIL_PROCESSOR, ComponentKind.LLM_ENHANCER):
+            config = ProcessorConfig(processor_id="validation", provider=component_id)
+        elif kind is ComponentKind.NOTIFIER:
+            config = NotifierConfig(
+                notifier_id="validation", provider=component_id, options=options
+            )
+        elif kind is ComponentKind.STORAGE:
+            config = StorageConfig(provider=component_id, path=str(scratch / "mail.db"))
+        elif kind is ComponentKind.BOT_EXPORTER:
+            config = BotExportContext(
+                config=MailFlowConfig(),
+                plugin_ids=[],
+                output_dir=scratch / component_id,
+            )
+        else:
+            config = None
+        args = () if kind is ComponentKind.GATEWAY_PROVISIONER else (config,)
+        if kind is ComponentKind.MAIL_PROCESSOR:
+            args = (config, NullRouter())
+        try:
+            instance = registry.factory(kind, component_id)(*args)
+            if kind is ComponentKind.BOT_EXPORTER:
+                validate_result(kind, "export", instance)
+                if not instance.created or not all(
+                    (config.output_dir / f).is_file() for f in instance.created
+                ):
+                    raise TypeError("exporter result does not identify its generated files")
+            else:
+                await asyncio.wait_for(
+                    check_component(kind, instance, record, requests, config), timeout=8
+                )
+        except Exception as exc:
+            raise TypeError(f"{plugin_id}/{kind.value}/{component_id}: {exc}") from exc
+
+
+def main() -> None:
+    def audit(event: str, args: Any) -> None:
+        if event in ("socket.connect", "socket.getaddrinfo", "subprocess.Popen"):
+            raise RuntimeError(f"real I/O forbidden during contract validation: {event}")
+
+    with (
+        asyncio.Runner() as runner,
+        tempfile.TemporaryDirectory(prefix="mailflow-plugin-sample-") as directory,
+        ExitStack() as stack,
+    ):
+        # Windows initializes asyncio's internal socket pair here, before
+        # plugins are imported and the real-I/O guard is installed.
+        runner.get_loop()
+        sys.addaudithook(audit)
+        scratch = Path(directory)
+        stack.enter_context(patch.object(Path, "home", return_value=scratch))
+        requests = fake_io(stack)
+        runner.run(validate(Path(sys.argv[1]).resolve(), scratch, requests, "--source" in sys.argv))
+
+
+if __name__ == "__main__":
+    main()

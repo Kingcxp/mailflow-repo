@@ -44,11 +44,7 @@ provider = "zhipu"
 api_key_env = "ZHIPUAI_API_KEY"
 ```
 
-The request runs on a worker thread via the standard library (urllib) — no
-third-party runtime dependency beyond `mailflow-core`. Only transient
-failures (timeouts, transport errors, HTTP 408/429/5xx) are retried, with
-exponential backoff capped at 5 s; error text is sanitized so no URL or key
-material leaks.
+Uses `mailflow-llm-openai-compatible` for tool calls, per-call options and retries. Its declared dependencies are installed automatically.
 
 ### License
 
@@ -100,9 +96,7 @@ provider = "zhipu"
 api_key_env = "ZHIPUAI_API_KEY"
 ```
 
-请求在工作线程中通过标准库（urllib）执行——除 `mailflow-core` 外无任何
-第三方运行时依赖。仅重试瞬时故障（超时、传输错误、HTTP 408/429/5xx），
-指数退避上限 5 秒；错误文本经过净化，绝不泄漏 URL 或密钥。
+共用 `mailflow-llm-openai-compatible` 的工具调用、单次调用配置和重试实现，安装时自动安装所需依赖。
 
 ### 协议
 
