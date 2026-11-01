@@ -91,33 +91,46 @@ PAYLOAD = {
 class _URLReply:
     status = 200
 
+    def __init__(self, data: bytes | None = None) -> None:
+        self.data = data
+
     def __enter__(self) -> _URLReply:
         return self
 
-    def __exit__(self, *args: Any) -> None:
+    def __exit__(self, *args: object) -> None:
         pass
 
     def read(self) -> bytes:
-        return json.dumps(PAYLOAD).encode()
+        return self.data if self.data is not None else json.dumps(PAYLOAD).encode()
 
 
 class _IMAP:
-    def login(self, *args: Any) -> tuple[str, list[bytes]]:
+    def login(self, *args: Any, **kwargs: Any) -> tuple[str, list[bytes]]:
         return "OK", []
 
     select = login
     logout = login
     close = login
 
-    def uid(self, *args: Any) -> tuple[str, list[bytes]]:
-        return "OK", [b""]
+    def response(self, name: str) -> tuple[str, list[bytes]]:
+        return name, [b"10"]
+
+    def uid(self, command: str, *args: Any) -> tuple[str, list[Any]]:
+        if command == "search":
+            return "OK", [b"1 2"]
+        uid = args[0]
+        raw = (
+            f"From: sender@example.test\r\nMessage-ID: <sample-{uid}>\r\n"
+            f"Subject: sample {uid}\r\n\r\nbody"
+        ).encode()
+        return "OK", [(b'1 (INTERNALDATE "01-Jan-2026 12:00:00 +0000")', raw)]
 
 
 class _SMTP:
     def __enter__(self) -> _SMTP:
         return self
 
-    def __exit__(self, *args: Any) -> None:
+    def __exit__(self, *args: object) -> None:
         pass
 
     def starttls(self, *args: Any, **kwargs: Any) -> None:
@@ -155,7 +168,31 @@ def fake_io(stack: ExitStack) -> list[dict[str, Any]]:
                 ),
             )
         )
-    stack.enter_context(patch("urllib.request.urlopen", return_value=_URLReply()))
+    feed_reads: dict[str, int] = {}
+
+    def url_reply(url: Any, *args: Any, **kwargs: Any) -> _URLReply:
+        address = str(url)
+        if not address.endswith("feed.xml"):
+            return _URLReply()
+        count = feed_reads.get(address, 0)
+        feed_reads[address] = count + 1
+        if "/b/" in address:
+            outer = (b'<feed xmlns="http://www.w3.org/2005/Atom">', b"</feed>")
+            entries = [
+                b"<entry><id>shared-id</id><title>first</title></entry>",
+                b"<entry><title>anonymous</title><summary>stable body</summary></entry>",
+            ]
+        else:
+            outer = (b"<rss><channel>", b"</channel></rss>")
+            entries = [
+                b"<item><guid>shared-id</guid><title>first</title></item>",
+                b"<item><title>anonymous</title><description>stable body</description></item>",
+            ]
+        if count:
+            entries.reverse()
+        return _URLReply(outer[0] + b"".join(entries) + outer[1])
+
+    stack.enter_context(patch("urllib.request.urlopen", side_effect=url_reply))
     stack.enter_context(patch("imaplib.IMAP4_SSL", side_effect=lambda *a, **kw: _IMAP()))
     stack.enter_context(patch("imaplib.IMAP4", side_effect=lambda *a, **kw: _IMAP()))
     stack.enter_context(patch("smtplib.SMTP", side_effect=lambda *a, **kw: _SMTP()))
@@ -166,6 +203,37 @@ def fake_io(stack: ExitStack) -> list[dict[str, Any]]:
 class NullRouter:
     async def chat(self, messages: Any, **kwargs: Any) -> LLMCompletion:
         return LLMCompletion(text=json.dumps({"urgency": "info", "summary": "validation"}))
+
+
+async def check_source_delivery(instance: Any, config: MailAccountConfig) -> None:
+    """A rejected second handoff must not consume it or replay the accepted prefix."""
+    expected = 4 if config.provider == "rss" else 2
+    stop = asyncio.Event()
+    received: list[str] = []
+    rejected = ""
+    attempts = 0
+    checkpoints: list[str] = []
+    if hasattr(instance, "set_watermark_store"):
+        instance.set_watermark_store(lambda: None, checkpoints.append)
+
+    async def emit(mail: MailMessage) -> None:
+        nonlocal attempts, rejected
+        validate_result(ComponentKind.MAIL_SOURCE, "fetch_history", [mail])
+        attempts += 1
+        if attempts == 2:
+            rejected = mail.normalized_message_id()
+            if checkpoints and json.loads(checkpoints[-1])["uid"] != 1:
+                raise AssertionError("source advanced its checkpoint before handoff")
+            raise RuntimeError("simulated rejected handoff")
+        received.append(mail.normalized_message_id())
+        if len(received) == expected:
+            stop.set()
+
+    await asyncio.wait_for(instance.run(emit, stop), timeout=2)
+    if attempts != expected + 1 or len(set(received)) != expected or rejected not in received:
+        raise AssertionError("source lost a rejected mail or repeated an accepted mail")
+    if checkpoints and json.loads(checkpoints[-1])["uid"] != 2:
+        raise AssertionError("source did not save the accepted UID")
 
 
 async def check_component(
@@ -214,6 +282,8 @@ async def check_component(
                 raise TypeError("run emitted something other than MailMessage")
 
         await call("run", emit, stop)
+        if config.provider in {"imap", "gmail", "outlook", "rss"}:
+            await check_source_delivery(instance, config)
         if hasattr(instance, "fetch_history"):
             await call("fetch_history", limit=2, offset=0)
         await call("close")
@@ -342,7 +412,9 @@ async def validate(
         "url": "https://example.test",
         "webhook_url": "https://example.test",
         "endpoint": "https://example.test",
-        "feeds": [],
+        "feeds": ["https://example.test/a/feed.xml", "https://example.test/b/feed.xml"],
+        "interval_seconds": 0.01,
+        "analyze_backlog": True,
         "stream": False,
         "from_addr": "sender@example.test",
         "to": ["receiver@example.test"],

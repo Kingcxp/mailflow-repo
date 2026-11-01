@@ -8,7 +8,9 @@ raises a clear error (there is no outbound channel for a feed).
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import hashlib
+import json
 import logging
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -51,9 +53,12 @@ def _parse_date(raw: str | None) -> datetime:
 
 def _entry_parts(entry: ET.Element, tag: str) -> list[str]:
     values: list[str] = []
-    for node in entry.iter(tag):
-        if node.text and node.text.strip():
-            values.append(node.text.strip())
+    for node in entry.iter():
+        if node.tag.rpartition("}")[2] != tag:
+            continue
+        text = (node.get("href") or node.text) if tag == "link" else node.text
+        if text and text.strip():
+            values.append(text.strip())
     return values
 
 
@@ -75,19 +80,26 @@ class RssSource:
         entries = list(root.iterfind(".//item")) + list(
             root.iterfind("{http://www.w3.org/2005/Atom}entry")
         )
-        for index, entry in enumerate(entries):
+        for entry in entries:
             titles = _entry_parts(entry, "title")
             links = _entry_parts(entry, "link")
             summaries = _entry_parts(entry, "summary") or _entry_parts(entry, "description")
             ids = _entry_parts(entry, "guid") or _entry_parts(entry, "id") or links
             dates = _entry_parts(entry, "pubDate") or _entry_parts(entry, "published")
-            entry_id = ids[0] if ids else f"{url}#{index}"
-            if entry_id in self._seen:
+            entry_id = (
+                ids[0]
+                if ids
+                else hashlib.sha256(
+                    json.dumps([titles, summaries, dates], ensure_ascii=False).encode()
+                ).hexdigest()
+            )
+            scoped_id = hashlib.sha256(f"{url}\0{entry_id}".encode()).hexdigest()
+            if scoped_id in self._seen:
                 continue
             feed_domain = urlparse(url).netloc
             mails.append(
                 MailMessage(
-                    message_id=f"rss-{hashlib.sha256(entry_id.encode('utf-8')).hexdigest()[:12]}",
+                    message_id=f"rss-{scoped_id}",
                     account_id=self._account_id,
                     subject=titles[0] if titles else "(no title)",
                     sender=MailAddress(name=feed_domain, address=f"feed@{feed_domain}"),
@@ -98,7 +110,7 @@ class RssSource:
                     body_text=summaries[0] if summaries else "",
                     body_html="",
                     provider="mailflow-mail-rss",
-                    provider_message_id=entry_id,
+                    provider_message_id=scoped_id,
                 )
             )
         return mails
@@ -108,14 +120,14 @@ class RssSource:
             for url in self._feeds:
                 try:
                     for mail in await asyncio.to_thread(self._entries, url):
-                        self._seen.add(mail.provider_message_id)
+                        if stop_event.is_set():
+                            return
                         await emit(mail)
-                except Exception as exc:  # noqa: BLE001 — one bad feed must not stop others
+                        self._seen.add(mail.provider_message_id)
+                except Exception as exc:
                     logger.warning("rss feed %r failed: %s", url, exc)
-            try:
+            with contextlib.suppress(TimeoutError):
                 await asyncio.wait_for(stop_event.wait(), timeout=self._interval)
-            except TimeoutError:
-                pass
 
     async def send_reply(self, mail_id: str, draft: ReplyDraft) -> None:
         raise RuntimeError("rss sources are read-only; replies are not supported")
