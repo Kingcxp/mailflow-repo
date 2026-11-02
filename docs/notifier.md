@@ -7,8 +7,7 @@ messaging service, email, a desktop notification.
 
 ```python
 class Notifier:
-    async def notify(self, record: MailRecord) -> None:
-        ...
+    async def notify(self, record: MailRecord) -> None: ...
 ```
 
 `MailRecord` carries everything the pipeline computed:

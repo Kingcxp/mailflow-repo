@@ -11,7 +11,7 @@ class LLMBackend:
 
     async def chat(
         self,
-        messages: list[dict[str, str]],          # [{"role": "system"|"user"|"assistant", "content": …}]
+        messages: list[dict[str, str]],  # [{"role": "system"|"user"|"assistant", "content": …}]
         *,
         temperature: float | None = None,
         options: dict[str, Any] | None = None,

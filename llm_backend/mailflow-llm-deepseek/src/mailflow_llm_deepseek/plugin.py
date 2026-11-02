@@ -43,9 +43,7 @@ class LLMPlugin:
     def mailflow_plugin_info(self) -> PluginInfo:
         return PLUGIN_INFO
 
-    def mailflow_register(
-        self, registrar: PluginRegistrar, config: MailFlowConfig
-    ) -> None:
+    def mailflow_register(self, registrar: PluginRegistrar, config: MailFlowConfig) -> None:
         registrar.add_llm("deepseek", DeepSeekBackend)
 
 

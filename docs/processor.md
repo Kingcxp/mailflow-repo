@@ -9,8 +9,7 @@ looks at a mail and contributes a decision, an analysis overlay and/or notes.
 class MailProcessor:
     processor_id: str
 
-    async def process(self, mail: MailMessage, context: ProcessingContext) -> ProcessorResult:
-        ...
+    async def process(self, mail: MailMessage, context: ProcessingContext) -> ProcessorResult: ...
 ```
 
 - `ProcessorResult.decision` — `CONTINUE` (default) or `STOP` (skip the
@@ -68,13 +67,13 @@ optional hooks:
 
 ```python
 class MyEnhancer:
-    def system_prompt(self, base: str) -> str:            # append guidance
+    def system_prompt(self, base: str) -> str:  # append guidance
         return base + "\nOutput summaries in Chinese."
 
     def extra_messages(self, mail, context) -> list[dict[str, str]]:  # extra chat turns
         return [{"role": "user", "content": "Be very concise."}]
 
-    def post_process(self, analysis, mail, context):      # adjust the result
+    def post_process(self, analysis, mail, context):  # adjust the result
         return analysis.model_copy(update={"notes": "adjusted"})  # or None
 ```
 

@@ -30,7 +30,7 @@ PLUGIN_INFO = PluginInfo(
     name="My Plugin",
     version="0.1.0",
     description="one-line summary",
-    kinds=[ComponentKind.NOTIFIER],          # what the plugin provides
+    kinds=[ComponentKind.NOTIFIER],  # what the plugin provides
 )
 
 
@@ -39,7 +39,7 @@ class MyPlugin:
         return PLUGIN_INFO
 
     def mailflow_register(self, registrar: PluginRegistrar, config) -> None:
-        registrar.add_notifier("my-channel", MyNotifier)   # category-specific
+        registrar.add_notifier("my-channel", MyNotifier)  # category-specific
 
 
 plugin = MyPlugin()
@@ -59,6 +59,7 @@ Component-specific settings live in the config's `options` dicts:
 
 ```python
 from mailflow.config import NotifierConfig
+
 
 def mailflow_register(self, registrar, config):
     notifier_config = next(
