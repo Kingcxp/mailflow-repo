@@ -66,6 +66,22 @@ class ValidatorTests(unittest.TestCase):
         ):
             self.assertEqual(validator.changed_folders("origin/develop"), [folder])
 
+    def test_url_dependency_requires_build_backend_support(self) -> None:
+        folder = self.plugin()
+        project = folder / "pyproject.toml"
+        text = project.read_text(encoding="utf-8").replace(
+            '"missing-library"', '"shared-backend @ git+https://example.invalid/backend.git"'
+        )
+        text += '\n[build-system]\nrequires = ["hatchling"]\nbuild-backend = "hatchling.build"\n'
+        project.write_text(text, encoding="utf-8")
+        errors = validator._failures(folder)
+        self.assertEqual(len(errors), 1)
+        self.assertIn("allow-direct-references", errors[0])
+        project.write_text(
+            text + "\n[tool.hatch.metadata]\nallow-direct-references = true\n", encoding="utf-8"
+        )
+        self.assertEqual(validator._failures(folder), [])
+
     def test_shared_validator_change_selects_all_plugins(self) -> None:
         folders = [self.plugin(), self.plugin("notifier", "mailflow-notifier")]
         with patch.object(

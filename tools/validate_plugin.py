@@ -17,7 +17,6 @@ import tempfile
 import tomllib
 import venv
 from pathlib import Path
-from typing import Any
 
 CATEGORIES = (
     "mail_source",
@@ -36,14 +35,11 @@ CORE_SOURCE = (
 TESTKIT_SOURCE = "mailflow-testkit@git+https://github.com/Kingcxp/mailflow.git#subdirectory=packages/mailflow-testkit"
 
 
-def _project(folder: Path) -> dict[str, Any]:
-    return tomllib.loads((folder / "pyproject.toml").read_text(encoding="utf-8"))["project"]
-
-
 def _failures(folder: Path) -> list[str]:
     try:
         metadata = json.loads((folder / "plugin.json").read_text(encoding="utf-8"))
-        project = _project(folder)
+        document = tomllib.loads((folder / "pyproject.toml").read_text(encoding="utf-8"))
+        project = document["project"]
     except (OSError, ValueError, KeyError) as exc:
         return [f"{folder.name}: {exc}"]
     errors: list[str] = []
@@ -69,6 +65,17 @@ def _failures(folder: Path) -> list[str]:
     dependencies = project.get("dependencies", [])
     if not any(dependency.startswith("mailflow-core") for dependency in dependencies):
         errors.append("mailflow-core must be a declared dependency")
+    if (
+        document.get("build-system", {}).get("build-backend") == "hatchling.build"
+        and any("@" in dependency for dependency in dependencies)
+        and not document.get("tool", {})
+        .get("hatch", {})
+        .get("metadata", {})
+        .get("allow-direct-references", False)
+    ):
+        errors.append(
+            "Hatchling URL dependencies require tool.hatch.metadata.allow-direct-references"
+        )
     return [f"{folder.name}: {error}" for error in errors]
 
 
