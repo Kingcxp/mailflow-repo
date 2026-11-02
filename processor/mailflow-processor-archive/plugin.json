@@ -2,7 +2,7 @@
   "id": "mailflow-processor-archive",
   "name": "Auto-Archive Processor",
   "version": "0.1.0",
-  "description": "Flags mail from matching senders/domains as info + auto-archived",
+  "description": "Archives matching senders/domains in MailFlow; source mail and priority are preserved",
   "categories": [
     "processor"
   ],
@@ -11,11 +11,11 @@
   "author": "MailFlow community",
   "license": "MIT",
   "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/processor/mailflow-processor-archive",
-  "readme": "# Auto-Archive Processor\n\nRegisters the processor component id `archive`. Options: `senders` (list), `domains` (list of domain suffixes). Matched mail is `info` with an 'auto-archived' note.\n",
+  "readme": "# Auto-Archive Processor\n\nRegisters the processor `archive`. Options: `senders` (list) and `domains` (list). Matching mail moves to the MailFlow archive, remains searchable and can be restored to the inbox. Original mail, priority and analysis are preserved.\n",
   "descriptions": {
-    "zh-CN": "Flags mail from matching senders/domains as info + auto-archived"
+    "zh-CN": "按发件人或域名归档 MailFlow 邮件，保留原邮件、重要程度和分析结果"
   },
   "readmes": {
-    "zh-CN": "# Auto-Archive Processor\n\nRegisters the processor component id `archive`. Options: `senders` (list), `domains` (list of domain suffixes). Matched mail is `info` with an 'auto-archived' note.\n"
+    "zh-CN": "# 自动归档处理器\n\n注册处理器 `archive`。选项：`senders`（发件人列表）、`domains`（域名列表）。匹配的邮件进入 MailFlow 归档，仍可搜索并恢复至收件箱。原邮箱邮件、重要程度和分析结果均保留。\n"
   }
 }

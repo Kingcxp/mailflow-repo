@@ -2,15 +2,15 @@
 
 # Auto-Archive Processor
 
-Registers the processor component id `archive`. Options: `senders` (list), `domains` (list of domain suffixes). Matched mail is `info` with an 'auto-archived' note.
+Registers the processor `archive`. Options: `senders` (list) and `domains` (list). Matching mail moves to the MailFlow archive, remains searchable and can be restored to the inbox. Original mail, priority and analysis are preserved.
 
 ---
 
 <!-- zh-CN -->
 
-# Auto-Archive Processor
+# 自动归档处理器
 
-Registers the processor component id `archive`. Options: `senders` (list), `domains` (list of domain suffixes). Matched mail is `info` with an 'auto-archived' note.
+注册处理器 `archive`。选项：`senders`（发件人列表）、`domains`（域名列表）。匹配的邮件进入 MailFlow 归档，仍可搜索并恢复至收件箱。原邮箱邮件、重要程度和分析结果均保留。
 
 ---
 

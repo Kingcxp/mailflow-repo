@@ -1,10 +1,4 @@
-"""Auto-archive processor: marks matching mail as info and notes it.
-
-A cheap deterministic pre-filter (no LLM): exact sender addresses and full
-domain suffixes are matched case-insensitively; matched mail is classified
-as ``info`` and flagged 'auto-archived' in the notes. Options: ``senders``
-(list), ``domains`` (list of domain suffixes, matched with ``@domain``).
-"""
+"""Archive matching senders in MailFlow while preserving analysis and source mail."""
 
 from __future__ import annotations
 
@@ -12,7 +6,7 @@ from typing import Any
 
 from mailflow.config import ProcessorConfig
 from mailflow.contracts import LLMRouter, MailMessage, ProcessingContext, ProcessorResult
-from mailflow.domain import ComponentKind, MailAnalysis, Urgency
+from mailflow.domain import ComponentKind
 from mailflow.plugins import PluginInfo
 from mailflow.registry import PluginRegistrar
 
@@ -20,7 +14,7 @@ PLUGIN_INFO = PluginInfo(
     plugin_id="mailflow-processor-archive",
     name="Auto-Archive Processor",
     version="0.1.0",
-    description="Flags mail from matching senders/domains as info + auto-archived",
+    description="Archives matching senders/domains in MailFlow; source mail and priority are preserved",
     kinds=[ComponentKind.MAIL_PROCESSOR],
 )
 
@@ -39,15 +33,7 @@ class ArchiveProcessor:
         )
         if not matched:
             return ProcessorResult()
-        return ProcessorResult(
-            analysis=MailAnalysis(
-                summary="Auto-archived",
-                urgency=Urgency.INFO,
-                reason=f"sender {sender} matched the archive rules",
-                backend="",
-            ),
-            notes=["auto-archived"],
-        )
+        return ProcessorResult(archive=True, notes=["archive rule matched"])
 
 
 class ArchivePlugin:

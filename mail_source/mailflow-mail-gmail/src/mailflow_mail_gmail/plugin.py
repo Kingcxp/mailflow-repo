@@ -8,7 +8,7 @@ from mailflow.config import MailAccountConfig, MailFlowConfig
 from mailflow.domain import ComponentKind, MailMessage
 from mailflow.plugins import PluginInfo
 from mailflow.registry import PluginRegistrar
-from mailflow_mail_imap.plugin import IMAPSource
+from mailflow_mail_imap.plugin import IMAPSource, account_form
 from mailflow_mail_imap.plugin import parse_mime as _parse_mime
 
 
@@ -48,6 +48,7 @@ class GmailPlugin:
 
     def mailflow_register(self, registrar: PluginRegistrar, config: MailFlowConfig) -> None:
         registrar.add_source("gmail", GmailSource)
+        registrar.add_form_fields(ComponentKind.MAIL_SOURCE, "gmail", account_form("gmail"))
 
 
 plugin = GmailPlugin()
