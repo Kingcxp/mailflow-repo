@@ -1,10 +1,9 @@
 # Validation
 
 The pull-request workflow `.github/workflows/validate-plugins.yml` makes sure
-every submitted plugin is **legal** (metadata consistent), **loadable**
-(entry point imports, info reports) and **runnable** (components instantiate,
-processors actually process). It validates only what changed, so unchanged
-plugins are never re-tested.
+every submitted plugin has consistent metadata, loads through its entry point,
+and follows the current `mailflow-core` contracts. Both repositories use
+`mailflow_testkit.plugin_smoke` for runtime samples with simulated I/O.
 
 ## What CI does
 
@@ -12,15 +11,14 @@ plugins are never re-tested.
    fails when a plugin folder's `README.md` no longer matches the `readme`
    in its `plugin.json`. This runs on every pull request, docs-only ones
    included, because it is the cheapest way to catch two texts drifting apart.
-2. **Detect changed plugins.** The workflow diffs the PR against `main`,
-   collects every changed path, and maps them to plugin folders. Only folders
-   with actual changes are validated.
-   - A PR that touches no plugin folder (e.g. docs only) is skipped — the
-     check passes immediately.
-   - A PR that updates an existing plugin re-validates exactly that plugin.
-3. **Install `mailflow-core`** (the version this repo pins) into a fresh
-   Python environment.
-4. **Run `tools/validate_plugin.py <folder>…`** for each changed plugin.
+2. **Detect changed plugins.** The workflow compares the PR with its target
+   branch. Plugin edits validate the affected folders; shared validator or
+   workflow edits validate all plugins. Documentation-only edits need no plugin
+   execution. Pushes to `main` validate all plugins.
+3. **Select core and testkit from one main-repository checkout.** For each
+   selected plugin, install core, testkit and the plugin together into a disposable
+   environment with declared dependencies, then run `pip check`.
+4. **Run the shared samples.** Plugin failures name the plugin, component and cause.
 
 ## The script checks
 
@@ -32,26 +30,33 @@ plugins are never re-tested.
 | `package` matches the `pyproject.toml` name | broken uninstall metadata |
 | `source` non-empty | not installable |
 | `readme` or `readmes.*` non-empty | undocumented |
-| `pip install .` succeeds | broken build |
+| declared dependencies install together and `pip check` succeeds | broken build or missing/conflicting dependencies |
 | entry point loads; `mailflow_plugin_info()` reports id + kinds | not loadable |
-| every registered factory instantiates via `build_registry()` | not runnable |
-| processors additionally run `process()` on a sample mail | processor broken |
+| runtime version and capabilities match metadata | incompatible declaration |
+| factories and method signatures match core contracts | incompatible interface |
+| LLM routing accepts temperature, options and tools | broken routing/tool support |
+| processors, sources, notifiers, storage and exporters return valid sample results | broken runtime behavior |
 
-Notifiers and sources are instantiated but not invoked over the network —
-delivery is environment-dependent and out of scope for CI; correctness of
-registration and construction is what "runnable" means for them.
+HTTP, mail transports and subprocess probes are simulated. Uncaught real network
+connections or process launches fail validation. Source samples also check rejected
+handoff retry; storage uses a temporary database. Gateway installation and startup
+are checked through their contracts without launching real runtimes.
 
 ## Running locally
 
 ```bash
-python tools/validate_plugin.py notifier/mailflow-notify-slack
+python tools/validate_plugin.py notifier/mailflow-notify-slack --offline --core ../mailflow/packages/mailflow-core
 # validate everything:
-python tools/validate_plugin.py --all
+python tools/validate_plugin.py --all --offline --core ../mailflow/packages/mailflow-core
+# use a disposable environment and resolve declared dependencies:
+python tools/validate_plugin.py notifier/mailflow-notify-slack --core ../mailflow/packages/mailflow-core
 ```
 
-`validate_plugin.py` needs a Python environment with `mailflow-core`
-importable (create one with `uv venv` + `uv pip install mailflow-core` from
-the repo git URL, or use your MailFlow workspace virtualenv).
+Offline mode uses the existing development interpreter and paired core/testkit
+sources without installation or downloads. Run it with the MailFlow workspace
+interpreter. Without `--offline`, installation happens only in the disposable
+environment. If `--core` is omitted, core and testkit use the main repository Git
+sources; `--core` selects both packages from one local checkout.
 
 Regenerate the plugin READMEs after editing any `plugin.json`:
 

@@ -33,6 +33,7 @@ ROOT = Path(__file__).resolve().parent.parent
 CORE_SOURCE = (
     "mailflow-core@git+https://github.com/Kingcxp/mailflow.git#subdirectory=packages/mailflow-core"
 )
+TESTKIT_SOURCE = "mailflow-testkit@git+https://github.com/Kingcxp/mailflow.git#subdirectory=packages/mailflow-testkit"
 
 
 def _project(folder: Path) -> dict[str, Any]:
@@ -82,6 +83,7 @@ def _run(python: Path, folder: Path, *, offline: bool, core: Path | None) -> lis
     paths: list[str] = []
     if core is not None:
         paths.append(str(core / "src"))
+        paths.append(str(core.parent / "mailflow-testkit" / "src"))
     if offline:
         # Local peers resolve shared transports without downloading the market.
         paths.extend(str(p / "src") for p in all_folders())
@@ -128,22 +130,20 @@ def _install_and_run(folder: Path, *, offline: bool = False, core: Path | None =
             "--quiet",
             "--disable-pip-version-check",
         ]
-        # Both installs resolve dependencies; never modify the validator's own
-        # interpreter or infer that a mailflow-* dependency can be omitted.
-        for source in (str(core) if core else CORE_SOURCE, str(folder)):
-            result = subprocess.run(
-                [*pip, source],
-                cwd=ROOT,
-                capture_output=True,
-                text=True,
-                encoding="utf-8",
-                timeout=900,
-                check=False,
-            )
-            if result.returncode:
-                return [
-                    f"{folder.name}: install failed: {(result.stderr or result.stdout)[-1000:]}"
-                ]
+        # Resolve core, shared samples and plugin together, so a conflicting
+        # plugin cannot silently replace the selected core. Keep the host untouched.
+        testkit = str(core.parent / "mailflow-testkit") if core else TESTKIT_SOURCE
+        result = subprocess.run(
+            [*pip, str(core) if core else CORE_SOURCE, testkit, str(folder)],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            timeout=900,
+            check=False,
+        )
+        if result.returncode:
+            return [f"{folder.name}: install failed: {(result.stderr or result.stdout)[-1000:]}"]
         check = subprocess.run(
             [str(python), "-m", "pip", "check"],
             capture_output=True,
@@ -196,12 +196,13 @@ def main() -> int:
         help="use local sources; never install or download",
     )
     parser.add_argument("--core", type=Path, help="local mailflow-core project folder")
+    parser.add_argument("--base", default="main", help="base ref for --changed")
     parser.add_argument("folders", nargs="*")
     args = parser.parse_args()
     folders = (
         all_folders()
         if args.all
-        else changed_folders()
+        else changed_folders(args.base)
         if args.changed
         else [(ROOT / f).resolve() for f in args.folders]
     )

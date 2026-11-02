@@ -21,6 +21,12 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Check out the matching core and shared validator
+        uses: actions/checkout@v5
+        with:
+          repository: Kingcxp/mailflow
+          path: _mailflow
+
       # plugin.json is the single source of truth for a plugin's description:
       # the marketplace renders it in `plugin market show` and in the TUI. The
       # per-folder README.md is generated from it, so a PR that edits one but
@@ -35,8 +41,10 @@ jobs:
       # plugins are never re-tested. Pushes to main: full sweep.
       - name: Validate changed plugins (pull requests)
         if: github.event_name == 'pull_request'
-        run: python tools/validate_plugin.py --changed
+        env:
+          PLUGIN_BASE_REF: origin/${{ github.base_ref }}
+        run: python tools/validate_plugin.py --changed --base "$PLUGIN_BASE_REF" --core _mailflow/packages/mailflow-core
 
       - name: Validate all plugins (main)
         if: github.event_name == 'push'
-        run: python tools/validate_plugin.py --all
+        run: python tools/validate_plugin.py --all --core _mailflow/packages/mailflow-core

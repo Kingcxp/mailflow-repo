@@ -14,10 +14,10 @@ pull request that never touches anyone else's files.
 | [Processors](processor/) | [mailflow-processor-blocklist](processor/mailflow-processor-blocklist/) — sender/domain blocklist · [mailflow-processor-filter](processor/mailflow-processor-filter/) — sender/subject/keyword junk rules · [mailflow-processor-archive](processor/mailflow-processor-archive/) — info + auto-archived · [mailflow-processor-rules](processor/mailflow-processor-rules/) — first-matching rule template |
 | [LLM backends](llm_backend/) | [mailflow-llm-anthropic](llm_backend/mailflow-llm-anthropic/) — Anthropic Messages API (Claude) · [mailflow-llm-openai-compatible](llm_backend/mailflow-llm-openai-compatible/) — OpenAI Completions/Responses family incl. Azure · [mailflow-llm-google-generative-ai](llm_backend/mailflow-llm-google-generative-ai/) — Gemini API · [mailflow-llm-google-vertex](llm_backend/mailflow-llm-google-vertex/) — Gemini on Vertex AI · [mailflow-llm-deepseek](llm_backend/mailflow-llm-deepseek/) · [mailflow-llm-qwen](llm_backend/mailflow-llm-qwen/) · [mailflow-llm-zhipu](llm_backend/mailflow-llm-zhipu/) · [mailflow-llm-moonshot](llm_backend/mailflow-llm-moonshot/) (OpenAI-compatible presets) |
 | [Notifiers](notifier/) | [mailflow-notify-webhook](notifier/mailflow-notify-webhook/) · [mailflow-notify-ntfy](notifier/mailflow-notify-ntfy/) · [mailflow-notify-smtp](notifier/mailflow-notify-smtp/) · [mailflow-notify-telegram](notifier/mailflow-notify-telegram/) · [mailflow-notify-console](notifier/mailflow-notify-console/) · [mailflow-notify-dingtalk](notifier/mailflow-notify-dingtalk/) · [mailflow-notify-feishu](notifier/mailflow-notify-feishu/) · [mailflow-notify-wecom](notifier/mailflow-notify-wecom/) · [mailflow-notify-slack](notifier/mailflow-notify-slack/) · [mailflow-notify-discord](notifier/mailflow-notify-discord/) · [mailflow-notify-serverchan](notifier/mailflow-notify-serverchan/) |
-| [Storage backends](storage/) | _yours could be the first_ |
+| [Storage backends](storage/) | [mailflow-storage-sqlite](storage/mailflow-storage-sqlite/) |
 | [LLM enhancers](llm_enhancer/) | _yours could be the first_ — bounded customization of the built-in LLM analysis (system prompt, extra messages, post-processing) |
 | [Bot exporters](bot_exporter/) | [mailflow-export-nonebot](bot_exporter/mailflow-export-nonebot/) — NoneBot2 plugin · [mailflow-export-astrbot](bot_exporter/mailflow-export-astrbot/) — AstrBot plugin |
-| [Gateways](gateway/) | _yours could be the first_ — auto-install + supervise chat-platform bot runtimes (NapCat for QQ, WeChaty/OpenWeChat for WeChat) |
+| [Gateways](gateway/) | _yours could be the first_ — auto-install + supervise chat-platform runtimes; the main repository bundles NapCat, OpenWeChat, WechatPadPro, WhatsApp and Telegram support |
 
 Each category folder has a README listing its plugins and an `INDEX.json`
 that generic HTTP mirrors use. Each plugin folder contains `plugin.json`
@@ -71,15 +71,22 @@ tools/           ← validation script used by CI
 2. Implement the stub and fill in `plugin.json`
    ([reference](docs/01-marketplace-metadata.md), including multi-language
    `descriptions` / `readmes`).
-3. Open a pull request — CI validates **exactly the plugins you changed**
+3. Open a pull request — CI validates **the plugins you changed**
    (metadata consistency, install, entry-point load, component registration,
-   and a real `process()` run for processors). Unchanged plugins are never
-   re-validated. Details: [docs/06-validation.md](docs/06-validation.md).
+   and simulated runtime results against the shared core contracts). Shared tooling
+   changes validate all plugins. Details: [docs/06-validation.md](docs/06-validation.md).
 
 ```bash
 # validate locally before pushing
-python tools/validate_plugin.py notifier/mailflow-notify-slack
+python tools/validate_plugin.py notifier/mailflow-notify-slack --offline --core ../mailflow/packages/mailflow-core
 ```
+
+The offline command uses the paired `mailflow-core` and `mailflow-testkit` sources.
+Both repositories run `mailflow_testkit.plugin_smoke`; signatures and result types
+come from `mailflow-core`. Without `--offline`, dependencies are installed in a
+disposable environment and checked with `pip check`. CI checks out one main
+repository revision for both core and testkit. Shared validator changes revalidate
+all plugins; ordinary plugin changes select only the affected folders.
 
 ## Development documentation
 

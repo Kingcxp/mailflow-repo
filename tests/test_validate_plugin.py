@@ -64,7 +64,7 @@ class ValidatorTests(unittest.TestCase):
                 subprocess.CompletedProcess([], 0, "", ""),
             ],
         ):
-            self.assertEqual(validator.changed_folders(), [folder])
+            self.assertEqual(validator.changed_folders("origin/develop"), [folder])
 
     def test_shared_validator_change_selects_all_plugins(self) -> None:
         folders = [self.plugin(), self.plugin("notifier", "mailflow-notifier")]
@@ -77,6 +77,7 @@ class ValidatorTests(unittest.TestCase):
 
     def test_installation_uses_disposable_interpreter_and_dependencies(self) -> None:
         folder = self.plugin()
+        core = self.root / "workspace/packages/mailflow-core"
         with (
             patch.object(validator.venv.EnvBuilder, "create") as create,
             patch.object(
@@ -86,13 +87,17 @@ class ValidatorTests(unittest.TestCase):
             ) as run,
             patch.object(validator, "_run", return_value=[]) as smoke,
         ):
-            self.assertEqual(validator._install_and_run(folder), [])
+            self.assertEqual(validator._install_and_run(folder, core=core), [])
             environment = create.call_args.args[0]
             for call in run.call_args_list:
                 command = call.args[0]
                 self.assertNotEqual(command[0], sys.executable)
                 self.assertTrue(Path(command[0]).is_relative_to(environment))
                 self.assertNotIn("--no-deps", command)
+            install = run.call_args_list[0].args[0]
+            self.assertEqual(
+                install[-3:], [str(core), str(core.parent / "mailflow-testkit"), str(folder)]
+            )
             smoke.assert_called_once()
             self.assertFalse(environment.exists())
 
@@ -113,6 +118,7 @@ class ValidatorTests(unittest.TestCase):
 
     def test_offline_mode_runs_sources_without_installing(self) -> None:
         folder = self.plugin()
+        core = self.root / "workspace/packages/mailflow-core"
         with (
             patch.object(validator.venv.EnvBuilder, "create") as create,
             patch.object(
@@ -121,13 +127,16 @@ class ValidatorTests(unittest.TestCase):
                 return_value=subprocess.CompletedProcess([], 0, "", ""),
             ) as run,
         ):
-            self.assertEqual(validator._install_and_run(folder, offline=True), [])
+            self.assertEqual(validator._install_and_run(folder, offline=True, core=core), [])
             create.assert_not_called()
             command = run.call_args.args[0]
             self.assertEqual(command[0], sys.executable)
             self.assertIn("--source", command)
             self.assertNotIn("pip", command)
             self.assertIn(str(folder / "src"), run.call_args.kwargs["env"]["PYTHONPATH"])
+            paths = run.call_args.kwargs["env"]["PYTHONPATH"]
+            self.assertIn(str(core / "src"), paths)
+            self.assertIn(str(core.parent / "mailflow-testkit/src"), paths)
 
     def test_metadata_checks_version_and_entry_point(self) -> None:
         folder = self.plugin()
