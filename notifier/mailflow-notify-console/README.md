@@ -47,14 +47,6 @@ minimum_urgency = "important"
 - Pair it with the webhook or Telegram notifiers while developing and keep
   console enabled as the always-on fallback channel.
 
-### Requirements
-
-Standard library only (`logging`), plus `mailflow-core`.
-
-### License
-
-MIT — contributions welcome.
-
 ---
 
 <!-- zh-CN -->
@@ -103,14 +95,6 @@ minimum_urgency = "important"
   最稳妥的通知器。
 - 开发阶段可以与 webhook 或 Telegram 通知器搭配使用，并保持 console 作为
   永远在线的兜底通道。
-
-### 依赖
-
-仅使用标准库（`logging`），以及 `mailflow-core`。
-
-### 协议
-
-MIT —— 欢迎贡献。
 
 ---
 

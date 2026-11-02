@@ -38,8 +38,8 @@ from the AstrBot dashboard.
 
 ### Notes
 
-- Secrets stay placeholders: provide the environment variables where AstrBot
-  runs, so the plugin folder itself carries no credentials.
+- Environment-backed secrets remain placeholders; provide those variables in
+  AstrBot's environment. Review literal credentials before sharing exported files.
 - The plugin owns the MailFlow lifecycle — `terminate` stops the service, so
   reloading the plugin does not leave a second runtime polling your mailboxes.
 - Re-export after configuration changes; `config.toml` is a snapshot.
@@ -47,10 +47,6 @@ from the AstrBot dashboard.
 ### Requirements
 
 `mailflow-core`; the generated plugin runs inside AstrBot.
-
-### License
-
-MIT — contributions welcome.
 
 ---
 
@@ -92,8 +88,8 @@ uv run mailflow export --framework astrbot --output dist/astrbot_plugin_mailflow
 
 ### 说明
 
-- 密钥保持为占位符：请在运行 AstrBot 的环境中提供相应环境变量，插件目录本身不携带
-  任何凭据。
+- 环境变量形式的密钥保留为占位符，请在 AstrBot 环境中提供相应变量。
+  分享导出文件前仍需检查直接填写的凭据。
 - 插件负责 MailFlow 的生命周期 —— `terminate` 会停止服务，因此重载插件不会留下
   第二个仍在轮询邮箱的运行时。
 - 配置变更后请重新导出；`config.toml` 只是快照。
@@ -101,10 +97,6 @@ uv run mailflow export --framework astrbot --output dist/astrbot_plugin_mailflow
 ### 依赖
 
 `mailflow-core`；生成的插件在 AstrBot 内运行。
-
-### 协议
-
-MIT —— 欢迎贡献。
 
 ---
 

@@ -58,14 +58,6 @@ chat_id = "123456789"
   bots; either disable it in BotFather or just re-check the `chat_id`.
 - **Only some mails arrive** — that is `minimum_urgency` doing its job.
 
-### Requirements
-
-Standard library only (`urllib`).
-
-### License
-
-MIT — contributions welcome.
-
 ---
 
 <!-- zh-CN -->
@@ -122,14 +114,6 @@ chat_id = "123456789"
 - **群里收不到** —— Telegram 的隐私模式会让机器人看不到群消息；可在 BotFather 中
   关闭，或重新确认 `chat_id`。
 - **只收到部分邮件** —— 这是 `minimum_urgency` 在正常工作。
-
-### 依赖
-
-仅使用标准库（`urllib`）。
-
-### 协议
-
-MIT —— 欢迎贡献。
 
 ---
 

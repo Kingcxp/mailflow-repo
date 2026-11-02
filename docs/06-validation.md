@@ -1,68 +1,56 @@
 # Validation
 
-The pull-request workflow `.github/workflows/validate-plugins.yml` makes sure
-every submitted plugin has consistent metadata, loads through its entry point,
-and follows the current `mailflow-core` contracts. Both repositories use
-`mailflow_testkit.plugin_smoke` for runtime samples with simulated I/O.
+Both repositories use the main checkout's `mailflow_testkit.plugin_smoke`.
+Validation checks metadata, entry points, factory/method signatures, actual
+arguments and return values, capabilities and simulated runtime behavior.
+Instantiating a component alone does not prove compatibility.
 
-## What CI does
+## Offline checks
 
-1. **Check the generated READMEs.** `tools/gen_plugin_readmes.py --check`
-   fails when a plugin folder's `README.md` no longer matches the `readme`
-   in its `plugin.json`. This runs on every pull request, docs-only ones
-   included, because it is the cheapest way to catch two texts drifting apart.
-2. **Detect changed plugins.** The workflow compares the PR with its target
-   branch. Plugin edits validate the affected folders; shared validator or
-   workflow edits validate all plugins. Documentation-only edits need no plugin
-   execution. Pushes to `main` validate all plugins.
-3. **Select core and testkit from one main-repository checkout.** For each
-   selected plugin, install core, testkit and the plugin together into a disposable
-   environment with declared dependencies, then run `pip check`.
-4. **Run the shared samples.** Plugin failures name the plugin, component and cause.
-
-## The script checks
-
-| Check | Failure |
-|---|---|
-| `plugin.json` exists and parses | invalid metadata |
-| `id` equals the folder name | inconsistent identity |
-| `categories` is exactly one known category | unknown category |
-| `package` matches the `pyproject.toml` name | broken uninstall metadata |
-| `source` non-empty | not installable |
-| `readme` or `readmes.*` non-empty | undocumented |
-| declared dependencies install together and `pip check` succeeds | broken build or missing/conflicting dependencies |
-| entry point loads; `mailflow_plugin_info()` reports id + kinds | not loadable |
-| runtime version and capabilities match metadata | incompatible declaration |
-| factories and method signatures match core contracts | incompatible interface |
-| LLM routing accepts temperature, options and tools | broken routing/tool support |
-| processors, sources, notifiers, storage and exporters return valid sample results | broken runtime behavior |
-
-HTTP, mail transports and subprocess probes are simulated. Uncaught real network
-connections or process launches fail validation. Source samples also check rejected
-handoff retry; storage uses a temporary database. Gateway installation and startup
-are checked through their contracts without launching real runtimes.
-
-## Running locally
+From this repository, use the paired MailFlow development interpreter. For a
+standard environment layout, replace `python` below with
+`../mailflow/.venv/Scripts/python.exe` on Windows or
+`../mailflow/.venv/bin/python` on Linux/macOS.
 
 ```bash
-python tools/validate_plugin.py notifier/mailflow-notify-slack --offline --core ../mailflow/packages/mailflow-core
-# validate everything:
+python tools/gen_plugin_readmes.py --check
+python -m unittest discover -s tests -q
 python tools/validate_plugin.py --all --offline --core ../mailflow/packages/mailflow-core
-# use a disposable environment and resolve declared dependencies:
-python tools/validate_plugin.py notifier/mailflow-notify-slack --core ../mailflow/packages/mailflow-core
 ```
 
-Offline mode uses the existing development interpreter and paired core/testkit
-sources without installation or downloads. Run it with the MailFlow workspace
-interpreter. Without `--offline`, installation happens only in the disposable
-environment. If `--core` is omitted, core and testkit use the main repository Git
-sources; `--core` selects both packages from one local checkout.
+A single folder may replace `--all`, for example
+`notifier/mailflow-notify-slack`. Offline mode imports paired core/testkit sources
+and uses the existing environment; it performs no installation or downloads.
+HTTP, mail and subprocess I/O are simulated. Samples cover source handoff retry,
+LLM `temperature`/`options`/`tools`, processor outputs, temporary SQLite storage,
+notifier failure and export output. Gateway contracts are checked without
+launching platform processes.
 
-Regenerate the plugin READMEs after editing any `plugin.json`:
+## Dependency installation and CI
+
+Omit `--offline` to install core, testkit and the plugin with declared dependencies
+into a disposable environment, then run `pip check` and the shared samples.
+`--core` selects core and testkit from one local checkout; without it, the script
+uses the main repository's Git sources. This mode needs access to dependency
+sources and is separate from offline verification.
+
+The [workflow](../.github/workflows/validate-plugins.yml) always checks generated
+READMEs and validator tests. Pull requests validate changed plugin folders;
+shared validator/workflow changes validate every plugin. Documentation-only
+changes need no component execution. Pushes to `main` validate all plugins.
+Failures identify the plugin, component and cause.
+
+Metadata checks include folder/category, package/version, entry-point name,
+source URL and usage text. Runtime metadata and declared capabilities must
+match registration. Missing dependencies or rejected parameters must fail with
+a concrete reason, rather than silently removing the plugin from discovery.
+
+Regenerate usage documents after editing `plugin.json`:
 
 ```bash
-python tools/gen_plugin_readmes.py          # write
-python tools/gen_plugin_readmes.py --check  # what CI runs
+python tools/gen_plugin_readmes.py
+python tools/gen_plugin_readmes.py --check
 ```
 
-This one needs no `mailflow-core`: it only reads `plugin.json`.
+The generator itself uses only the standard library. Do not hand-edit generated
+READMEs, connect live services in tests or commit validation caches/reports.

@@ -67,14 +67,6 @@ api_version = "preview"
 In the TUI's **LLMs** tab the list order is the fallback chain: put the
 primary entry first and others below it as fallbacks.
 
-### Requirements
-
-`httpx`, plus `mailflow-core`.
-
-### License
-
-MIT — contributions welcome.
-
 ---
 
 <!-- zh-CN -->
@@ -142,14 +134,6 @@ api_version = "preview"
 
 在 TUI 的**大模型**标签页中，列表顺序即回退链：主条目放第一位，其余放在
 下面作为后备。
-
-### 依赖
-
-`httpx`，以及 `mailflow-core`。
-
-### 协议
-
-MIT —— 欢迎贡献。
 
 ---
 

@@ -66,15 +66,6 @@ location = "us-central1"
 # ...or skip it and set api_key_env = "VERTEX_ACCESS_TOKEN" above
 ```
 
-### Requirements
-
-`httpx` and `mailflow-core`; `google-auth` is optional and needed only for
-service-account token minting.
-
-### License
-
-MIT — contributions welcome.
-
 ---
 
 <!-- zh-CN -->
@@ -142,14 +133,6 @@ location = "us-central1"
 # service_account_file = "/path/to/key.json"
 # 或者不配置它，改为在上面的 api_key_env = "VERTEX_ACCESS_TOKEN" 提供访问令牌
 ```
-
-### 依赖
-
-`httpx` 与 `mailflow-core`；`google-auth` 为可选，仅服务账号令牌签发时需要。
-
-### 协议
-
-MIT —— 欢迎贡献。
 
 ---
 

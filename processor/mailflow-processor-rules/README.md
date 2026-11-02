@@ -1,22 +1,20 @@
 <!-- Generated from plugin.json by tools/gen_plugin_readmes.py. Edit plugin.json. -->
 
-# Rule Templates Processor
+## Rule Templates Processor
 
-Registers the processor component id `rule-templates`. Options: `rules` as a list of `{match: {field, contains}, action: {urgency, summary}}` dicts; the first match wins.
-
-
-Uses `rule-templates` to keep the core `rules` processor available. Existing template configurations should select `provider = "rule-templates"`.
+Use `provider = "rule-templates"`. Configure `options.rules` as a list of
+`{match: {field, contains}, action: {urgency, summary}}` objects; the first match
+wins. The core `rules` processor remains separate.
 
 ---
 
 <!-- zh-CN -->
 
-# Rule Templates Processor
+## 规则模板处理器
 
-Registers the processor component id `rule-templates`. Options: `rules` as a list of `{match: {field, contains}, action: {urgency, summary}}` dicts; the first match wins.
-
-
-组件使用 `rule-templates`，避免覆盖核心内置的 `rules`。已有规则模板配置请改用 `provider = "rule-templates"`。
+使用 `provider = "rule-templates"`。`options.rules` 为
+`{match: {field, contains}, action: {urgency, summary}}` 对象列表，首次匹配即生效。
+核心的 `rules` 处理器仍独立保留。
 
 ---
 

@@ -57,14 +57,6 @@ to make it the default, or below another entry to use it only as a fallback.
 - Raise `max_tokens` if long mails come back with truncated JSON; the built-in
   analysis prompt expects one complete JSON object.
 
-### Requirements
-
-`httpx`, plus `mailflow-core`.
-
-### License
-
-MIT — contributions welcome.
-
 ---
 
 <!-- zh-CN -->
@@ -120,14 +112,6 @@ max_tokens = 2048
   环境变量。
 - 如果长邮件返回的 JSON 被截断，请调高 `max_tokens`；内置分析提示词要求返回一个
   完整的 JSON 对象。
-
-### 依赖
-
-`httpx`，以及 `mailflow-core`。
-
-### 协议
-
-MIT —— 欢迎贡献。
 
 ---
 

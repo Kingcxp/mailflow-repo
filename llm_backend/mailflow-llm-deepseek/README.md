@@ -45,10 +45,6 @@ api_key_env = "DEEPSEEK_API_KEY"
 
 Uses `mailflow-llm-openai-compatible` for tool calls, per-call options and retries. Its declared dependencies are installed automatically.
 
-### License
-
-MIT — contributions welcome.
-
 ---
 
 <!-- zh-CN -->
@@ -96,10 +92,6 @@ api_key_env = "DEEPSEEK_API_KEY"
 ```
 
 共用 `mailflow-llm-openai-compatible` 的工具调用、单次调用配置和重试实现，安装时自动安装所需依赖。
-
-### 协议
-
-MIT —— 欢迎贡献。
 
 ---
 

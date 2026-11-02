@@ -57,14 +57,6 @@ In the TUI's **LLMs** tab the list order is the fallback chain: put Gemini
 first to make it the default, or below another entry to use it only as a
 fallback.
 
-### Requirements
-
-`httpx`, plus `mailflow-core`.
-
-### License
-
-MIT — contributions welcome.
-
 ---
 
 <!-- zh-CN -->
@@ -122,14 +114,6 @@ timeout_seconds = 60
 
 在 TUI 的**大模型**标签页中，列表顺序即回退链：把 Gemini 放在第一位即设为
 默认，放在其他条目之后则只作为后备使用。
-
-### 依赖
-
-`httpx`，以及 `mailflow-core`。
-
-### 协议
-
-MIT —— 欢迎贡献。
 
 ---
 

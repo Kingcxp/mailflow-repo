@@ -2,34 +2,8 @@
 
 ## SQLite Storage
 
-Durable SQLite persistence: records, trash, reply drafts and preferences
-survive restarts in a single database file, with a seven-day recovery trash.
-
-Registers the storage component id `sqlite`.
-
-### How it works
-
-- One connection guarded by an asyncio lock; WAL journal mode plus a 5 s busy
-  timeout absorb brief write contention.
-- Full domain records are serialized into JSON columns; attachment payloads
-  are stripped before persisting, while the original mail text/HTML stays
-  intact.
-- Deletion — manual or retention cleanup — moves the *full* record to trash
-  with a deletion timestamp; restoring returns the identical record.
-- Purging compares the trash deletion timestamp, never the receipt time, and
-  first-deletion timestamps survive restore → re-trash cycles
-  (`INSERT OR IGNORE`).
-
-### Options
-
-The database file comes from the standard `[storage]` section; there are no
-backend-specific `[storage.options]` entries:
-
-| Option | Required | Default | Meaning |
-| ------ | -------- | ------- | ------- |
-| `path` | no | `":memory:"` | SQLite file path; the parent directory is created automatically. Leave empty for an in-memory database. |
-
-### Usage
+Component ID: `sqlite`. Persists mail, analysis, tasks, reply drafts, preferences
+and recoverable trash in one database. Data survives application restarts.
 
 ```toml
 [storage]
@@ -37,20 +11,19 @@ provider = "sqlite"
 path = "data/mailflow.db"
 ```
 
-### Notes
+`path` defaults to `data/mailflow.db`; parent directories are created as needed.
+Use `:memory:` only for temporary data that may disappear on shutdown. There are
+no backend-specific storage options.
 
-- WAL mode keeps concurrent reads cheap; the busy timeout rides out short
-  writer contention instead of failing the request.
-- Attachment binaries are never persisted — downstream consumers work from
-  the original text/HTML bodies.
+Deleting mail moves it into trash; restoring recovers its stored state. Mail
+and trash retention are controlled by `[general]`, not fixed by this plugin.
+Trash expiry uses the deletion timestamp. Manual urgency, feedback and local
+task state are preserved when analysis is updated.
 
-### Requirements
-
-Standard library only (`sqlite3`), plus `mailflow-core`.
-
-### License
-
-MIT — contributions welcome.
+Mail text/HTML, attachment metadata and OCR text are persisted; attachment
+binaries are omitted. SQLite uses WAL and a busy timeout to handle brief write
+contention. Back up the database together with its active WAL when the service
+is running, or stop the service before making a file copy.
 
 ---
 
@@ -58,32 +31,8 @@ MIT — contributions welcome.
 
 ## SQLite 存储
 
-基于 SQLite 的持久化存储：记录、回收站、回复草稿与偏好设置都保存在单个
-数据库文件中，重启不丢，并附带七天可恢复的回收站。
-
-注册的存储组件 id 为 `sqlite`。
-
-### 工作方式
-
-- 单个连接由 asyncio 锁保护；WAL 日志模式加上 5 秒 busy timeout，可以吸收
-  短暂的写入竞争。
-- 完整的领域记录序列化进 JSON 列；持久化前会剥离附件二进制内容，而原始
-  邮件的文本/HTML 正文原样保留。
-- 删除（手动或保留期清理）会把*完整*记录连同删除时间戳一起移入回收站；
-  还原时返回与原来完全一致的记录。
-- 清空回收站比较的是回收站删除时间戳而非接收时间，且首次删除的时间戳在
-  「还原 → 再次删除」循环中得以保留（`INSERT OR IGNORE`）。
-
-### 配置项
-
-数据库文件来自标准的 `[storage]` 段，没有后端专属的 `[storage.options]`
-配置项：
-
-| 配置项 | 必填 | 默认值 | 说明 |
-| ------ | ---- | ------ | ---- |
-| `path` | 否 | `":memory:"` | SQLite 文件路径；父目录会自动创建。留空则使用内存数据库。 |
-
-### 用法
+组件标识为 `sqlite`。在一个数据库中保存邮件、分析结果、待办、回复草稿、偏好和
+可恢复的回收站内容，应用重启后仍然保留。
 
 ```toml
 [storage]
@@ -91,19 +40,16 @@ provider = "sqlite"
 path = "data/mailflow.db"
 ```
 
-### 说明
+`path` 默认为 `data/mailflow.db`，按需创建父目录。`:memory:` 仅适合关闭后可以丢失的
+临时数据。此插件没有额外的存储选项。
 
-- WAL 模式让并发读取开销很低；busy timeout 能扛住短时的写入竞争而不是让
-  请求失败。
-- 附件二进制从不落盘 —— 下游消费依赖原始的文本/HTML 正文。
+删除邮件会移入回收站，恢复时保留已保存状态。邮件和回收站保留时间由 `[general]`
+控制，并非插件内固定天数。回收站按删除时间计算过期；更新分析结果时保留手动
+优先级、用户反馈和本地待办状态。
 
-### 依赖
-
-仅使用标准库（`sqlite3`），以及 `mailflow-core`。
-
-### 协议
-
-MIT —— 欢迎贡献。
+保存正文、HTML、附件信息和图片识别文本，不保存附件原始字节。SQLite 使用 WAL 和
+繁忙等待处理短暂写入竞争。运行中备份时需要连同活动 WAL 一起处理，也可以先停止
+服务再复制数据库文件。
 
 ---
 

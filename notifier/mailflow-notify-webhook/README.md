@@ -55,14 +55,6 @@ timeout_seconds = 10
 - Need custom auth headers? Copy this plugin as a starting point — it is ~60
   lines of standard library code.
 
-### Requirements
-
-Standard library only (`urllib`, `json`).
-
-### License
-
-MIT — contributions welcome.
-
 ---
 
 <!-- zh-CN -->
@@ -117,14 +109,6 @@ timeout_seconds = 10
 
 - 投递失败由运行时记录，绝不会中断邮件处理，因此端点不稳定也不会丢邮件。
 - 需要自定义鉴权头？可以直接拷贝本插件作为起点 —— 它只有约 60 行标准库代码。
-
-### 依赖
-
-仅使用标准库（`urllib`、`json`）。
-
-### 协议
-
-MIT —— 欢迎贡献。
 
 ---
 

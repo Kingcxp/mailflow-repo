@@ -16,8 +16,8 @@ Pushes MailFlow mail alerts to QQ users and group chats through an
 
 ### Notes
 
-- QR login happens in NapCat/go-cqhttp itself; this plugin only sends
-  messages over the standard HTTP API.
+- This notifier sends through the OneBot HTTP API. Use MailFlow's guided
+  notification setup for a managed gateway, or log in through your external server.
 
 ---
 
@@ -37,7 +37,8 @@ Pushes MailFlow mail alerts to QQ users and group chats through an
 
 ### 说明
 
-- 扫码登录在 NapCat / go-cqhttp 自身完成；本插件只通过标准 HTTP API 发送消息。
+- 此通知器通过 OneBot HTTP 接口发送消息。托管网关可在 MailFlow 通知向导中登录，
+  外部服务器则按其自身方式登录。
 
 ---
 

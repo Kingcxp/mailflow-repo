@@ -57,14 +57,6 @@ domains = ["marketing.example", "promo.example"]
 - **Undo a mistake** — remove the entry and set the mail's urgency back with
   `mail urgency <id> auto`, or override it manually in the TUI.
 
-### Requirements
-
-No dependencies beyond `mailflow-core`; no network access, no LLM.
-
-### License
-
-MIT — contributions welcome.
-
 ---
 
 <!-- zh-CN -->
@@ -123,14 +115,6 @@ domains = ["marketing.example", "promo.example"]
   回收站保留规则）中，方便事后审查。
 - **误伤后撤回** —— 删掉对应条目，并用 `mail urgency <id> auto` 恢复自动紧急度，
   或在 TUI 中手动覆盖。
-
-### 依赖
-
-除 `mailflow-core` 外无依赖；不访问网络，也不调用大模型。
-
-### 协议
-
-MIT —— 欢迎贡献。
 
 ---
 

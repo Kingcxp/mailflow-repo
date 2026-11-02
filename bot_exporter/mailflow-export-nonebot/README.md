@@ -46,8 +46,8 @@ nonebot.load_plugin("nonebot_plugin_mailflow")
 
 ### Notes
 
-- Secrets are never inlined: an `api_key` that came from `${VAR}` or
-  `api_key_env` stays a placeholder, so the generated package is safe to commit.
+- Keys from `${VAR}` or `api_key_env` remain placeholders. Provide those
+  variables in the bot environment and review literal credentials before sharing.
 - Regenerate after changing the configuration — the exported `config.toml` is a
   snapshot, not a live link.
 - Exporters are plugins themselves, so supporting another framework is an
@@ -56,10 +56,6 @@ nonebot.load_plugin("nonebot_plugin_mailflow")
 ### Requirements
 
 `mailflow-core`; the generated plugin additionally needs `nonebot2`.
-
-### License
-
-MIT — contributions welcome.
 
 ---
 
@@ -109,18 +105,14 @@ nonebot.load_plugin("nonebot_plugin_mailflow")
 
 ### 说明
 
-- 密钥绝不会被内联：来自 `${VAR}` 或 `api_key_env` 的 `api_key` 仍保持为占位符，
-  因此生成的包可以安全提交到仓库。
+- 来自 `${VAR}` 或 `api_key_env` 的密钥保留为占位符，请在机器人环境中提供变量。
+  分享导出文件前仍需检查直接填写的凭据。
 - 修改配置后请重新导出 —— 导出的 `config.toml` 是快照，不是实时链接。
 - 导出器本身也是插件，因此支持新框架只需安装一个插件，无需改动核心。
 
 ### 依赖
 
 `mailflow-core`；生成的插件还需要 `nonebot2`。
-
-### 协议
-
-MIT —— 欢迎贡献。
 
 ---
 

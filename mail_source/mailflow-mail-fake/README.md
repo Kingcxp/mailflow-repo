@@ -62,14 +62,6 @@ sender = "news@example.org"
 body = "Everything that happened this week."
 ```
 
-### Requirements
-
-Standard library only (`asyncio`), plus `mailflow-core`.
-
-### License
-
-MIT — contributions welcome.
-
 ---
 
 <!-- zh-CN -->
@@ -133,14 +125,6 @@ subject = "Weekly digest"
 sender = "news@example.org"
 body = "Everything that happened this week."
 ```
-
-### 依赖
-
-仅使用标准库（`asyncio`），以及 `mailflow-core`。
-
-### 协议
-
-MIT —— 欢迎贡献。
 
 ---
 

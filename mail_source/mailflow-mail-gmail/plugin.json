@@ -11,11 +11,11 @@
   "author": "MailFlow community",
   "license": "MIT",
   "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/mail_source/mailflow-mail-gmail",
-  "readme": "# Gmail Mail Source\n\nRegisters the mail source component id `gmail`. IMAP to imap.gmail.com:993 (SSL), SMTP via smtp.gmail.com:587 (STARTTLS). Options: `username`, `password` (**an app password, not your account password** — enable 2-Step Verification then create one under Google Account → Security → App passwords), `imap_folder` (default INBOX), `interval_seconds` (default 300), `limit` (default 20), `analyze_backlog` (default false). Native OAuth is planned; today the adapter uses IMAP with an app password.\n",
+  "readme": "## Gmail Mail Source\n\nComponent ID: `gmail`. Uses the shared IMAP/SMTP source with the Gmail\npreset; this adapter does not implement native OAuth. Configure the credentials\naccepted by your mailbox service and enable the required receive/send access.\n\n```toml\n[[accounts]]\naccount_id = \"gmail-main\"\nprovider = \"gmail\"\nemail = \"you@example.com\"\n\n[accounts.options]\npassword = \"${MAIL_PASSWORD}\"\n```\n\nFor host overrides, polling options, history and retry behavior, see the\n[IMAP source](../mailflow-mail-imap/README.md). Mail identity remains account-scoped.\n",
   "descriptions": {
     "zh-CN": "IMAP/SMTP mail source for Gmail with app-password auth"
   },
   "readmes": {
-    "zh-CN": "# Gmail Mail Source\n\nRegisters the mail source component id `gmail`. IMAP to imap.gmail.com:993 (SSL), SMTP via smtp.gmail.com:587 (STARTTLS). Options: `username`, `password` (**an app password, not your account password** — enable 2-Step Verification then create one under Google Account → Security → App passwords), `imap_folder` (default INBOX), `interval_seconds` (default 300), `limit` (default 20), `analyze_backlog` (default false). Native OAuth is planned; today the adapter uses IMAP with an app password.\n"
+    "zh-CN": "## Gmail 邮件源\n\n组件标识为 `gmail`，使用共享 IMAP/SMTP 实现及 Gmail 预设，\n目前未实现原生 OAuth。请配置邮箱服务接受的凭据，并开启所需的收发访问权限。\n\n```toml\n[[accounts]]\naccount_id = \"gmail-main\"\nprovider = \"gmail\"\nemail = \"you@example.com\"\n\n[accounts.options]\npassword = \"${MAIL_PASSWORD}\"\n```\n\n主机覆盖、轮询选项、历史浏览及重试规则见\n[IMAP 邮件源](../mailflow-mail-imap/README.md)。邮件按账户范围区分。\n"
   }
 }

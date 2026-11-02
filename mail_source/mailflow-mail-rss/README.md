@@ -57,14 +57,6 @@ interval_seconds = 900
 - The first poll ingests everything the feed currently exposes; after that only
   new entries arrive.
 
-### Requirements
-
-Standard library only (`urllib`, `xml.etree`).
-
-### License
-
-MIT — contributions welcome.
-
 ---
 
 <!-- zh-CN -->
@@ -121,14 +113,6 @@ interval_seconds = 900
   `minimum_urgency` 设为 `"important"` 可避免它们推送到手机。
 - 轮询按账户独立进行，且单个源的失败是隔离的 —— 一个失效 URL 不会阻塞其他邮箱。
 - 首次轮询会摄取该源当前暴露的全部条目，之后只接收新条目。
-
-### 依赖
-
-仅使用标准库（`urllib`、`xml.etree`）。
-
-### 协议
-
-MIT —— 欢迎贡献。
 
 ---
 

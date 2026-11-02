@@ -59,14 +59,6 @@ my-mailflow-alerts`) and you are done.
   `${NTFY_TOKEN}` placeholder so the value never lands in the config file.
 - **Too many messages** — raise `minimum_urgency` to `urgent`.
 
-### Requirements
-
-Standard library only (`urllib`); no dependency beyond `mailflow-core`.
-
-### License
-
-MIT — contributions welcome.
-
 ---
 
 <!-- zh-CN -->
@@ -125,14 +117,6 @@ timeout_seconds = 10
 - **返回 `403`/`401`** —— 主题受保护：请设置 `token`，建议使用 `${NTFY_TOKEN}`
   占位符，避免明文写入配置文件。
 - **消息太多** —— 把 `minimum_urgency` 调高到 `urgent`。
-
-### 依赖
-
-仅使用标准库（`urllib`），除 `mailflow-core` 外无额外依赖。
-
-### 协议
-
-MIT —— 欢迎贡献。
 
 ---
 

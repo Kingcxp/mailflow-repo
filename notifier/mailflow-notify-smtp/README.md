@@ -61,14 +61,6 @@ to = ["team@example.com", "me@example.com"]
 - **Alert loops** — never point `to` at a mailbox MailFlow itself polls, or
   each alert becomes new mail to classify.
 
-### Requirements
-
-Standard library only (`smtplib`, `email`).
-
-### License
-
-MIT — contributions welcome.
-
 ---
 
 <!-- zh-CN -->
@@ -129,14 +121,6 @@ to = ["team@example.com", "me@example.com"]
 - **465 端口超时** —— 465 是隐式 SSL，请设置 `use_tls = false`。
 - **提醒形成回环** —— 切勿把 `to` 指向 MailFlow 自己在轮询的邮箱，否则每条提醒
   又会变成一封需要分类的新邮件。
-
-### 依赖
-
-仅使用标准库（`smtplib`、`email`）。
-
-### 协议
-
-MIT —— 欢迎贡献。
 
 ---
 

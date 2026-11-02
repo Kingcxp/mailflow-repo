@@ -1,16 +1,45 @@
 <!-- Generated from plugin.json by tools/gen_plugin_readmes.py. Edit plugin.json. -->
 
-# Outlook Mail Source
+## Outlook Mail Source
 
-Registers the mail source component id `outlook`. IMAP to outlook.office365.com:993 (SSL), SMTP via smtp.office365.com:587 (STARTTLS). Options: `username` (full email address), `password` (**an app password, not your account password** — enable MFA then create one under Microsoft Account → Security → App passwords), `imap_folder` (default INBOX), `interval_seconds` (default 300), `limit` (default 20), `analyze_backlog` (default false). Native OAuth is planned; today the adapter uses IMAP with an app password.
+Component ID: `outlook`. Uses the shared IMAP/SMTP source with the Outlook
+preset; this adapter does not implement native OAuth. Configure the credentials
+accepted by your mailbox service and enable the required receive/send access.
+
+```toml
+[[accounts]]
+account_id = "outlook-main"
+provider = "outlook"
+email = "you@example.com"
+
+[accounts.options]
+password = "${MAIL_PASSWORD}"
+```
+
+For host overrides, polling options, history and retry behavior, see the
+[IMAP source](../mailflow-mail-imap/README.md). Mail identity remains account-scoped.
 
 ---
 
 <!-- zh-CN -->
 
-# Outlook Mail Source
+## Outlook 邮件源
 
-Registers the mail source component id `outlook`. IMAP to outlook.office365.com:993 (SSL), SMTP via smtp.office365.com:587 (STARTTLS). Options: `username` (full email address), `password` (**an app password, not your account password** — enable MFA then create one under Microsoft Account → Security → App passwords), `imap_folder` (default INBOX), `interval_seconds` (default 300), `limit` (default 20), `analyze_backlog` (default false). Native OAuth is planned; today the adapter uses IMAP with an app password.
+组件标识为 `outlook`，使用共享 IMAP/SMTP 实现及 Outlook 预设，
+目前未实现原生 OAuth。请配置邮箱服务接受的凭据，并开启所需的收发访问权限。
+
+```toml
+[[accounts]]
+account_id = "outlook-main"
+provider = "outlook"
+email = "you@example.com"
+
+[accounts.options]
+password = "${MAIL_PASSWORD}"
+```
+
+主机覆盖、轮询选项、历史浏览及重试规则见
+[IMAP 邮件源](../mailflow-mail-imap/README.md)。邮件按账户范围区分。
 
 ---
 

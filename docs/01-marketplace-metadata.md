@@ -1,69 +1,64 @@
-# Marketplace metadata (`plugin.json`)
+# Marketplace metadata
 
-Every plugin folder contains one `plugin.json`. This is the single source of
-truth for how MailFlow discovers, displays and installs the plugin. There is
-no shared index of plugin metadata anywhere in the repository — the root
-`index.json` only lists categories.
+Each plugin's `plugin.json` is the source for the description shown in MailFlow
+and the generated README shown on GitHub. Root/category indexes locate folders;
+they do not duplicate the plugin's metadata.
 
-## Schema
+## Fields
 
-| Field | Type | Required | Meaning |
-|---|---|---|---|
-| `id` | string | yes | Unique plugin id; must equal the folder name. Lowercase letters, digits and dashes. |
-| `name` | string | no | Human-friendly name (falls back to `id`). |
-| `version` | string | yes | Semver. |
-| `description` | string | yes | One-line summary shown in `market list` / search. |
-| `categories` | list[string] | yes | Exactly one of the known categories (see below). |
-| `package` | string | yes | The distribution name in `pyproject.toml` (what `pip uninstall` uses). |
-| `source` | string | yes* | Installable location. For this repository: `git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=<category>/<plugin-id>`. For your fork, point `source` at your fork so installs use your code. |
-| `entry_point` | string | no | Entry-point group; defaults to `mailflow.plugins`. |
-| `author` | string | no | Your name or handle. |
-| `license` | string | no | SPDX id; MIT by convention here. |
-| `homepage` | string | no | Where users can learn more. |
-| `readme` | string | yes* | Markdown long description shown in the detail view. |
-| `descriptions` | object | no | Locale code → translated one-line summary. |
-| `readmes` | object | no | Locale code → translated markdown readme. |
+| Field | Meaning |
+| --- | --- |
+| `id` | Unique plugin ID, matching the folder and entry-point name |
+| `name` | Display name; falls back to ID |
+| `version` | Release version, matching package and runtime metadata |
+| `description` | Concise English summary |
+| `categories` | Exactly one category from [index.json](../index.json), matching the parent folder |
+| `package` | Distribution name from `pyproject.toml`, used for installation/uninstallation |
+| `source` | Installable URL; normally a Git URL with the plugin subdirectory |
+| `entry_point` | Entry-point group; default `mailflow.plugins` |
+| `author`, `license`, `homepage`, `updated` | Attribution, SPDX license, project link and update date |
+| `readme` | English Markdown usage instructions |
+| `descriptions`, `readmes` | Locale-to-text maps, including `zh-CN` |
 
-`*` — `source` and `readme` are required in practice: the validation workflow
-rejects a plugin without them (a plugin that cannot be installed or
-described is not useful).
-
-## Example
+ID, version, description, category, package, source and useful usage instructions
+must be present. The validator checks installability and consistency with the
+package and core contracts; see [validation](06-validation.md).
 
 ```json
 {
-  "id": "mailflow-notify-slack",
-  "name": "Slack Notifier",
+  "id": "mailflow-notify-example",
+  "name": "Example Notifier",
   "version": "0.1.0",
-  "description": "Posts computed mail analyses to a Slack incoming webhook",
+  "description": "Delivers analyzed mail to an example endpoint",
   "categories": ["notifier"],
-  "package": "mailflow-notify-slack",
-  "source": "git+https://github.com/you/mailflow-repo.git#subdirectory=notifier/mailflow-notify-slack",
-  "author": "you",
+  "package": "mailflow-notify-example",
+  "source": "git+https://github.com/you/mailflow-repo.git#subdirectory=notifier/mailflow-notify-example",
   "license": "MIT",
-  "homepage": "https://github.com/you/mailflow-notify-slack",
-  "readme": "## Slack Notifier\n\nSends a message per analyzed mail…",
-  "descriptions": {
-    "zh-CN": "把邮件分析结果推送到 Slack 的 Webhook"
-  },
-  "readmes": {
-    "zh-CN": "## Slack 通知器\n\n每封邮件分析完成后推送一条消息…"
-  }
+  "readme": "## Example notifier\n\nConfigure the endpoint and token in notifier options.",
+  "descriptions": {"zh-CN": "向指定地址推送邮件分析结果"},
+  "readmes": {"zh-CN": "## 示例通知器\n\n在通知器选项中配置地址和令牌。"}
 }
 ```
 
-## Consistency rules enforced by CI
+Point `source` at the repository containing the code users should install;
+a fork's unpublished changes are not available from the official repository URL.
 
-- `id` matches the folder name exactly.
-- `categories` contains exactly one known category.
-- `package` matches the distribution name in `pyproject.toml`.
-- `source` is non-empty.
-- `readme` (or `readmes.*`) is non-empty.
-- The entry point resolves and the plugin registers (see
-  [06-validation.md](06-validation.md)).
+## Localization and concise usage
 
-## Why one file per plugin?
+MailFlow selects the current locale's translated description/README, falling
+back to the English fields. Search also matches translated descriptions.
+Keep both languages aligned when behavior or options change.
 
-Two contributors adding plugins never touch the same file — every PR is
-independent. Categories themselves change only when MailFlow adds a new
-component kind, which is rare and centrally coordinated.
+A useful README needs the plugin's purpose, required options, one configuration
+example and any specific limitations or recovery steps. Avoid repeating the
+core API, generic installation instructions, license paragraphs or development
+history in every plugin. License and dependency declarations already have
+structured fields.
+
+Markdown supports tables, code blocks and normal emphasis. Inline color spans
+are optional; plain-text chat output drops color. Never depend on a color to
+explain a required action. Plugin form labels and runtime messages use the main
+translation component, separately from marketplace description fields.
+
+After editing metadata, run `python tools/gen_plugin_readmes.py` and commit the
+regenerated README with it. CI checks that the two stay identical.
