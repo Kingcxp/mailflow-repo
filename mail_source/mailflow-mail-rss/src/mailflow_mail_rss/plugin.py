@@ -70,6 +70,10 @@ class RssSource:
         self._feeds = [str(url) for url in account.options.get("feeds", [])]
         self._interval = float(account.options.get("interval_seconds", 900))
         self._seen: set[str] = set()
+        self._status_callback: Any = None
+
+    def set_status_callback(self, callback: Any) -> None:
+        self._status_callback = callback
 
     def _fetch(self, url: str) -> ET.Element:
         with urllib.request.urlopen(url, timeout=30) as response:
@@ -119,6 +123,7 @@ class RssSource:
 
     async def run(self, emit: MailEmitter, stop_event: asyncio.Event) -> None:
         while not stop_event.is_set():
+            count, error = 0, ""
             for url in self._feeds:
                 try:
                     for mail in await asyncio.to_thread(self._entries, url):
@@ -126,8 +131,12 @@ class RssSource:
                             return
                         await emit(mail)
                         self._seen.add(mail.provider_message_id)
+                        count += 1
                 except Exception as exc:
+                    error = type(exc).__name__
                     logger.warning("rss feed %r failed: %s", url, exc)
+            if self._status_callback is not None:
+                self._status_callback(not error, count, error)
             with contextlib.suppress(TimeoutError):
                 await asyncio.wait_for(stop_event.wait(), timeout=self._interval)
 
