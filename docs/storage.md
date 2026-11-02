@@ -19,7 +19,13 @@ class StorageBackend:
     async def set_manual_urgency(
         self, record_id: str, urgency: Urgency | None
     ) -> MailRecord | None: ...
-    async def delete_mail(self, record_id: str) -> None: ...  # moves the full record to trash
+    async def update_mail_analysis(
+        self, record_id: str, *, urgency: Urgency | None = None,
+        summary: str | None = None, reason: str | None = None,
+    ) -> MailRecord | None: ...
+    async def delete_mail(
+        self, record_id: str, *, refresh_deleted_at: bool = False,
+    ) -> None: ...  # moves the full record to trash
 
     # trash (recovery)
     async def list_trash(self) -> list[TrashRecord]: ...
@@ -30,18 +36,27 @@ class StorageBackend:
     # reply drafts
     async def save_draft(self, draft: ReplyDraft) -> None: ...
     async def get_draft(self, draft_id: str) -> ReplyDraft | None: ...
+    async def list_drafts(self, mail_id: str) -> list[ReplyDraft]: ...
     async def delete_draft(self, draft_id: str) -> None: ...
 
     # preferences
     async def get_preference(self, key: str) -> str | None: ...
     async def set_preference(self, key: str, value: str) -> None: ...
+
+    # custom action items
+    async def save_custom_action(self, item: ActionItem) -> None: ...
+    async def list_custom_actions(self) -> list[ActionItem]: ...
+    async def delete_custom_action(self, item_id: str) -> bool: ...
 ```
 
 ## Key points
 
-- **Implement everything.** The pipeline calls every method; missing pieces
-  surface as runtime errors, not at load time. The generated template is a
-  complete in-memory implementation — replace storage, keep behavior.
+- **Follow the core contract.** `mailflow.contracts.StorageBackend` is authoritative;
+  the loader checks method signatures. The generated template provides method
+  placeholders to implement in your backend.
+- **Draft lookup stays within one mail.** `list_drafts(mail_id)` returns all saved
+  replies to that mail, including finished drafts. The service chooses the latest
+  unfinished draft when the user continues editing.
 - **`delete_mail` moves to trash**; it is not a hard delete. `purge_trash`
   hard-deletes old trash; `cleanup_mail` ages old active mail into trash.
 - **Precision matters.** `set_manual_urgency(record_id, None)` must reset the
