@@ -15,6 +15,7 @@ from typing import Any
 
 from mailflow.config import NotifierConfig
 from mailflow.domain import ComponentKind, MailRecord
+from mailflow.notifications import DeliveryError, post_webhook
 from mailflow.plugins import PluginInfo
 from mailflow.registry import PluginRegistrar
 
@@ -36,8 +37,7 @@ class WebhookNotifier:
 
     async def notify(self, record: MailRecord) -> None:
         if not self._url:
-            logger.warning("webhook notifier has no url option; skipping")
-            return
+            raise DeliveryError("configuration")
         payload = {
             "mail_id": record.record_id,
             "urgency": record.effective_urgency.value,
@@ -52,7 +52,7 @@ class WebhookNotifier:
             headers={"Content-Type": "application/json"},
             method="POST",
         )
-        await asyncio.to_thread(urllib.request.urlopen, request, timeout=self._timeout)
+        await asyncio.to_thread(post_webhook, request, self._timeout, provider="webhook")
 
 
 class WebhookPlugin:

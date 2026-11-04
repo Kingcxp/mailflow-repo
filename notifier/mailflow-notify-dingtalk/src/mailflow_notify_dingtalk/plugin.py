@@ -15,6 +15,7 @@ from typing import Any
 
 from mailflow.config import NotifierConfig
 from mailflow.domain import ComponentKind, MailRecord
+from mailflow.notifications import DeliveryError, post_webhook
 from mailflow.plugins import PluginInfo
 from mailflow.registry import PluginRegistrar
 
@@ -35,12 +36,6 @@ class DingTalkNotifier:
     def __init__(self, config: NotifierConfig) -> None:
         self._options = dict(config.options)
         self._timeout = float(self._options.get("timeout_seconds", 10))
-
-    def _target_url(self) -> str:
-        raise NotImplementedError
-
-    def _payload(self, record: MailRecord) -> dict[str, Any]:
-        raise NotImplementedError
 
     def _target_url(self) -> str:
         token = str(self._options.get("access_token", ""))
@@ -64,15 +59,14 @@ class DingTalkNotifier:
     async def notify(self, record: MailRecord) -> None:
         url = self._target_url()
         if not url:
-            logger.warning("%(log)s notifier has no endpoint; skipping", {"log": "dingtalk"})
-            return
+            raise DeliveryError("configuration")
         request = urllib.request.Request(
             url,
             data=json.dumps(self._payload(record)).encode("utf-8"),
             headers={"Content-Type": "application/json"},
             method="POST",
         )
-        await asyncio.to_thread(urllib.request.urlopen, request, timeout=self._timeout)
+        await asyncio.to_thread(post_webhook, request, self._timeout, provider="dingtalk")
 
 
 class DingTalkNotifierPlugin:

@@ -16,6 +16,7 @@ from typing import Any
 
 from mailflow.config import NotifierConfig
 from mailflow.domain import ComponentKind, MailRecord, Urgency
+from mailflow.notifications import DeliveryError, post_webhook
 from mailflow.plugins import PluginInfo
 from mailflow.registry import PluginRegistrar
 
@@ -46,8 +47,7 @@ class NtfyNotifier:
 
     async def notify(self, record: MailRecord) -> None:
         if not self._topic:
-            logger.warning("ntfy notifier has no topic option; skipping")
-            return
+            raise DeliveryError("configuration")
         url = f"{self._base_url}/{self._topic}"
         headers = {"Content-Type": "application/json"}
         if self._token:
@@ -62,7 +62,7 @@ class NtfyNotifier:
         request = urllib.request.Request(
             url, data=json.dumps(payload).encode("utf-8"), headers=headers, method="POST"
         )
-        await asyncio.to_thread(urllib.request.urlopen, request, timeout=self._timeout)
+        await asyncio.to_thread(post_webhook, request, self._timeout, provider="ntfy")
 
 
 class NtfyPlugin:

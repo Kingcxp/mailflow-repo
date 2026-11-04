@@ -15,6 +15,7 @@ from typing import Any
 
 from mailflow.config import NotifierConfig
 from mailflow.domain import ComponentKind, MailRecord
+from mailflow.notifications import DeliveryError
 from mailflow.plugins import PluginInfo
 from mailflow.registry import PluginRegistrar
 
@@ -40,10 +41,10 @@ class SmtpNotifier:
         self._from_addr = str(options.get("from_addr", ""))
         self._to = [str(addr) for addr in options.get("to", [])]
 
-    def _send_sync(self, record: MailRecord) -> None:
+    def _send_sync(self, record: MailRecord, recipients: list[str] | None = None) -> None:
         message = EmailMessage()
         message["From"] = self._from_addr
-        message["To"] = ", ".join(self._to)
+        message["To"] = ", ".join(recipients if recipients is not None else self._to)
         message["Subject"] = f"[{record.effective_urgency.value}] {record.mail.subject}"
         message.set_content(record.summary or record.mail.subject)
         if record.mail.body_text:
@@ -54,18 +55,26 @@ class SmtpNotifier:
                 server.starttls()
                 if self._username:
                     server.login(self._username, self._password)
-                server.send_message(message)
+                refused = server.send_message(message)
+                if refused:
+                    raise DeliveryError("rejected")
         else:
             with smtplib.SMTP_SSL(self._host, self._port, timeout=30) as server:
                 if self._username:
                     server.login(self._username, self._password)
-                server.send_message(message)
+                refused = server.send_message(message)
+                if refused:
+                    raise DeliveryError("rejected")
 
     async def notify(self, record: MailRecord) -> None:
         if not self._host or not self._from_addr or not self._to:
-            logger.warning("smtp notifier is missing host/from_addr/to options; skipping")
-            return
+            raise DeliveryError("configuration")
         await asyncio.to_thread(self._send_sync, record)
+
+    async def notify_to_target(self, target: str, record: MailRecord, *, text: str | None = None) -> None:
+        if not self._host or not self._from_addr or not target:
+            raise DeliveryError("configuration")
+        await asyncio.to_thread(self._send_sync, record, [target])
 
 
 class SmtpPlugin:
