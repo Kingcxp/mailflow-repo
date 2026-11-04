@@ -15,6 +15,7 @@ from typing import Any
 
 from mailflow.config import NotifierConfig
 from mailflow.domain import ComponentKind, MailRecord
+from mailflow.forms import FormField
 from mailflow.notifications import DeliveryError
 from mailflow.plugins import PluginInfo
 from mailflow.registry import PluginRegistrar
@@ -71,7 +72,9 @@ class SmtpNotifier:
             raise DeliveryError("configuration")
         await asyncio.to_thread(self._send_sync, record)
 
-    async def notify_to_target(self, target: str, record: MailRecord, *, text: str | None = None) -> None:
+    async def notify_to_target(
+        self, target: str, record: MailRecord, *, text: str | None = None
+    ) -> None:
         if not self._host or not self._from_addr or not target:
             raise DeliveryError("configuration")
         await asyncio.to_thread(self._send_sync, record, [target])
@@ -83,6 +86,21 @@ class SmtpPlugin:
 
     def mailflow_register(self, registrar: PluginRegistrar, config: Any) -> None:
         registrar.add_notifier("smtp", SmtpNotifier)
+        registrar.add_form_fields(
+            ComponentKind.NOTIFIER,
+            "smtp",
+            (
+                FormField("host", required=True),
+                FormField("port", kind="number", default=587),
+                FormField(
+                    "use_tls", kind="boolean", default=True, description_key="tui.smtp_tls_hint"
+                ),
+                FormField("username"),
+                FormField("password", kind="password", secret=True),
+                FormField("from_addr", required=True),
+                FormField("to", kind="list", required=True),
+            ),
+        )
 
 
 plugin = SmtpPlugin()

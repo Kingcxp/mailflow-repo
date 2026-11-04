@@ -8,13 +8,18 @@ fail mail processing.
 from __future__ import annotations
 
 import asyncio
+import base64
+import hashlib
+import hmac
 import json
 import logging
+import time
 import urllib.request
 from typing import Any
 
 from mailflow.config import NotifierConfig
 from mailflow.domain import ComponentKind, MailRecord
+from mailflow.forms import FormField
 from mailflow.notifications import DeliveryError, post_webhook
 from mailflow.plugins import PluginInfo
 from mailflow.registry import PluginRegistrar
@@ -41,10 +46,20 @@ class FeishuNotifier:
         return str(self._options.get("webhook_url", ""))
 
     def _payload(self, record: MailRecord) -> dict[str, Any]:
-        return {
+        payload: dict[str, Any] = {
             "msg_type": "text",
             "content": {"text": self._summary_text(record)},
         }
+        secret = str(self._options.get("secret") or "")
+        if secret:
+            timestamp = str(int(time.time()))
+            payload.update(
+                timestamp=timestamp,
+                sign=base64.b64encode(
+                    hmac.new(f"{timestamp}\n{secret}".encode(), b"", hashlib.sha256).digest()
+                ).decode(),
+            )
+        return payload
 
     @staticmethod
     def _summary_text(record: MailRecord) -> str:
@@ -72,6 +87,15 @@ class FeishuNotifierPlugin:
 
     def mailflow_register(self, registrar: PluginRegistrar, config: Any) -> None:
         registrar.add_notifier("feishu", FeishuNotifier)
+        registrar.add_form_fields(
+            ComponentKind.NOTIFIER,
+            "feishu",
+            (
+                FormField("webhook_url", required=True, secret=True),
+                FormField("secret", kind="password", secret=True),
+                FormField("timeout_seconds", kind="number", default=10),
+            ),
+        )
 
 
 plugin = FeishuNotifierPlugin()

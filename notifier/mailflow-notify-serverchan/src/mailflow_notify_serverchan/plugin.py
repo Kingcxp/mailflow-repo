@@ -15,6 +15,7 @@ from typing import Any
 
 from mailflow.config import NotifierConfig
 from mailflow.domain import ComponentKind, MailRecord
+from mailflow.forms import FormField
 from mailflow.notifications import DeliveryError, post_webhook
 from mailflow.plugins import PluginInfo
 from mailflow.registry import PluginRegistrar
@@ -66,6 +67,15 @@ class ServerChanNotifierPlugin:
 
     def mailflow_register(self, registrar: PluginRegistrar, config: Any) -> None:
         registrar.add_notifier("serverchan", ServerChanNotifier)
+        registrar.add_form_fields(
+            ComponentKind.NOTIFIER,
+            "serverchan",
+            (
+                FormField("send_key", kind="password", secret=True, required=True),
+                FormField("title"),
+                FormField("timeout_seconds", kind="number", default=10),
+            ),
+        )
 
 
 plugin = ServerChanNotifierPlugin()

@@ -15,6 +15,7 @@ from typing import Any
 
 from mailflow.config import NotifierConfig
 from mailflow.domain import ComponentKind, MailRecord
+from mailflow.forms import FormField
 from mailflow.notifications import DeliveryError, post_webhook
 from mailflow.plugins import PluginInfo
 from mailflow.registry import PluginRegistrar
@@ -25,7 +26,7 @@ PLUGIN_INFO = PluginInfo(
     plugin_id="mailflow-notify-webhook",
     name="Webhook Notifier",
     version="0.1.0",
-    description="POSTs computed mail analyses and reminders to an HTTP webhook",
+    description="POSTs computed mail analyses to an HTTP webhook",
     kinds=[ComponentKind.NOTIFIER],
 )
 
@@ -61,6 +62,14 @@ class WebhookPlugin:
 
     def mailflow_register(self, registrar: PluginRegistrar, config: Any) -> None:
         registrar.add_notifier("webhook", WebhookNotifier)
+        registrar.add_form_fields(
+            ComponentKind.NOTIFIER,
+            "webhook",
+            (
+                FormField("url", required=True),
+                FormField("timeout_seconds", kind="number", default=10),
+            ),
+        )
 
 
 plugin = WebhookPlugin()

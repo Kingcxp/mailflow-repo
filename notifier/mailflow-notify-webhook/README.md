@@ -31,7 +31,7 @@ contract the rest of MailFlow uses, so a receiver can colour-code on it
 
 | Option | Required | Default | Meaning |
 | ------ | -------- | ------- | ------- |
-| `url` | **yes** | `""` | Endpoint that receives the POST. Missing → warn and skip. |
+| `url` | **yes** | `""` | Endpoint that receives the POST. Missing → delivery fails; configure the endpoint and retry. |
 | `timeout_seconds` | no | `10` | Per-request HTTP timeout. |
 
 ### Usage
@@ -88,7 +88,7 @@ Home Assistant 自动化或无服务器函数的最短路径。
 
 | 配置项 | 必填 | 默认值 | 说明 |
 | ------ | ---- | ------ | ---- |
-| `url` | **是** | `""` | 接收 POST 的端点。未设置时记录警告并跳过。 |
+| `url` | **是** | `""` | 接收 POST 的端点。未设置时投递失败；补充端点后可重试。 |
 | `timeout_seconds` | 否 | `10` | 单次请求的 HTTP 超时秒数。 |
 
 ### 用法

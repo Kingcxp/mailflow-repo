@@ -16,6 +16,7 @@ from typing import Any
 
 from mailflow.config import NotifierConfig
 from mailflow.domain import ComponentKind, MailRecord, Urgency
+from mailflow.forms import FormField
 from mailflow.notifications import DeliveryError, post_webhook
 from mailflow.plugins import PluginInfo
 from mailflow.registry import PluginRegistrar
@@ -71,6 +72,16 @@ class NtfyPlugin:
 
     def mailflow_register(self, registrar: PluginRegistrar, config: Any) -> None:
         registrar.add_notifier("ntfy", NtfyNotifier)
+        registrar.add_form_fields(
+            ComponentKind.NOTIFIER,
+            "ntfy",
+            (
+                FormField("base_url", default="https://ntfy.sh"),
+                FormField("topic", required=True),
+                FormField("token", kind="password", secret=True),
+                FormField("timeout_seconds", kind="number", default=10),
+            ),
+        )
 
 
 plugin = NtfyPlugin()

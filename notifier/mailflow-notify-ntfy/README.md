@@ -27,7 +27,7 @@ processing.
 
 | Option | Required | Default | Meaning |
 | ------ | -------- | ------- | ------- |
-| `topic` | **yes** | — | ntfy topic to publish to. Without it the notifier logs a warning and skips every message. |
+| `topic` | **yes** | — | ntfy topic to publish to. Without it delivery fails; configure the topic and retry. |
 | `base_url` | no | `https://ntfy.sh` | Server base URL; point it at your self-hosted instance. |
 | `token` | no | `""` | Access token for a protected topic, sent as `Authorization: Bearer`. |
 | `timeout_seconds` | no | `10` | Per-request HTTP timeout. |
