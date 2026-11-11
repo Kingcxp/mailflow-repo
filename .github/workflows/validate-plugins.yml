@@ -3,15 +3,20 @@ name: validate-plugins
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, dev]
 
 permissions:
   contents: read
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ["3.11", "3.12"]
     steps:
       - uses: actions/checkout@v5
         with:
@@ -19,12 +24,13 @@ jobs:
 
       - uses: actions/setup-python@v6
         with:
-          python-version: "3.12"
+          python-version: ${{ matrix.python }}
 
       - name: Check out the matching core and shared validator
         uses: actions/checkout@v5
         with:
           repository: Kingcxp/mailflow
+          ref: ${{ (github.base_ref || github.ref_name) == 'dev' && 'dev' || 'main' }}
           path: _mailflow
 
       # plugin.json is the single source of truth for a plugin's description:
@@ -38,13 +44,13 @@ jobs:
         run: python -m unittest discover -s tests
 
       # PRs: validate exactly the plugins this PR touched, so untouched
-      # plugins are never re-tested. Pushes to main: full sweep.
+      # plugins are never re-tested. Branch pushes run a full sweep.
       - name: Validate changed plugins (pull requests)
         if: github.event_name == 'pull_request'
         env:
           PLUGIN_BASE_REF: origin/${{ github.base_ref }}
-        run: python tools/validate_plugin.py --changed --base "$PLUGIN_BASE_REF" --core _mailflow/packages/mailflow-core
+        run: python -c "import os, subprocess, sys; sys.exit(subprocess.call([sys.executable, 'tools/validate_plugin.py', '--changed', '--base', os.environ['PLUGIN_BASE_REF'], '--core', '_mailflow/packages/mailflow-core']))"
 
-      - name: Validate all plugins (main)
+      - name: Validate all plugins (branch push)
         if: github.event_name == 'push'
         run: python tools/validate_plugin.py --all --core _mailflow/packages/mailflow-core
