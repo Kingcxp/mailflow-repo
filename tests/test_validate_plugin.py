@@ -135,8 +135,8 @@ class ValidatorTests(unittest.TestCase):
             self.assertEqual(
                 install[-3:], [str(core), str(core.parent / "mailflow-testkit"), str(folder)]
             )
-            self.assertIn(f"mailflow-shared @ {shared.as_uri()}", overrides)
-            self.assertIn(f"mailflow-core @ {core.as_uri()}", overrides)
+            self.assertIn(f"mailflow-shared @ {shared.resolve().as_uri()}", overrides)
+            self.assertIn(f"mailflow-core @ {core.resolve().as_uri()}", overrides)
             smoke.assert_called_once()
             self.assertFalse(environment.exists())
 
