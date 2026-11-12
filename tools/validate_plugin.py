@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -125,23 +126,31 @@ def _run(python: Path, folder: Path, *, offline: bool, core: Path | None) -> lis
 def _install_and_run(folder: Path, *, offline: bool = False, core: Path | None = None) -> list[str]:
     if offline:
         return _run(Path(sys.executable), folder, offline=True, core=core)
+    uv = shutil.which("uv")
+    if uv is None:
+        return [f"{folder.name}: dependency installation requires uv (or use --offline)"]
     with tempfile.TemporaryDirectory(prefix="mailflow-validate-") as scratch:
         environment = Path(scratch) / "venv"
         venv.EnvBuilder(with_pip=True).create(environment)
         python = environment / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
-        pip = [
-            str(python),
-            "-m",
-            "pip",
-            "install",
-            "--quiet",
-            "--disable-pip-version-check",
-        ]
-        # Resolve core, shared samples and plugin together, so a conflicting
-        # plugin cannot silently replace the selected core. Keep the host untouched.
+        # Shared plugins come from this checkout, including direct Git dependencies.
+        # Other requirements still resolve normally in the disposable environment.
+        projects = all_folders()
+        if core is not None:
+            projects += [core, core.parent / "mailflow-testkit"]
+        overrides = Path(scratch) / "overrides.txt"
+        overrides.write_text(
+            "\n".join(
+                f"{tomllib.loads((project / 'pyproject.toml').read_text(encoding='utf-8'))['project']['name']} @ {project.resolve().as_uri()}"
+                for project in projects
+                if (project / "pyproject.toml").is_file()
+            ),
+            encoding="utf-8",
+        )
+        install = [uv, "pip", "install", "--python", str(python), "--overrides", str(overrides)]
         testkit = str(core.parent / "mailflow-testkit") if core else TESTKIT_SOURCE
         result = subprocess.run(
-            [*pip, str(core) if core else CORE_SOURCE, testkit, str(folder)],
+            [*install, str(core) if core else CORE_SOURCE, testkit, str(folder)],
             cwd=ROOT,
             capture_output=True,
             text=True,

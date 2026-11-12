@@ -28,8 +28,11 @@ launching platform processes.
 
 ## Dependency installation and CI
 
-Omit `--offline` to install core, testkit and the plugin with declared dependencies
-into a disposable environment, then run `pip check` and the shared samples.
+Omit `--offline` to use `uv` to install core, testkit and the plugin with declared
+dependencies into a disposable environment, then run `pip check` and the shared
+samples. Shared MailFlow plugin dependencies use this checkout through dependency
+overrides, so a dev plugin is not tested against an older shared plugin from main.
+Other dependencies are installed normally; no dependency checks are bypassed.
 `--core` selects core and testkit from one local checkout; without it, the script
 uses the main repository's Git sources. This mode needs access to dependency
 sources and is separate from offline verification.
@@ -37,7 +40,7 @@ sources and is separate from offline verification.
 The [workflow](../.github/workflows/validate-plugins.yml) always checks generated
 READMEs and validator tests. Pull requests validate changed plugin folders;
 shared validator/workflow changes validate every plugin. Documentation-only
-changes need no component execution. Pushes to `main` validate all plugins.
+changes need no component execution. Pushes to `main` and `dev` validate all plugins.
 Failures identify the plugin, component and cause.
 
 Metadata checks include folder/category, package/version, entry-point name,

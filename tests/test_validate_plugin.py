@@ -93,33 +93,57 @@ class ValidatorTests(unittest.TestCase):
 
     def test_installation_uses_disposable_interpreter_and_dependencies(self) -> None:
         folder = self.plugin()
+        shared = self.plugin(name="mailflow-shared")
+        project = folder / "pyproject.toml"
+        project.write_text(
+            project.read_text(encoding="utf-8").replace(
+                '"missing-library"',
+                '"mailflow-shared @ git+https://example.invalid/main.git"',
+            ),
+            encoding="utf-8",
+        )
         core = self.root / "workspace/packages/mailflow-core"
+        core.mkdir(parents=True)
+        (core / "pyproject.toml").write_text(
+            '[project]\nname = "mailflow-core"\nversion = "0.1.0"\n', encoding="utf-8"
+        )
+        overrides = ""
+
+        def run_command(command: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+            nonlocal overrides
+            if "--overrides" in command:
+                overrides = Path(command[command.index("--overrides") + 1]).read_text("utf-8")
+            return subprocess.CompletedProcess(command, 0, "", "")
+
         with (
+            patch.object(validator.shutil, "which", return_value="uv"),
             patch.object(validator.venv.EnvBuilder, "create") as create,
-            patch.object(
-                validator.subprocess,
-                "run",
-                return_value=subprocess.CompletedProcess([], 0, "", ""),
-            ) as run,
+            patch.object(validator.subprocess, "run", side_effect=run_command) as run,
             patch.object(validator, "_run", return_value=[]) as smoke,
         ):
             self.assertEqual(validator._install_and_run(folder, core=core), [])
             environment = create.call_args.args[0]
             for call in run.call_args_list:
                 command = call.args[0]
-                self.assertNotEqual(command[0], sys.executable)
-                self.assertTrue(Path(command[0]).is_relative_to(environment))
+                interpreter = (
+                    command[command.index("--python") + 1] if "--python" in command else command[0]
+                )
+                self.assertNotEqual(interpreter, sys.executable)
+                self.assertTrue(Path(interpreter).is_relative_to(environment))
                 self.assertNotIn("--no-deps", command)
             install = run.call_args_list[0].args[0]
             self.assertEqual(
                 install[-3:], [str(core), str(core.parent / "mailflow-testkit"), str(folder)]
             )
+            self.assertIn(f"mailflow-shared @ {shared.as_uri()}", overrides)
+            self.assertIn(f"mailflow-core @ {core.as_uri()}", overrides)
             smoke.assert_called_once()
             self.assertFalse(environment.exists())
 
     def test_dependency_failure_stops_before_runtime_check(self) -> None:
         folder = self.plugin()
         with (
+            patch.object(validator.shutil, "which", return_value="uv"),
             patch.object(validator.venv.EnvBuilder, "create"),
             patch.object(
                 validator.subprocess,
