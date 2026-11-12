@@ -1,44 +1,14 @@
 <!-- Generated from plugin.json by tools/gen_plugin_readmes.py. Edit plugin.json. -->
 
-## Webhook Notifier
+# Webhook notifier
 
-Delivers computed mail analyses to any HTTP endpoint as JSON — the shortest
-path to a chat bridge, a team dashboard, a Home Assistant automation or a
-serverless function.
-
-Registers the notifier component id `webhook`.
-
-### Payload
-
-One POST per mail above the threshold, `Content-Type: application/json`:
-
-```json
-{
-  "mail_id": "3f9c…",
-  "urgency": "urgent",
-  "subject": "Collect your student ID card",
-  "summary": "Pick up the card at the office before 17:00.",
-  "from": "office@example.edu",
-  "reply_required": false
-}
-```
-
-`urgency` is one of `ad`, `info`, `important`, `urgent` — the same four-level
-contract the rest of MailFlow uses, so a receiver can colour-code on it
-(`#909399`, `#67C23A`, `#E6A23C`, `#F56C6C`).
-
-### Options
-
-| Option | Required | Default | Meaning |
-| ------ | -------- | ------- | ------- |
-| `url` | **yes** | `""` | Endpoint that receives the POST. Missing → delivery fails; configure the endpoint and retry. |
-| `timeout_seconds` | no | `10` | Per-request HTTP timeout. |
-
-### Usage
+Component ID: `webhook`. Delivers mail summaries through the configured
+Webhook endpoint. This package implements mail notification, not incoming chat
+commands, arbitrary-text reminders, images or file exchange.
 
 ```toml
 [[notifiers]]
-notifier_id = "webhook"
+notifier_id = "webhook-alerts"
 provider = "webhook"
 enabled = true
 minimum_urgency = "important"
@@ -48,54 +18,27 @@ url = "https://example.com/hooks/mailflow"
 timeout_seconds = 10
 ```
 
-### Notes
+`url` is required. The JSON body contains `mail_id`, `urgency`, `subject`, `summary`, `from` and `reply_required`. This plugin has no custom-auth-header option.
+`timeout_seconds` defaults to 10 seconds. Environment placeholders are resolved
+by MailFlow; keep endpoint tokens private.
 
-- Delivery failures are logged by the runtime and never abort mail processing,
-  so a flaky endpoint cannot lose mail.
-- Need custom auth headers? Copy this plugin as a starting point — it is ~60
-  lines of standard library code.
+Missing required configuration, HTTP errors and recognized platform rejection
+fail delivery. The runtime records the failure without losing the stored mail;
+fix the endpoint/access settings and retry the failed notification. A successful
+HTTP response is not enough if the platform reports a business error.
 
 ---
 
 <!-- zh-CN -->
 
-## Webhook 通知器
+# Webhook 通知器
 
-以 JSON 形式把邮件分析结果投递到任意 HTTP 端点 —— 这是接入聊天桥、团队看板、
-Home Assistant 自动化或无服务器函数的最短路径。
-
-注册的通知器组件 id 为 `webhook`。
-
-### 请求体
-
-每封超过阈值的邮件发送一次 POST，`Content-Type: application/json`：
-
-```json
-{
-  "mail_id": "3f9c…",
-  "urgency": "urgent",
-  "subject": "请领取你的学生证",
-  "summary": "请在 17:00 前到办公室领取证件。",
-  "from": "office@example.edu",
-  "reply_required": false
-}
-```
-
-`urgency` 取值为 `ad`、`info`、`important`、`urgent` —— 与 MailFlow 其他部分一致
-的四级契约，接收端可据此配色（`#909399`、`#67C23A`、`#E6A23C`、`#F56C6C`）。
-
-### 配置项
-
-| 配置项 | 必填 | 默认值 | 说明 |
-| ------ | ---- | ------ | ---- |
-| `url` | **是** | `""` | 接收 POST 的端点。未设置时投递失败；补充端点后可重试。 |
-| `timeout_seconds` | 否 | `10` | 单次请求的 HTTP 超时秒数。 |
-
-### 用法
+组件标识为 `webhook`，通过配置的 Webhook 地址发送邮件摘要。
+本插件提供邮件推送，不提供接收聊天命令、任意文字提醒、图片或文件收发。
 
 ```toml
 [[notifiers]]
-notifier_id = "webhook"
+notifier_id = "webhook-alerts"
 provider = "webhook"
 enabled = true
 minimum_urgency = "important"
@@ -105,11 +48,13 @@ url = "https://example.com/hooks/mailflow"
 timeout_seconds = 10
 ```
 
-### 说明
+`url` 必填，JSON 包含 `mail_id`、`urgency`、`subject`、`summary`、`from`、`reply_required`，目前没有自定义认证头选项。
+`timeout_seconds` 默认 10 秒。环境变量由 MailFlow 展开，地址中的令牌需要保密。
 
-- 投递失败由运行时记录，绝不会中断邮件处理，因此端点不稳定也不会丢邮件。
-- 需要自定义鉴权头？可以直接拷贝本插件作为起点 —— 它只有约 60 行标准库代码。
+缺少必要配置、HTTP 错误或可识别的平台拒绝均视为投递失败。
+运行时保留已存邮件并记录失败，修正地址和访问设置后重试对应通知。
+不能只因 HTTP 成功就把平台业务失败当成发送成功。
 
 ---
 
-Metadata: [`plugin.json`](plugin.json) · Marketplace: [https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-webhook](https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-webhook)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-webhook)

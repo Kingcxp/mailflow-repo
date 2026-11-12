@@ -1,46 +1,51 @@
 <!-- Generated from plugin.json by tools/gen_plugin_readmes.py. Edit plugin.json. -->
 
-## Outlook Mail Source
+# Outlook mail source
 
-Component ID: `outlook`. Uses the shared IMAP/SMTP source with the Outlook
-preset; this adapter does not implement native OAuth. Configure the credentials
-accepted by your mailbox service and enable the required receive/send access.
+Component ID: `outlook`. Reuses the shared IMAP/SMTP source with the Outlook
+server preset. It does not implement native OAuth; use credentials and access
+settings accepted by your mailbox service.
 
 ```toml
 [[accounts]]
-account_id = "outlook-main"
+account_id = "outlook-personal"
 provider = "outlook"
 email = "you@example.com"
 
 [accounts.options]
 password = "${MAIL_PASSWORD}"
+initial_sync = "new"
+catch_up_missed = false
 ```
 
-For host overrides, polling options, history and retry behavior, see the
-[IMAP source](../mailflow-mail-imap/README.md). Mail identity remains account-scoped.
+See [IMAP options and behavior](../mailflow-mail-imap/README.md) for server
+overrides, sending, history, catch-up, attachments and opt-in source-state sync.
+The default receives new mail only; account IDs remain part of mail identity.
 
 ---
 
 <!-- zh-CN -->
 
-## Outlook 邮件源
+# Outlook 邮件源
 
-组件标识为 `outlook`，使用共享 IMAP/SMTP 实现及 Outlook 预设，
-目前未实现原生 OAuth。请配置邮箱服务接受的凭据，并开启所需的收发访问权限。
+组件标识为 `outlook`，复用共享 IMAP/SMTP 实现及 Outlook 服务器预设。
+不提供原生 OAuth；凭据和收发权限必须符合实际邮箱服务要求。
 
 ```toml
 [[accounts]]
-account_id = "outlook-main"
+account_id = "outlook-personal"
 provider = "outlook"
 email = "you@example.com"
 
 [accounts.options]
 password = "${MAIL_PASSWORD}"
+initial_sync = "new"
+catch_up_missed = false
 ```
 
-主机覆盖、轮询选项、历史浏览及重试规则见
-[IMAP 邮件源](../mailflow-mail-imap/README.md)。邮件按账户范围区分。
+服务器覆盖、发信、历史导入、补收、附件和原邮箱联动选项见
+[IMAP 说明](../mailflow-mail-imap/README.md)。默认只接收新邮件，账户标识参与去重。
 
 ---
 
-Metadata: [`plugin.json`](plugin.json) · Marketplace: [https://github.com/Kingcxp/mailflow-repo/tree/main/mail_source/mailflow-mail-outlook](https://github.com/Kingcxp/mailflow-repo/tree/main/mail_source/mailflow-mail-outlook)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/mailflow-repo/tree/main/mail_source/mailflow-mail-outlook)

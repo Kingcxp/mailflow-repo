@@ -1,123 +1,62 @@
 <!-- Generated from plugin.json by tools/gen_plugin_readmes.py. Edit plugin.json. -->
 
-## ntfy Notifier
+# ntfy notifier
 
-Pushes mail alerts to an [ntfy](https://ntfy.sh) topic. Works with the public
-`ntfy.sh` service or any self-hosted ntfy server, so alerts arrive on your
-phone through the ntfy app without running a bot or an SMTP relay.
-
-Registers the notifier component id `ntfy`.
-
-### How it works
-
-Every mail that clears the notifier's `minimum_urgency` threshold is POSTed as
-one JSON message: the mail subject becomes the ntfy *title*, the analysis
-summary becomes the *message body*, and the effective urgency becomes the ntfy
-priority. Delivery runs off the event loop, so a slow server never stalls mail
-processing.
-
-| MailFlow urgency | ntfy priority |
-| ---------------- | ------------- |
-| `ad` (gray)      | `1` (min)     |
-| `info` (green)   | `3` (default) |
-| `important` (orange) | `4` (high) |
-| `urgent` (red)   | `5` (urgent)  |
-
-### Options
-
-| Option | Required | Default | Meaning |
-| ------ | -------- | ------- | ------- |
-| `topic` | **yes** | — | ntfy topic to publish to. Without it delivery fails; configure the topic and retry. |
-| `base_url` | no | `https://ntfy.sh` | Server base URL; point it at your self-hosted instance. |
-| `token` | no | `""` | Access token for a protected topic, sent as `Authorization: Bearer`. |
-| `timeout_seconds` | no | `10` | Per-request HTTP timeout. |
-
-### Usage
+Component ID: `ntfy`. Delivers mail summaries through the configured
+ntfy endpoint. This package implements mail notification, not incoming chat
+commands, arbitrary-text reminders, images or file exchange.
 
 ```toml
 [[notifiers]]
-notifier_id = "ntfy"
+notifier_id = "ntfy-alerts"
 provider = "ntfy"
 enabled = true
-minimum_urgency = "important"   # ad | info | important | urgent
+minimum_urgency = "important"
 
 [notifiers.options]
-topic = "my-mailflow-alerts"    # required
-base_url = "https://ntfy.sh"    # or your own server
-token = "${NTFY_TOKEN}"         # only needed for protected topics
+topic = "your-topic"
+base_url = "https://ntfy.sh"
 timeout_seconds = 10
 ```
 
-Subscribe to the same topic in the ntfy mobile app (or `ntfy subscribe
-my-mailflow-alerts`) and you are done.
+`topic` is required. `base_url` defaults to `https://ntfy.sh`; optional `token` is sent as Bearer authorization. Choose server/topic access settings appropriate for mail content.
+`timeout_seconds` defaults to 10 seconds. Environment placeholders are resolved
+by MailFlow; keep endpoint tokens private.
 
-### Troubleshooting
-
-- **Nothing arrives, no errors** — `topic` is unset; the notifier warns once
-  and skips. Check `mailflow.notification.ntfy` in the log.
-- **`403`/`401`** — the topic is protected: set `token`, ideally through a
-  `${NTFY_TOKEN}` placeholder so the value never lands in the config file.
-- **Too many messages** — raise `minimum_urgency` to `urgent`.
+Missing required configuration, HTTP errors and recognized platform rejection
+fail delivery. The runtime records the failure without losing the stored mail;
+fix the endpoint/access settings and retry the failed notification. A successful
+HTTP response is not enough if the platform reports a business error.
 
 ---
 
 <!-- zh-CN -->
 
-## ntfy 通知器
+# ntfy 通知器
 
-把邮件提醒推送到 [ntfy](https://ntfy.sh) 主题。支持公共 `ntfy.sh` 服务或任何自建
-ntfy 服务器，无需运行机器人或 SMTP 中继，提醒直达手机上的 ntfy 应用。
-
-注册的通知器组件 id 为 `ntfy`。
-
-### 工作方式
-
-每封达到 `minimum_urgency` 阈值的邮件都会以一条 JSON 消息 POST 出去：邮件主题作为
-ntfy 的*标题*，分析摘要作为*正文*，有效紧急度映射为 ntfy 优先级。推送在事件循环之外
-执行，服务器再慢也不会阻塞邮件处理。
-
-| MailFlow 紧急度 | ntfy 优先级 |
-| --------------- | ----------- |
-| `ad`（灰）      | `1`（最低） |
-| `info`（绿）    | `3`（默认） |
-| `important`（橙）| `4`（高）   |
-| `urgent`（红）  | `5`（紧急） |
-
-### 配置项
-
-| 配置项 | 必填 | 默认值 | 说明 |
-| ------ | ---- | ------ | ---- |
-| `topic` | **是** | — | 要发布到的 ntfy 主题。未设置时通知器只记录一条警告并跳过所有消息。 |
-| `base_url` | 否 | `https://ntfy.sh` | 服务器地址，可指向自建实例。 |
-| `token` | 否 | `""` | 受保护主题的访问令牌，通过 `Authorization: Bearer` 发送。 |
-| `timeout_seconds` | 否 | `10` | 单次请求的 HTTP 超时秒数。 |
-
-### 用法
+组件标识为 `ntfy`，通过配置的 ntfy 地址发送邮件摘要。
+本插件提供邮件推送，不提供接收聊天命令、任意文字提醒、图片或文件收发。
 
 ```toml
 [[notifiers]]
-notifier_id = "ntfy"
+notifier_id = "ntfy-alerts"
 provider = "ntfy"
 enabled = true
-minimum_urgency = "important"   # ad | info | important | urgent
+minimum_urgency = "important"
 
 [notifiers.options]
-topic = "my-mailflow-alerts"    # 必填
-base_url = "https://ntfy.sh"    # 或你的自建服务器
-token = "${NTFY_TOKEN}"         # 仅受保护主题需要
+topic = "your-topic"
+base_url = "https://ntfy.sh"
 timeout_seconds = 10
 ```
 
-在 ntfy 手机应用中订阅同一主题（或执行 `ntfy subscribe my-mailflow-alerts`）即可。
+`topic` 必填，`base_url` 默认 `https://ntfy.sh`；可选 `token` 通过 Bearer 认证发送。请按邮件隐私需求配置服务器和主题权限。
+`timeout_seconds` 默认 10 秒。环境变量由 MailFlow 展开，地址中的令牌需要保密。
 
-### 排查
-
-- **收不到消息且没有报错** —— `topic` 未设置，通知器会警告一次后跳过。请查看日志中的
-  `mailflow.notification.ntfy`。
-- **返回 `403`/`401`** —— 主题受保护：请设置 `token`，建议使用 `${NTFY_TOKEN}`
-  占位符，避免明文写入配置文件。
-- **消息太多** —— 把 `minimum_urgency` 调高到 `urgent`。
+缺少必要配置、HTTP 错误或可识别的平台拒绝均视为投递失败。
+运行时保留已存邮件并记录失败，修正地址和访问设置后重试对应通知。
+不能只因 HTTP 成功就把平台业务失败当成发送成功。
 
 ---
 
-Metadata: [`plugin.json`](plugin.json) · Marketplace: [https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-ntfy](https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-ntfy)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-ntfy)

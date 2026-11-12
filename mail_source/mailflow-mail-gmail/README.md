@@ -1,46 +1,51 @@
 <!-- Generated from plugin.json by tools/gen_plugin_readmes.py. Edit plugin.json. -->
 
-## Gmail Mail Source
+# Gmail mail source
 
-Component ID: `gmail`. Uses the shared IMAP/SMTP source with the Gmail
-preset; this adapter does not implement native OAuth. Configure the credentials
-accepted by your mailbox service and enable the required receive/send access.
+Component ID: `gmail`. Reuses the shared IMAP/SMTP source with the Gmail
+server preset. It does not implement native OAuth; use credentials and access
+settings accepted by your mailbox service.
 
 ```toml
 [[accounts]]
-account_id = "gmail-main"
+account_id = "gmail-personal"
 provider = "gmail"
 email = "you@example.com"
 
 [accounts.options]
 password = "${MAIL_PASSWORD}"
+initial_sync = "new"
+catch_up_missed = false
 ```
 
-For host overrides, polling options, history and retry behavior, see the
-[IMAP source](../mailflow-mail-imap/README.md). Mail identity remains account-scoped.
+See [IMAP options and behavior](../mailflow-mail-imap/README.md) for server
+overrides, sending, history, catch-up, attachments and opt-in source-state sync.
+The default receives new mail only; account IDs remain part of mail identity.
 
 ---
 
 <!-- zh-CN -->
 
-## Gmail 邮件源
+# Gmail 邮件源
 
-组件标识为 `gmail`，使用共享 IMAP/SMTP 实现及 Gmail 预设，
-目前未实现原生 OAuth。请配置邮箱服务接受的凭据，并开启所需的收发访问权限。
+组件标识为 `gmail`，复用共享 IMAP/SMTP 实现及 Gmail 服务器预设。
+不提供原生 OAuth；凭据和收发权限必须符合实际邮箱服务要求。
 
 ```toml
 [[accounts]]
-account_id = "gmail-main"
+account_id = "gmail-personal"
 provider = "gmail"
 email = "you@example.com"
 
 [accounts.options]
 password = "${MAIL_PASSWORD}"
+initial_sync = "new"
+catch_up_missed = false
 ```
 
-主机覆盖、轮询选项、历史浏览及重试规则见
-[IMAP 邮件源](../mailflow-mail-imap/README.md)。邮件按账户范围区分。
+服务器覆盖、发信、历史导入、补收、附件和原邮箱联动选项见
+[IMAP 说明](../mailflow-mail-imap/README.md)。默认只接收新邮件，账户标识参与去重。
 
 ---
 
-Metadata: [`plugin.json`](plugin.json) · Marketplace: [https://github.com/Kingcxp/mailflow-repo/tree/main/mail_source/mailflow-mail-gmail](https://github.com/Kingcxp/mailflow-repo/tree/main/mail_source/mailflow-mail-gmail)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/mailflow-repo/tree/main/mail_source/mailflow-mail-gmail)

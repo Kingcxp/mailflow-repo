@@ -11,11 +11,11 @@
   "author": "MailFlow community",
   "license": "MIT",
   "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/processor/mailflow-processor-archive",
-  "readme": "# Auto-Archive Processor\n\nRegisters the processor `archive`. Options: `senders` (list) and `domains` (list). Matching mail moves to the MailFlow archive, remains searchable and can be restored to the inbox. Original mail, priority and analysis are preserved.\n",
+  "readme": "# Local auto-archive processor\n\nComponent ID: `archive`. Archives matching mail inside MailFlow while retaining\nits priority, analysis and original content. It does not move source mailbox mail.\n\n```toml\n[[processors]]\nprocessor_id = \"local-archive\"\nprovider = \"archive\"\npriority = 5\n\n[processors.options]\nsenders = [\"reports@example.com\"]\ndomains = [\"news.example\"]\n```\n\n`senders` and `domains` are optional lists, matched case-insensitively against\nexact addresses and `@domain`. Empty lists do nothing. Archived mail remains\nsearchable and can be returned to the inbox. Archiving is separate from trash,\npriority filtering and the account's optional source-state synchronization.\n",
   "descriptions": {
     "zh-CN": "按发件人或域名归档 MailFlow 邮件，保留原邮件、重要程度和分析结果"
   },
   "readmes": {
-    "zh-CN": "# 自动归档处理器\n\n注册处理器 `archive`。选项：`senders`（发件人列表）、`domains`（域名列表）。匹配的邮件进入 MailFlow 归档，仍可搜索并恢复至收件箱。原邮箱邮件、重要程度和分析结果均保留。\n"
+    "zh-CN": "# 本地自动归档处理器\n\n组件标识为 `archive`，将匹配邮件归档到 MailFlow，保留重要程度、分析和原文，\n不移动原邮箱邮件。\n\n```toml\n[[processors]]\nprocessor_id = \"local-archive\"\nprovider = \"archive\"\npriority = 5\n\n[processors.options]\nsenders = [\"reports@example.com\"]\ndomains = [\"news.example\"]\n```\n\n发件人和域名列表可选，按地址及 `@domain` 匹配，不区分大小写；为空时不处理。\n归档邮件仍可搜索、恢复到收件箱。归档、回收站、重要程度过滤和账户原邮箱联动是不同操作。\n"
   }
 }

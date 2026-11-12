@@ -1,63 +1,78 @@
 <!-- Generated from plugin.json by tools/gen_plugin_readmes.py. Edit plugin.json. -->
 
-## WhatsApp Notifier (auto-deploy)
+# WhatsApp notifier and chat connection
 
-Pushes MailFlow mail alerts into WhatsApp chats and lets those chats run
-MailFlow commands, through a local Node bridge built on
-[Baileys](https://github.com/WhiskeySockets/Baileys) (the WhatsApp Web
-multi-device protocol).
+Component ID: `whatsapp`. Supports mail delivery and shared text-based
+reminders/commands; images and managed files are available through the channel's
+rich-message capabilities and platform limits.
 
-### Guided setup
+```toml
+[[notifiers]]
+notifier_id = "whatsapp-main"
+provider = "whatsapp"
+minimum_urgency = "important"
 
-Add the notifier in the Notifications tab and press Next: MailFlow installs
-the bridge (npm), starts it, and shows the pairing QR in the terminal. Scan it
-once from *WhatsApp → Linked devices*; the session is kept on disk, so later
-restarts reconnect without scanning again.
+[notifiers.options]
+gateway_url = "http://127.0.0.1:3000"
+targets = ["user:15550001111"]
+admins = ["15550001111"]
+```
 
-### Options
+Use the managed Baileys bridge or a compatible configured bridge. The managed setup needs its detected Node/npm prerequisites and downloads dependencies; pair from WhatsApp Linked devices when requested. Stored sessions may reconnect, but an expired login still requires pairing again.
 
-| Option | Required | Description |
-|---|---|---|
-| `gateway_url` | yes | Local bridge root, written by the guided setup |
-| `targets` | yes | Recipients: `group:<id>` / `user:<number>` |
-| `admins` | for commands | WhatsApp ids allowed to run chat commands |
-| `gateway` | auto | Marks the entry as auto-deployed |
+`gateway_url` is required. Targets use `user:<number-or-jid>` or `group:<id-or-jid>`; use stable platform identity rather than contact names. Keep administrator numbers consistent with the bridge callback identity.
 
-### Notes
+Administrator identity controls mutations, sending, configuration and plugin
+management. Ordinary allowed read commands do not require making everyone an
+administrator. Natural-language management uses the shared assistant and requires
+a configured model; changes and outbound mail retain confirmation checks.
 
-- Requires Node 20+ and npm on the host; nothing else is downloaded.
-- Delivery is one message per target; a chat that fails does not stop the rest.
-- Chat commands arrive through the same bridge and are answered in-chat.
+Fixed targets and chat subscriptions are distinct. Unsubscribing reports whether
+a separately configured fixed target still receives pushes. Global, channel and
+chat switches, urgency and quiet hours determine actual delivery. Optional
+`notification_images`, `summary_cards` and `send_interval_seconds` use the shared
+notification settings; text is the fallback on unsupported output.
+
+Configuration, HTTP and platform errors fail delivery visibly. Per-target
+receipts prevent retries from repeating successful destinations. Run a delivery
+test after login; process existence alone does not prove the connection works.
 
 ---
 
 <!-- zh-CN -->
 
-## WhatsApp 通知器（自动部署）
+# WhatsApp 通知与聊天连接
 
-通过基于 [Baileys](https://github.com/WhiskeySockets/Baileys)（WhatsApp Web 多设备协议）的本地 Node 桥，
-把 MailFlow 邮件提醒推送到 WhatsApp 会话，并让这些会话可以直接运行 MailFlow 命令。
+组件标识为 `whatsapp`，支持邮件推送及共享文字提醒、命令；图片和受管文件由渠道能力
+提供，并受平台限制。
 
-### 引导式部署
+```toml
+[[notifiers]]
+notifier_id = "whatsapp-main"
+provider = "whatsapp"
+minimum_urgency = "important"
 
-在「通知」页添加本通知器并点击「下一步」：MailFlow 会安装桥（npm）、启动它，并在终端里显示配对二维码。
-用手机打开 *WhatsApp → 已关联的设备* 扫一次即可；会话会保存在磁盘上，之后重启无需再次扫码。
+[notifiers.options]
+gateway_url = "http://127.0.0.1:3000"
+targets = ["user:15550001111"]
+admins = ["15550001111"]
+```
 
-### 配置项
+使用受管 Baileys 桥或兼容的现有桥。受管安装需要检测到的 Node/npm 环境并下载依赖；按提示在 WhatsApp 已关联设备中配对。保存的会话可重连，登录失效时仍需重新配对。
 
-| 选项 | 必填 | 说明 |
-|---|---|---|
-| `gateway_url` | 是 | 本地桥地址，由引导式部署写入 |
-| `targets` | 是 | 接收人:`group:<群ID>` / `user:<号码>` |
-| `admins` | 使用命令时必填 | 允许执行聊天命令的 WhatsApp ID |
-| `gateway` | 自动 | 标记该条目为自动部署 |
+桥地址必填，目标使用 `user:<号码或JID>`／`group:<群ID或JID>`，不依赖联系人显示名。管理员号码需与桥回调身份对应。
 
-### 说明
+管理员身份控制修改、发信、配置和插件操作，不必为了允许普通查询而将所有人设为管理员。
+自然语言管理使用共享助手并需要模型，修改和发信仍需确认。
 
-- 需要宿主机有 Node 20+ 与 npm，除此之外不下载任何东西。
-- 每个目标一条消息；某个会话发送失败不会影响其余目标。
-- 聊天命令通过同一个桥进入，并在会话内回复。
+固定目标与聊天订阅不同，取消订阅会说明是否还存在独立固定推送。
+全局、渠道、聊天开关、重要程度及免打扰共同决定是否发送。
+`notification_images`、`summary_cards`、`send_interval_seconds` 使用共享通知设置，
+不支持的输出明确回退文字。
+
+配置、HTTP 或平台错误会报告投递失败，按目标保留凭据，重试不重复发送成功目标。
+登录后单独测试投递；进程存在并不代表可用。
 
 ---
 
-Metadata: [`plugin.json`](plugin.json) · Marketplace: [https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-whatsapp](https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-whatsapp)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-whatsapp)

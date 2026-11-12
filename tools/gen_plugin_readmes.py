@@ -47,7 +47,7 @@ def render(metadata: dict[str, object], folder: Path) -> str:
         parts += [
             "---",
             "",
-            f"Metadata: [`plugin.json`](plugin.json) · Marketplace: [{homepage}]({homepage})",
+            f"[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page]({homepage})",
             "",
         ]
     return "\n".join(parts)
@@ -62,7 +62,9 @@ def main() -> int:
     written = 0
     for plugin_json in sorted(ROOT.glob("*/mailflow-*/plugin.json")):
         folder = plugin_json.parent
-        metadata: dict[str, object] = json.loads(plugin_json.read_text(encoding="utf-8"))
+        metadata: dict[str, object] = json.loads(
+            plugin_json.read_text(encoding="utf-8")
+        )
         expected = render(metadata, folder)
         target = folder / "README.md"
         current = target.read_text(encoding="utf-8") if target.is_file() else ""

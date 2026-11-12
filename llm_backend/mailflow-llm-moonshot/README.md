@@ -1,100 +1,51 @@
 <!-- Generated from plugin.json by tools/gen_plugin_readmes.py. Edit plugin.json. -->
 
-## Moonshot LLM Backend
+# Moonshot model preset
 
-Thin preset over the OpenAI-compatible Chat Completions transport that points
-MailFlow at Moonshot AI (Kimi). Registers the LLM backend component id
-`moonshot`.
-
-### Endpoint
-
-    POST https://api.moonshot.cn/v1/chat/completions
-    Authorization: Bearer <api key>
-
-Defaults: `base_url` `https://api.moonshot.cn/v1`, `model`
-`moonshot-v1-8k`. Both are used only when the `[[llms]]` entry does not set
-them; an explicit `model` or `base_url` always wins.
-
-### Authentication
-
-Set `api_key` directly or reference an environment variable with
-`api_key_env` (e.g. `MOONSHOT_API_KEY`). MailFlow expands `${VAR}`
-placeholders when loading configuration.
-
-### Options
-
-Standard `[[llms]]` fields apply (`model`, `api_key`, `api_key_env`,
-`base_url`, `headers`, `extra_body`, `timeout_seconds`, `max_retries`,
-`fallback`). Backend-specific entries live in `[llms.options]`:
-
-| Option | Default | Meaning |
-| ------ | ------- | ------- |
-| `path` | `chat/completions` | Path appended to `base_url`; override for proxy gateways. |
-| `headers` | `{}` | Per-call extra headers, merged over the configured ones. |
-| `query` | `{}` | Per-call query parameters. |
-| `body` | `{}` | Per-call request-body overrides, merged last. |
-| `model` / `temperature` | from config | Per-call overrides of the model name / sampling temperature. |
-
-### Usage
+Component ID: `moonshot`. Reuses the OpenAI-compatible Chat Completions
+transport; its dependency is installed with this package.
 
 ```toml
 [[llms]]
-llm_id = "moonshot"
+llm_id = "primary"
 provider = "moonshot"
+model = "your-model-id"
 api_key_env = "MOONSHOT_API_KEY"
 ```
 
-Uses `mailflow-llm-openai-compatible` for tool calls, per-call options and retries. Its declared dependencies are installed automatically.
+The implementation defaults to `https://api.moonshot.cn/v1` and
+model `moonshot-v1-8k` when those fields are omitted. These are code
+defaults, not a guarantee that the provider still offers that model. Set your
+available model explicitly; an explicit `base_url` also overrides the preset.
+
+See [shared transport options](../mailflow-llm-openai-compatible/README.md) for
+credentials, timeout/retries, request overrides and tool calls. The model and
+endpoint must support the requested tools. Primary/fallback selection uses
+the shared model defaults and processor bindings described in that guide.
 
 ---
 
 <!-- zh-CN -->
 
-## 月之暗面大模型后端
+# Moonshot 模型预设
 
-基于 OpenAI 兼容的 Chat Completions 传输层的轻量预设，让 MailFlow 直接对接
-月之暗面（Moonshot AI）的 Kimi 模型。注册的大模型后端组件 id 为
-`moonshot`。
-
-### 端点
-
-    POST https://api.moonshot.cn/v1/chat/completions
-    Authorization: Bearer <api key>
-
-默认值：`base_url` 为 `https://api.moonshot.cn/v1`，`model` 为
-`moonshot-v1-8k`。仅当 `[[llms]]` 条目未设置时才使用默认值；显式配置的
-`model` 或 `base_url` 始终优先。
-
-### 鉴权
-
-直接设置 `api_key`，或用 `api_key_env` 引用环境变量（例如
-`MOONSHOT_API_KEY`）。MailFlow 在加载配置时会展开 `${VAR}` 占位符。
-
-### 配置项
-
-标准的 `[[llms]]` 字段均适用（`model`、`api_key`、`api_key_env`、
-`base_url`、`headers`、`extra_body`、`timeout_seconds`、`max_retries`、
-`fallback`）。后端专属项写在 `[llms.options]`：
-
-| 配置项 | 默认值 | 说明 |
-| ------ | ------ | ---- |
-| `path` | `chat/completions` | 追加到 `base_url` 的路径；代理网关时可覆盖。 |
-| `headers` | `{}` | 单次调用的额外请求头，合并覆盖已配置项。 |
-| `query` | `{}` | 单次调用的查询参数。 |
-| `body` | `{}` | 单次调用的请求体覆盖，最后合并。 |
-| `model` / `temperature` | 取自配置 | 单次调用覆盖模型名 / 采样温度。 |
-
-### 用法
+组件标识为 `moonshot`，复用 OpenAI 兼容的 Chat Completions 传输，安装时处理所需依赖。
 
 ```toml
 [[llms]]
-llm_id = "moonshot"
+llm_id = "primary"
 provider = "moonshot"
+model = "your-model-id"
 api_key_env = "MOONSHOT_API_KEY"
 ```
 
-共用 `mailflow-llm-openai-compatible` 的工具调用、单次调用配置和重试实现，安装时自动安装所需依赖。
+代码默认地址为 `https://api.moonshot.cn/v1`，默认模型为
+`moonshot-v1-8k`；这仅说明实现默认值，不保证服务仍提供该模型。
+请明确填写实际可用模型，显式 `base_url` 可覆盖地址。
+
+凭据、超时、重试、请求覆盖和工具调用见[共享后端说明](../mailflow-llm-openai-compatible/README.md)。
+真实模型和端点也必须支持相应工具能力，主模型与后备遵守共享模型默认值和处理器绑定。
 
 ---
 
-Metadata: [`plugin.json`](plugin.json) · Marketplace: [https://github.com/Kingcxp/mailflow-repo/tree/main/llm_backend/mailflow-llm-moonshot](https://github.com/Kingcxp/mailflow-repo/tree/main/llm_backend/mailflow-llm-moonshot)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/mailflow-repo/tree/main/llm_backend/mailflow-llm-moonshot)

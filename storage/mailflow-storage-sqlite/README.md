@@ -1,9 +1,9 @@
 <!-- Generated from plugin.json by tools/gen_plugin_readmes.py. Edit plugin.json. -->
 
-## SQLite Storage
+# SQLite storage
 
-Component ID: `sqlite`. Persists mail, analysis, tasks, reply drafts, preferences
-and recoverable trash in one database. Data survives application restarts.
+Component ID: `sqlite`. Stores mail, analysis, tasks, drafts, preferences and
+recoverable trash in one local database, with compatible incremental migrations.
 
 ```toml
 [storage]
@@ -11,28 +11,28 @@ provider = "sqlite"
 path = "data/mailflow.db"
 ```
 
-`path` defaults to `data/mailflow.db`; parent directories are created as needed.
-Use `:memory:` only for temporary data that may disappear on shutdown. There are
-no backend-specific storage options.
+Parent directories are created as needed. `:memory:` is temporary and disappears
+when closed. Retention is controlled by `[general]`, not fixed by this plugin;
+mail defaults to indefinite retention and trash to seven days. Trash restore
+preserves stored mail state and ingestion origin. Receipt-date filtering uses
+the source mail timestamp. Reanalysis retains manual priority and local state.
 
-Deleting mail moves it into trash; restoring recovers its stored state. Mail
-and trash retention are controlled by `[general]`, not fixed by this plugin.
-Trash expiry uses the deletion timestamp. Manual urgency, feedback and local
-task state are preserved when analysis is updated.
+Mail records keep text/HTML, attachment metadata and OCR text. Managed uploads
+and fetched attachment caches are stored separately from those records and are
+included by the service backup workflow when available. Uncached attachments
+still need source access.
 
-Mail text/HTML, attachment metadata and OCR text are persisted; attachment
-binaries are omitted. SQLite uses WAL and a busy timeout to handle brief write
-contention. Back up the database together with its active WAL when the service
-is running, or stop the service before making a file copy.
+Use MailFlow backup/restore for a consistent portable archive and recovery
+preview. If manually copying a database, stop its writer first; copying only
+the main file while WAL is active is not a consistent backup.
 
 ---
 
 <!-- zh-CN -->
 
-## SQLite 存储
+# SQLite 存储
 
-组件标识为 `sqlite`。在一个数据库中保存邮件、分析结果、待办、回复草稿、偏好和
-可恢复的回收站内容，应用重启后仍然保留。
+组件标识为 `sqlite`，保存邮件、分析、待办、草稿、偏好和可恢复回收站，兼容增量迁移。
 
 ```toml
 [storage]
@@ -40,17 +40,16 @@ provider = "sqlite"
 path = "data/mailflow.db"
 ```
 
-`path` 默认为 `data/mailflow.db`，按需创建父目录。`:memory:` 仅适合关闭后可以丢失的
-临时数据。此插件没有额外的存储选项。
+父目录按需创建，`:memory:` 关闭即丢失。保留策略由 `[general]` 控制，
+不是插件内固定天数；默认长期保留邮件、回收站七天。恢复保留邮件状态和导入来源，
+日期筛选使用真实收件时间，重析保留人工优先级及本地状态。
 
-删除邮件会移入回收站，恢复时保留已保存状态。邮件和回收站保留时间由 `[general]`
-控制，并非插件内固定天数。回收站按删除时间计算过期；更新分析结果时保留手动
-优先级、用户反馈和本地待办状态。
+邮件记录保存正文、HTML、附件信息和识别文字；受管上传与下载缓存另行保存，
+服务备份会纳入已有文件。未缓存附件仍需访问原邮箱。
 
-保存正文、HTML、附件信息和图片识别文本，不保存附件原始字节。SQLite 使用 WAL 和
-繁忙等待处理短暂写入竞争。运行中备份时需要连同活动 WAL 一起处理，也可以先停止
-服务再复制数据库文件。
+建议通过 MailFlow 创建一致备份并预览恢复。手工复制数据库前先停止写入，
+运行中只复制主文件而忽略活动 WAL 不能保证备份一致。
 
 ---
 
-Metadata: [`plugin.json`](plugin.json) · Marketplace: [https://github.com/Kingcxp/mailflow-repo/tree/main/storage/mailflow-storage-sqlite](https://github.com/Kingcxp/mailflow-repo/tree/main/storage/mailflow-storage-sqlite)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/mailflow-repo/tree/main/storage/mailflow-storage-sqlite)

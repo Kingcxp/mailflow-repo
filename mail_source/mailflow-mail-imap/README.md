@@ -1,114 +1,97 @@
 <!-- Generated from plugin.json by tools/gen_plugin_readmes.py. Edit plugin.json. -->
 
-## IMAP Mail Source
+# IMAP mail source
 
-Receives mail over IMAP and sends confirmed replies over SMTP. Component ID:
-`imap`. Presets cover QQ, 163, Gmail and Outlook; explicit host settings override
-a preset for other servers.
-
-### Options
-
-Configure these under `[accounts.options]`:
-
-| Option | Default | Meaning |
-| --- | --- | --- |
-| `preset` | empty | `qq`, `163`, `gmail` or `outlook` |
-| `imap_host` / `imap_port` | preset / `993` | Receive endpoint; host is required without a preset |
-| `imap_ssl` / `imap_folder` | `true` / `INBOX` | Implicit TLS and mailbox folder |
-| `smtp_host` / `smtp_port` | preset / `465` | Send endpoint, required for replies |
-| `smtp_ssl` | port is 465 | Implicit TLS when true, STARTTLS otherwise |
-| `username` | account email | Login name |
-| `password` | empty | Required credential; prefer an environment placeholder |
-| `interval_seconds` | `300` | Poll interval |
-| `limit` | `20` | Recent messages read on the first poll |
+Receives IMAP mail and sends through SMTP. Component ID: `imap`. Presets are
+`qq`, `163`, `gmail` and `outlook`; explicit hosts override the preset.
 
 ```toml
 [[accounts]]
-account_id = "qq-main"
+account_id = "personal"
 provider = "imap"
-email = "me@qq.com"
+email = "you@example.com"
+state_sync = false
 
 [accounts.options]
-preset = "qq"
-password = "${QQ_AUTH_CODE}"
+imap_host = "imap.example.com"
+smtp_host = "smtp.example.com"
+password = "${MAIL_PASSWORD}"
+initial_sync = "new"
+catch_up_missed = false
 ```
 
-For a generic server, replace `preset` with its `imap_host`, `smtp_host` and
-ports/TLS settings. Use the credentials required by that mailbox service.
+| Option | Default / purpose |
+| --- | --- |
+| `preset` | Optional server preset; otherwise set `imap_host` and the needed send host |
+| `username` / `password` | Account email / required mailbox credential |
+| `imap_port`, `imap_ssl`, `imap_folder` | `993`, `true`, `INBOX` |
+| `smtp_port`, `smtp_ssl` | `465`; implicit TLS on 465, STARTTLS otherwise unless overridden |
+| `initial_sync`, `initial_days` | `new`; `recent` imports 30 days by default, `all` explicitly imports history |
+| `catch_up_missed`, `catch_up_summary` | `false` / `true`; optional catch-up from a valid saved cursor, normally with a summary |
+| `include_past_actions` | `false`; opt in to past tasks from imported mail |
+| `interval_seconds`, `limit` | `300` / `20`; polling interval and batch size, not implicit startup history |
+| `archive_folder`, `trash_folder`, `sent_folder` | Optional overrides for detected source folders |
 
-### Receive, history and retry
+The default first connection receives only new mail. History browsing is separate;
+restarts do not resume abandoned analysis. A valid account/folder-scoped UID and
+UIDVALIDITY cursor is required for missed-mail catch-up; invalid progress asks for
+an explicit resync range. Accepted messages advance progress only after handoff.
 
-The first poll reads the newest `limit` messages. Later polls use incremental
-UIDs. Progress advances only after successful runtime handoff; rejected messages
-remain retryable, and a later failure does not discard earlier accepted mail.
+Account IDs isolate mail identity. MIME attachment bytes survive extraction, and
+attachments can be fetched on demand independently of OCR. Receiving and sending
+must be checked separately. Configured credentials must be accepted by the mail
+service; presets do not implement native OAuth.
 
-Identity includes the provider/account scope and message identity. The same mail
-retried within one account is deduplicated; equal Message-ID values in different
-accounts remain separate. Keep account IDs stable.
-
-The history browser lets you select older mail for analysis without changing
-live receive progress. MIME parsing preserves text/HTML, attachment metadata and
-bytes needed by the optional OCR stage. Extracted image text is searchable.
-
-If login fails, check the mailbox's IMAP access and configured credentials. If
-nothing arrives, check the selected folder, enabled account and first-poll limit;
-use history browsing to import older messages. Reconnecting or restarting may
-revisit mail, but stored mail in the same account remains deduplicated.
+Optional account `state_sync` enables supported read/star/archive synchronization.
+Source trash/restore requires confirmation and a reliable move capability; unknown
+results are checked before retry. Local permanent deletion never expunges source
+mail. See the [operation guide](https://github.com/Kingcxp/mailflow/blob/dev/docs/configuration/overview.md).
 
 ---
 
 <!-- zh-CN -->
 
-## IMAP 邮件源
+# IMAP 邮件源
 
-通过 IMAP 收信，通过 SMTP 发送已确认的回复，组件标识为 `imap`。
-内置 QQ、163、Gmail 和 Outlook 预设；自定义主机配置可以覆盖预设。
-
-### 配置项
-
-以下选项放在 `[accounts.options]`：
-
-| 选项 | 默认值 | 说明 |
-| --- | --- | --- |
-| `preset` | 空 | `qq`、`163`、`gmail` 或 `outlook` |
-| `imap_host` / `imap_port` | 预设 / `993` | 收信地址；未用预设时必须填写主机 |
-| `imap_ssl` / `imap_folder` | `true` / `INBOX` | 隐式 TLS 和邮箱文件夹 |
-| `smtp_host` / `smtp_port` | 预设 / `465` | 回复所需的发信地址 |
-| `smtp_ssl` | 端口为 465 | 为真时使用隐式 TLS，否则使用 STARTTLS |
-| `username` | 账户邮箱 | 登录名 |
-| `password` | 空 | 必填凭据，建议使用环境变量占位符 |
-| `interval_seconds` | `300` | 轮询间隔秒数 |
-| `limit` | `20` | 首次读取的最近邮件数 |
+通过 IMAP 收信、SMTP 发信，组件标识为 `imap`。支持 QQ、163、Gmail、Outlook
+预设，也可填写实际服务器地址；显式主机设置优先于预设。
 
 ```toml
 [[accounts]]
-account_id = "qq-main"
+account_id = "personal"
 provider = "imap"
-email = "me@qq.com"
+email = "you@example.com"
+state_sync = false
 
 [accounts.options]
-preset = "qq"
-password = "${QQ_AUTH_CODE}"
+imap_host = "imap.example.com"
+smtp_host = "smtp.example.com"
+password = "${MAIL_PASSWORD}"
+initial_sync = "new"
+catch_up_missed = false
 ```
 
-通用服务器可用 `imap_host`、`smtp_host` 及端口和 TLS 选项替代 `preset`，
-凭据以对应邮箱服务的要求为准。
+| 选项 | 默认值或用途 |
+| --- | --- |
+| `preset` | 可选预设；不用预设时填写收件及所需发件主机 |
+| `username` / `password` | 默认账户邮箱／邮箱服务接受的凭据 |
+| `imap_port`、`imap_ssl`、`imap_folder` | `993`、`true`、`INBOX` |
+| `smtp_port`、`smtp_ssl` | 默认 `465`；465 默认隐式 TLS，其他端口默认 STARTTLS，可覆盖 |
+| `initial_sync`、`initial_days` | 默认 `new`；`recent` 默认导入 30 天，`all` 明确导入历史 |
+| `catch_up_missed`、`catch_up_summary` | 默认关闭补收、开启补收汇总，补收依赖有效游标 |
+| `include_past_actions` | 默认不提取导入邮件的过期待办 |
+| `interval_seconds`、`limit` | 默认 `300` 秒／每批 `20` 封，不表示启动自动导入最近邮件 |
+| `archive_folder`、`trash_folder`、`sent_folder` | 可覆盖自动识别的归档、回收站和已发送目录 |
 
-### 接收、历史与重试
+首次默认只接收新邮件，历史浏览单独进行；重启不恢复已取消的分析。
+补收需要账户、文件夹及 UIDVALIDITY 匹配的游标，失效时要求主动选择重新同步范围。
+成功交给运行时后才推进进度，账户标识参与去重，请保持稳定。
 
-首次读取最近的 `limit` 封邮件，之后按 UID 增量读取。只有运行时成功接收邮件后
-才推进进度；交付失败的邮件可以重试，后续失败不会丢掉之前已经接收的邮件。
-
-邮件标识包含来源、账户和消息标识。同一账户内重试不会重复入库，不同账户即使
-具有相同的 Message-ID 也分别保存。请保持账户标识稳定。
-
-历史浏览可以选择旧邮件进行分析，不改变实时接收进度。MIME 解析保留正文、HTML、
-附件信息及图片识别所需字节；识别出的图片文字可参与搜索。
-
-登录失败时检查邮箱的 IMAP 设置和凭据。收不到邮件时检查文件夹、账户开关和首次
-读取数量，较早邮件可从历史浏览导入。重连或重启可能再次读取邮件，但同一账户中
-已经保存的邮件不会重复入库。
+附件字节保留到识别完成，可按需获取附件，下载与 OCR 独立。
+收件与发件分别检查；预设不提供原生 OAuth，也不绕过邮箱访问限制。
+账户 `state_sync` 可开启受支持的已读、收藏、归档联动；原邮箱删除与恢复需确认，
+未知结果先核对。永久清除仅作用于本地，不清空原邮箱其他邮件。
 
 ---
 
-Metadata: [`plugin.json`](plugin.json) · Marketplace: [https://github.com/Kingcxp/mailflow-repo/tree/main/mail_source/mailflow-mail-imap](https://github.com/Kingcxp/mailflow-repo/tree/main/mail_source/mailflow-mail-imap)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/mailflow-repo/tree/main/mail_source/mailflow-mail-imap)

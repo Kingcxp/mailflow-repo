@@ -1,5 +1,7 @@
 # Marketplace metadata
 
+[Home](../README.md) · [简体中文](#简体中文)
+
 Each plugin's `plugin.json` is the source for the description shown in MailFlow
 and the generated README shown on GitHub. Root/category indexes locate folders;
 they do not duplicate the plugin's metadata.
@@ -62,3 +64,20 @@ translation component, separately from marketplace description fields.
 
 After editing metadata, run `python tools/gen_plugin_readmes.py` and commit the
 regenerated README with it. CI checks that the two stay identical.
+
+## 简体中文
+
+[返回首页](../README.md#简体中文) · [English](#marketplace-metadata)
+
+`plugin.json` 是应用内说明和 GitHub README 的共同来源，索引只负责定位目录。
+标识、版本、类别、安装包和来源要与实际代码一致；字段含义和完整示例见上表。
+`readme` 与 `description` 为英文，`readmes.zh-CN`、`descriptions.zh-CN` 提供中文。
+
+说明包含用途、组件标识、必要选项、一份配置示例和真实限制即可。
+不要在每个插件重复核心接口、通用安装流程、开发历史或与功能无关的配色说明。
+示例使用占位符，不写真实令牌；没有实现的提醒、文件或聊天能力不要宣称支持。
+模型名按用户实际可用值填写，不把过期示例当成当前服务推荐。
+
+`source` 决定真正安装的代码；不带分支的 Git 来源使用默认分支。
+切换索引、编辑 `homepage` 或本地修改不会自动改变它。发布前确认用户能访问对应版本。
+修改后运行 README 生成及 `--check`，并一起提交；运行时提示仍通过核心翻译组件维护。

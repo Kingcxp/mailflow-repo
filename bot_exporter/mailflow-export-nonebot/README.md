@@ -1,119 +1,54 @@
 <!-- Generated from plugin.json by tools/gen_plugin_readmes.py. Edit plugin.json. -->
 
-## NoneBot Exporter
+# NoneBot exporter
 
-Registers the `nonebot` framework exporter. Running `mailflow export --framework
-nonebot --output <dir>` (or the TUI's Market → Export wizard) turns your
-configured MailFlow instance into a ready-to-install `nonebot-plugin-mailflow`
-package.
-
-Registers the bot exporter component id `nonebot`.
-
-### What it generates
-
-| File | Purpose |
-| ---- | ------- |
-| `pyproject.toml` | Installable package metadata with the needed dependencies |
-| `src/nonebot_plugin_mailflow/__init__.py` | Plugin metadata plus driver `on_startup` / `on_shutdown` hooks that start and stop the service |
-| `src/nonebot_plugin_mailflow/config.toml` | Your resolved configuration, with secrets kept as `${ENV_VAR}` placeholders |
-| `README.md` | Install and usage notes for the generated plugin |
-
-### Chat surface
-
-The generated plugin embeds the shared command router, so the full management
-surface is available in chat: messages starting with `mailflow` are dispatched to
-the same commands the CLI and TUI use (`mail list`, `action list`, `reply
-prepare`, `config get`, ...). Long responses are split across several messages,
-and the daily digest is paginated into the chat.
-
-### Usage
+Exporter ID: `nonebot`. Creates a framework host from the current MailFlow
+configuration without starting a mail runtime during export.
 
 ```bash
-uv run mailflow export --framework nonebot --output dist/nonebot_plugin_mailflow \
-    -c configs/development.toml
-# or: make bot-plugin-nonebot
+uv run mailflow export --framework nonebot --output dist/nonebot_plugin_mailflow -c configs/local.toml
 ```
 
-Then install it into your bot project and load it as usual:
+Install the generated folder into your NoneBot environment, then load `nonebot_plugin_mailflow` with the framework plugin loader. Configure MailFlow administrators through the matching enabled notifier binding described in the generated README; framework administrator flags are not imported automatically.
+The generated README describes its file layout and command prefix. Its host
+starts/stops the MailFlow service with the framework and forwards sender/chat identity to the shared layer.
+Administration is resolved from a unique enabled notifier matching the platform
+and instance, with the sender in options.admins; unmatched providers remain read-only.
 
-```bash
-uv pip install ./dist/nonebot_plugin_mailflow
-```
+Supported framework file events can upload managed files, and supported adapters
+can send selected files back. Availability depends on the actual platform adapter;
+exporting/importing Python successfully does not prove file delivery. Mutations
+and sending keep their permission and confirmation rules.
 
-```python
-nonebot.load_plugin("nonebot_plugin_mailflow")
-```
-
-### Notes
-
-- Keys from `${VAR}` or `api_key_env` remain placeholders. Provide those
-  variables in the bot environment and review literal credentials before sharing.
-- Regenerate after changing the configuration — the exported `config.toml` is a
-  snapshot, not a live link.
-- Exporters are plugins themselves, so supporting another framework is an
-  install away, never a core change.
-
-### Requirements
-
-`mailflow-core`; the generated plugin additionally needs `nonebot2`.
+The exported configuration is a snapshot, not a live link. Environment-backed
+secrets remain references; literal credentials may still be present. Review the
+output, supply needed environment variables in the bot host and regenerate after
+configuration changes. Configured notifiers deliver notifications: the export
+adapter does not imply an extra automatic broadcast to every framework chat.
 
 ---
 
 <!-- zh-CN -->
 
-## NoneBot 导出器
+# NoneBot 导出器
 
-注册 `nonebot` 框架导出器。执行 `mailflow export --framework nonebot --output
-<目录>`（或使用 TUI 的“插件市场 → 导出”向导），即可把已配置好的 MailFlow 实例
-打包成可直接安装的 `nonebot-plugin-mailflow`。
-
-注册的机器人导出器组件 id 为 `nonebot`。
-
-### 生成的内容
-
-| 文件 | 作用 |
-| ---- | ---- |
-| `pyproject.toml` | 可安装包的元数据与所需依赖 |
-| `src/nonebot_plugin_mailflow/__init__.py` | 插件元数据，以及启动/停止服务的 `on_startup` / `on_shutdown` 钩子 |
-| `src/nonebot_plugin_mailflow/config.toml` | 解析后的配置，其中密钥仍保留为 `${环境变量}` 占位符 |
-| `README.md` | 生成插件的安装与使用说明 |
-
-### 聊天能力
-
-生成的插件内嵌共享命令路由器，因此完整的管理能力可直接在聊天中使用：以
-`mailflow` 开头的消息会被分派到与 CLI、TUI 相同的命令（`mail list`、
-`action list`、`reply prepare`、`config get` 等）。过长的回复会拆分为多条消息，
-每日摘要也会分页发送到聊天中。
-
-### 用法
+导出器标识为 `nonebot`，按当前配置生成框架宿主；导出过程不启动邮件运行时。
 
 ```bash
-uv run mailflow export --framework nonebot --output dist/nonebot_plugin_mailflow \
-    -c configs/development.toml
-# 或：make bot-plugin-nonebot
+uv run mailflow export --framework nonebot --output dist/nonebot_plugin_mailflow -c configs/local.toml
 ```
 
-随后安装到你的机器人项目并按常规方式加载：
+将生成目录安装到 NoneBot 使用的环境，再通过框架加载 `nonebot_plugin_mailflow`，按生成说明配置匹配通知器的管理员，框架管理员不会自动导入。
+生成的 README 说明目录和命令前缀。宿主随框架启动／停止核心服务，
+将发起人和会话传给共享层；管理员由唯一匹配平台、实例的启用通知器中 options.admins 决定，未匹配平台保留普通权限。
 
-```bash
-uv pip install ./dist/nonebot_plugin_mailflow
-```
+支持的框架文件事件可上传受管文件，适配器支持时可发送选中文件；具体能力取决于实际平台。
+不能因为导出成功或代码能导入就声称真实文件收发已验证，修改和发信仍受权限与确认限制。
 
-```python
-nonebot.load_plugin("nonebot_plugin_mailflow")
-```
-
-### 说明
-
-- 来自 `${VAR}` 或 `api_key_env` 的密钥保留为占位符，请在机器人环境中提供变量。
-  分享导出文件前仍需检查直接填写的凭据。
-- 修改配置后请重新导出 —— 导出的 `config.toml` 是快照，不是实时链接。
-- 导出器本身也是插件，因此支持新框架只需安装一个插件，无需改动核心。
-
-### 依赖
-
-`mailflow-core`；生成的插件还需要 `nonebot2`。
+导出配置是快照，环境变量引用会保留，直接填写的凭据可能仍在文件中。
+检查输出、在机器人宿主提供所需环境变量，配置变化后重新导出。
+通知仍由已配置通知器投递，导出适配器不代表自动向所有框架会话额外广播。
 
 ---
 
-Metadata: [`plugin.json`](plugin.json) · Marketplace: [https://github.com/Kingcxp/mailflow-repo/tree/main/bot_exporter/mailflow-export-nonebot](https://github.com/Kingcxp/mailflow-repo/tree/main/bot_exporter/mailflow-export-nonebot)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/mailflow-repo/tree/main/bot_exporter/mailflow-export-nonebot)

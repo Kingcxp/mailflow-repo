@@ -1,45 +1,80 @@
 <!-- Generated from plugin.json by tools/gen_plugin_readmes.py. Edit plugin.json. -->
 
-## OneBot v11 (QQ) Notifier
+# OneBot / QQ notifier and chat connection
 
-Pushes MailFlow mail alerts to QQ users and group chats through an
-[OneBot v11](https://github.com/botuniverse/onebot-11) HTTP server such as
-[NapCat](https://github.com/NapNeko/NapCatQQ) or go-cqhttp.
+Component ID: `onebot`. Supports mail delivery and shared text-based
+reminders/commands; images and managed files are available through the channel's
+rich-message capabilities and platform limits.
 
-### Options
+```toml
+[[notifiers]]
+notifier_id = "onebot-main"
+provider = "onebot"
+minimum_urgency = "important"
 
-| Option | Required | Description |
-|---|---|---|
-| `http_url` | yes | OneBot HTTP server root, e.g. `http://127.0.0.1:3000` |
-| `access_token` | no | Shared secret sent as `Authorization: Bearer …` |
-| `targets` | yes | List of `user:<qq>` / `group:<group_id>` recipients |
+[notifiers.options]
+http_url = "http://127.0.0.1:3000"
+access_token = "${ONEBOT_ACCESS_TOKEN}"
+targets = ["user:123456"]
+admins = ["123456"]
+```
 
-### Notes
+Use an existing OneBot v11 HTTP service or the matching managed gateway. Installation, process startup, QQ login and delivery readiness are separate steps; follow detected prerequisites and scan/login when requested.
 
-- This notifier sends through the OneBot HTTP API. Use MailFlow's guided
-  notification setup for a managed gateway, or log in through your external server.
+`http_url` is required. `access_token` must match the gateway. Targets use `user:<id>` or `group:<id>`; administrators use stable platform user IDs. HTTP 200 with a failing OneBot retcode is a failure.
+
+Administrator identity controls mutations, sending, configuration and plugin
+management. Ordinary allowed read commands do not require making everyone an
+administrator. Natural-language management uses the shared assistant and requires
+a configured model; changes and outbound mail retain confirmation checks.
+
+Fixed targets and chat subscriptions are distinct. Unsubscribing reports whether
+a separately configured fixed target still receives pushes. Global, channel and
+chat switches, urgency and quiet hours determine actual delivery. Optional
+`notification_images`, `summary_cards` and `send_interval_seconds` use the shared
+notification settings; text is the fallback on unsupported output.
+
+Configuration, HTTP and platform errors fail delivery visibly. Per-target
+receipts prevent retries from repeating successful destinations. Run a delivery
+test after login; process existence alone does not prove the connection works.
 
 ---
 
 <!-- zh-CN -->
 
-## OneBot v11（QQ）通知器
+# OneBot／QQ 通知与聊天连接
 
-通过 [OneBot v11](https://github.com/botuniverse/onebot-11) HTTP 服务器（如 [NapCat](https://github.com/NapNeko/NapCatQQ) 或 go-cqhttp）把 MailFlow 邮件提醒推送到 QQ 用户与群聊。
+组件标识为 `onebot`，支持邮件推送及共享文字提醒、命令；图片和受管文件由渠道能力
+提供，并受平台限制。
 
-### 配置项
+```toml
+[[notifiers]]
+notifier_id = "onebot-main"
+provider = "onebot"
+minimum_urgency = "important"
 
-| 选项 | 必填 | 说明 |
-|---|---|---|
-| `http_url` | 是 | OneBot HTTP 服务器根地址，如 `http://127.0.0.1:3000` |
-| `access_token` | 否 | 共享密钥，以 `Authorization: Bearer …` 发送 |
-| `targets` | 是 | 接收人列表：`user:<QQ号>` / `group:<群号>` |
+[notifiers.options]
+http_url = "http://127.0.0.1:3000"
+access_token = "${ONEBOT_ACCESS_TOKEN}"
+targets = ["user:123456"]
+admins = ["123456"]
+```
 
-### 说明
+可连接已有 OneBot v11 HTTP 服务，或使用对应受管网关。安装、启动、QQ 登录和投递就绪是不同步骤，按检测出的前置条件安装并完成登录。
 
-- 此通知器通过 OneBot HTTP 接口发送消息。托管网关可在 MailFlow 通知向导中登录，
-  外部服务器则按其自身方式登录。
+`http_url` 必填，令牌需与网关一致。目标使用 `user:<ID>`／`group:<ID>`，管理员填写稳定平台用户标识；HTTP 200 但 retcode 失败仍算失败。
+
+管理员身份控制修改、发信、配置和插件操作，不必为了允许普通查询而将所有人设为管理员。
+自然语言管理使用共享助手并需要模型，修改和发信仍需确认。
+
+固定目标与聊天订阅不同，取消订阅会说明是否还存在独立固定推送。
+全局、渠道、聊天开关、重要程度及免打扰共同决定是否发送。
+`notification_images`、`summary_cards`、`send_interval_seconds` 使用共享通知设置，
+不支持的输出明确回退文字。
+
+配置、HTTP 或平台错误会报告投递失败，按目标保留凭据，重试不重复发送成功目标。
+登录后单独测试投递；进程存在并不代表可用。
 
 ---
 
-Metadata: [`plugin.json`](plugin.json) · Marketplace: [https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-onebot](https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-onebot)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-onebot)

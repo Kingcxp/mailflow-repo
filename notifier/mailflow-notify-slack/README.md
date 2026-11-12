@@ -1,17 +1,60 @@
 <!-- Generated from plugin.json by tools/gen_plugin_readmes.py. Edit plugin.json. -->
 
-# Slack Notifier
+# Slack notifier
 
-Registers the notifier component id `slack`. Options: `webhook_url`, optional `channel`, `timeout_seconds`. Sends `{text, channel?}` JSON.
+Component ID: `slack`. Delivers mail summaries through the configured
+Slack endpoint. This package implements mail notification, not incoming chat
+commands, arbitrary-text reminders, images or file exchange.
+
+```toml
+[[notifiers]]
+notifier_id = "slack-alerts"
+provider = "slack"
+enabled = true
+minimum_urgency = "important"
+
+[notifiers.options]
+webhook_url = "${SLACK_WEBHOOK}"
+timeout_seconds = 10
+```
+
+`webhook_url` is required. Optional `channel` is sent as a request override; the webhook must permit it.
+`timeout_seconds` defaults to 10 seconds. Environment placeholders are resolved
+by MailFlow; keep endpoint tokens private.
+
+Missing required configuration, HTTP errors and recognized platform rejection
+fail delivery. The runtime records the failure without losing the stored mail;
+fix the endpoint/access settings and retry the failed notification. A successful
+HTTP response is not enough if the platform reports a business error.
 
 ---
 
 <!-- zh-CN -->
 
-# Slack Notifier
+# Slack 通知器
 
-Registers the notifier component id `slack`. Options: `webhook_url`, optional `channel`, `timeout_seconds`. Sends `{text, channel?}` JSON.
+组件标识为 `slack`，通过配置的 Slack 地址发送邮件摘要。
+本插件提供邮件推送，不提供接收聊天命令、任意文字提醒、图片或文件收发。
+
+```toml
+[[notifiers]]
+notifier_id = "slack-alerts"
+provider = "slack"
+enabled = true
+minimum_urgency = "important"
+
+[notifiers.options]
+webhook_url = "${SLACK_WEBHOOK}"
+timeout_seconds = 10
+```
+
+`webhook_url` 必填；可选 `channel` 作为请求覆盖传递，是否允许由实际 webhook 决定。
+`timeout_seconds` 默认 10 秒。环境变量由 MailFlow 展开，地址中的令牌需要保密。
+
+缺少必要配置、HTTP 错误或可识别的平台拒绝均视为投递失败。
+运行时保留已存邮件并记录失败，修正地址和访问设置后重试对应通知。
+不能只因 HTTP 成功就把平台业务失败当成发送成功。
 
 ---
 
-Metadata: [`plugin.json`](plugin.json) · Marketplace: [https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-slack](https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-slack)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-slack)
