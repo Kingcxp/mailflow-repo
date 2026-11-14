@@ -57,9 +57,9 @@ Use paired `dev` checkouts for unreleased changes. From the main checkout,
 plugin into its environment; use `--python` to select the host interpreter if
 needed. In the standard workspace environment, start it with
 `uv run --no-sync mailflow tui -c configs/local.toml`, then check `plugin list`.
-`make sync` or workspace-wide `--all-packages` synchronization restores locked
-workspace sources, including a same-name plugin from the main checkout. Use
-`--no-sync` while deliberately testing the paired local installation.
+`make tui` also uses the selected environment directly and preserves this local
+installation. An explicit `make sync` or `uv sync --all-packages` restores locked
+workspace sources, including a same-name plugin from the main checkout.
 The marketplace index URL and metadata
 `source` are separate: changing an index does not change the code installed from
 a source URL that still names the default branch.
@@ -83,8 +83,8 @@ credentials, caches or diagnostic reports.
 
 先修改中英文元数据，再运行生成和离线验证命令。使用主仓库已同步依赖的 Python 环境；
 离线验证不会安装依赖或连接服务。本地安装方法见上方，可用 `--python` 明确选择宿主解释器。
-测试本地安装时使用 `uv run --no-sync` 启动，避免 Make 的工作区同步将同名插件恢复为主仓库来源。
-重新执行 `make sync` 会按锁文件恢复环境。
+测试本地安装时使用 `uv run --no-sync` 或 `make tui` 启动，两者都保留现有安装。
+只有主动执行 `make sync` 或 `uv sync --all-packages` 才会按锁文件恢复环境，可能替换同名插件。
 默认市场及元数据安装来源使用默认分支，索引地址与安装地址是不同字段。
 未发布代码应使用本地路径安装，不能只改索引就声称用户会安装到开发代码。
 
