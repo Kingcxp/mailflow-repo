@@ -18,5 +18,8 @@
   },
   "readmes": {
     "zh-CN": "# Anthropic Messages 后端\n\n组件标识为 `anthropic-messages`，兼容旧标识 `anthropic`。\n将共享对话和工具格式转换为 Messages 请求，并返回结构化工具调用。\n\n```toml\n[[llms]]\nllm_id = \"primary\"\nprovider = \"anthropic\"\nmodel = \"your-model-id\"\napi_key_env = \"ANTHROPIC_API_KEY\"\n\n[llms.options]\nmax_tokens = 2048\n```\n\n默认端点为 `https://api.anthropic.com/v1/messages`。\n顶层 `base_url` 可填写代理根地址、`/v1` 前缀或完整端点；兼容的 `options.base_url`\n按完整端点覆盖。`max_tokens` 默认 1024，按需设置模型支持的 `thinking_budget`。\n\n支持共享超时、重试、请求头、查询和额外请求体配置，传递温度、单次选项和工具。\n模型本身也需支持所用能力，请填写实际可用模型名，失败时检查凭据与端点。\n主模型和后备使用 MailFlow 的统一设置，不在示例或日志中填写真实密钥。\n"
+  },
+  "names": {
+    "zh-CN": "Anthropic 模型"
   }
 }

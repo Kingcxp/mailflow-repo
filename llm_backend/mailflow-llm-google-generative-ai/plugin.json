@@ -17,5 +17,8 @@
   },
   "readmes": {
     "zh-CN": "# Google Generative AI 后端\n\n组件标识为 `google-generative-ai`，使用 Gemini 的 `generateContent`，\n转换共享系统消息和结构化工具调用。\n\n```toml\n[[llms]]\nllm_id = \"primary\"\nprovider = \"google-generative-ai\"\nmodel = \"your-model-id\"\napi_key_env = \"GEMINI_API_KEY\"\n```\n\n默认根地址为 `https://generativelanguage.googleapis.com`，可用 `base_url` 覆盖代理地址。\n请求路径为 `/v1beta/models/{model}:generateContent`，密钥通过 `x-goog-api-key` 发送。\n`options.max_tokens`、`temperature`、`thinking_budget` 可设置生成默认值，\n也支持共享请求头、查询、额外请求体、超时和重试。\n\n选择账户实际可用且支持所需工具能力的模型。连接或参数失败会明确报告，并按配置回退。\n本插件是 API 传输，不提供浏览器账号登录。\n"
+  },
+  "names": {
+    "zh-CN": "Google Gemini 模型"
   }
 }

@@ -17,5 +17,8 @@
   },
   "readmes": {
     "zh-CN": "# 控制台通知器\n\n组件标识为 `console`，将邮件通知写入 MailFlow 日志，适合本地开发，无需外部服务。\n\n```toml\n[[notifiers]]\nnotifier_id = \"console\"\nprovider = \"console\"\nminimum_urgency = \"important\"\n```\n\n没有额外配置项，请按需开启控制台或文件日志查看输出，重要程度阈值仍然生效。\n本插件不是聊天平台，不提供订阅、接收命令或图片文件传输。\n"
+  },
+  "names": {
+    "zh-CN": "日志通知"
   }
 }

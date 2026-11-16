@@ -17,5 +17,8 @@
   },
   "readmes": {
     "zh-CN": "# OpenAI 兼容模型后端\n\n提供 Chat Completions 和 Responses 传输，支持配置的代理与 Azure 地址。\n组件标识包括 `openai-completions`、`openai-responses`、`openai-codex-responses`、\n`azure-openai-responses`；旧标识 `openai-compatible` 对应 Chat Completions。\n\n```toml\n[[llms]]\nllm_id = \"primary\"\nprovider = \"openai-compatible\"\nbase_url = \"https://your-provider.example/v1\"\nmodel = \"your-model-id\"\napi_key_env = \"MAILFLOW_MODEL_KEY\"\ntimeout_seconds = 60\nmax_retries = 2\n```\n\n按实际端点选择协议。`openai-codex-responses` 选择请求格式，不提供账号登录或订阅凭据流程。\nAzure 的 `model` 填部署名，`base_url` 填资源地址，`options.api_version` 需为服务接受的版本。\n\n额外请求头、查询参数和请求体分别使用 `headers`、`query`、`extra_body`；\n`options.path` 覆盖请求路径，`max_tokens`、`temperature`、`stream` 提供受支持的请求默认值。\n超时和重试由 `timeout_seconds`、`max_retries` 控制，密钥优先用环境变量。\n\n后端传递工具、温度和单次调用选项，并返回结构化工具调用；真实模型也必须支持相应能力。\n模型名填写账户实际可用值。处理器有效的 llm/fallback_llms 绑定优先；未指定时取默认模型或首项，后备由剩余列表补齐。先测试连接，认证和参数错误不会当成成功。\n"
+  },
+  "names": {
+    "zh-CN": "OpenAI 兼容模型"
   }
 }

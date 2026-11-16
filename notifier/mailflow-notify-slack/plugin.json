@@ -17,5 +17,8 @@
   },
   "readmes": {
     "zh-CN": "# Slack 通知器\n\n组件标识为 `slack`，通过配置的 Slack 地址发送邮件摘要。\n本插件提供邮件推送，不提供接收聊天命令、任意文字提醒、图片或文件收发。\n\n```toml\n[[notifiers]]\nnotifier_id = \"slack-alerts\"\nprovider = \"slack\"\nenabled = true\nminimum_urgency = \"important\"\n\n[notifiers.options]\nwebhook_url = \"${SLACK_WEBHOOK}\"\ntimeout_seconds = 10\n```\n\n`webhook_url` 必填；可选 `channel` 作为请求覆盖传递，是否允许由实际 webhook 决定。\n`timeout_seconds` 默认 10 秒。环境变量由 MailFlow 展开，地址中的令牌需要保密。\n\n缺少必要配置、HTTP 错误或可识别的平台拒绝均视为投递失败。\n运行时保留已存邮件并记录失败，修正地址和访问设置后重试对应通知。\n不能只因 HTTP 成功就把平台业务失败当成发送成功。\n"
+  },
+  "names": {
+    "zh-CN": "Slack 通知"
   }
 }

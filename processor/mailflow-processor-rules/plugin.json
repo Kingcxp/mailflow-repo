@@ -13,9 +13,12 @@
   "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/processor/mailflow-processor-rules",
   "readme": "# Rule-template processor\n\nComponent ID: `rule-templates`, separate from the core `rules` processor.\nApplies the first matching configured template.\n\n```toml\n[[processors]]\nprocessor_id = \"templates\"\nprovider = \"rule-templates\"\npriority = 15\n\n[processors.options]\nrules = [{ match = { field = \"subject\", contains = \"invoice\" }, action = { urgency = \"important\", summary = \"Review the invoice.\" } }]\n```\n\nEach rule has `match.field` (`sender`, `subject` or `body`), a nonempty `contains`\nsubstring, and `action.urgency`/`summary`. Matching is case-insensitive; empty\nconditions are skipped. The first match contributes an analysis overlay and\nlater processors may still run. Supported urgency values are `ad`, `info`,\n`important` and `urgent`. No match leaves the current processing result unchanged.\n",
   "descriptions": {
-    "zh-CN": "Applies the first matching rule template to each mail"
+    "zh-CN": "按顺序匹配规则，用首条匹配规则设置邮件分析结果。"
   },
   "readmes": {
     "zh-CN": "# 规则模板处理器\n\n组件标识为 `rule-templates`，与核心 `rules` 处理器不同，按顺序应用首条匹配模板。\n\n```toml\n[[processors]]\nprocessor_id = \"templates\"\nprovider = \"rule-templates\"\npriority = 15\n\n[processors.options]\nrules = [{ match = { field = \"subject\", contains = \"invoice\" }, action = { urgency = \"important\", summary = \"请核对账单。\" } }]\n```\n\n每条规则包含字段、非空匹配子串和重要程度／摘要。字段可选 `sender`、`subject`、`body`，\n匹配不区分大小写，空条件跳过。首次命中提供分析结果，但后续处理器仍可运行。\n重要程度支持 `ad`、`info`、`important`、`urgent`；无命中时不改变当前结果。\n"
+  },
+  "names": {
+    "zh-CN": "邮件处理规则"
   }
 }

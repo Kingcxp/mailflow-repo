@@ -13,9 +13,12 @@
   "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/mail_source/mailflow-mail-gmail",
   "readme": "# Gmail mail source\n\nComponent ID: `gmail`. Reuses the shared IMAP/SMTP source with the Gmail\nserver preset. It does not implement native OAuth; use credentials and access\nsettings accepted by your mailbox service.\n\n```toml\n[[accounts]]\naccount_id = \"gmail-personal\"\nprovider = \"gmail\"\nemail = \"you@example.com\"\n\n[accounts.options]\npassword = \"${MAIL_PASSWORD}\"\ninitial_sync = \"new\"\ncatch_up_missed = false\n```\n\nSee [IMAP options and behavior](../mailflow-mail-imap/README.md) for server\noverrides, sending, history, catch-up, attachments and opt-in source-state sync.\nThe default receives new mail only; account IDs remain part of mail identity.\n",
   "descriptions": {
-    "zh-CN": "IMAP/SMTP mail source for Gmail with app-password auth"
+    "zh-CN": "通过应用专用密码接入 Gmail，使用 IMAP 收信、SMTP 发信。"
   },
   "readmes": {
     "zh-CN": "# Gmail 邮件源\n\n组件标识为 `gmail`，复用共享 IMAP/SMTP 实现及 Gmail 服务器预设。\n不提供原生 OAuth；凭据和收发权限必须符合实际邮箱服务要求。\n\n```toml\n[[accounts]]\naccount_id = \"gmail-personal\"\nprovider = \"gmail\"\nemail = \"you@example.com\"\n\n[accounts.options]\npassword = \"${MAIL_PASSWORD}\"\ninitial_sync = \"new\"\ncatch_up_missed = false\n```\n\n服务器覆盖、发信、历史导入、补收、附件和原邮箱联动选项见\n[IMAP 说明](../mailflow-mail-imap/README.md)。默认只接收新邮件，账户标识参与去重。\n"
+  },
+  "names": {
+    "zh-CN": "Gmail 邮箱"
   }
 }

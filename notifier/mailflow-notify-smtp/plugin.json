@@ -17,5 +17,8 @@
   },
   "readmes": {
     "zh-CN": "# SMTP 通知器\n\n组件标识为 `smtp`，将邮件摘要作为通知邮件发送，与来源账户的新建／回复邮件不同。\n\n```toml\n[[notifiers]]\nnotifier_id = \"email-alerts\"\nprovider = \"smtp\"\nminimum_urgency = \"important\"\n\n[notifiers.options]\nhost = \"smtp.example.com\"\nport = 587\nuse_tls = true\nusername = \"alerts@example.com\"\npassword = \"${SMTP_PASSWORD}\"\nfrom_addr = \"alerts@example.com\"\nto = [\"you@example.com\"]\n```\n\n主机、发件地址和非空收件人列表必填。`use_tls = true` 使用 STARTTLS，默认端口 587；\n设为 false 时使用隐式 TLS，应同时设置正确端口，通常为 465。服务器允许时可不填认证信息，\n不提供纯明文模式。\n\n通知包含主题、重要程度、摘要和已有纯文本正文，不转发原附件。\n按目标投递可保留已成功收件人的凭据；配置缺失、拒收、SMTP 或网络错误均视为失败。\n本插件不接收聊天命令，不提供受管文件交换。\n"
+  },
+  "names": {
+    "zh-CN": "邮件通知（SMTP）"
   }
 }

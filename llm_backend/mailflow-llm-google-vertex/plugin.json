@@ -17,5 +17,8 @@
   },
   "readmes": {
     "zh-CN": "# Google Vertex AI 后端\n\n组件标识为 `google-vertex`，通过 Vertex `generateContent` 处理共享对话和工具请求。\n需要项目和有效访问凭据。\n\n```toml\n[[llms]]\nllm_id = \"primary\"\nprovider = \"google-vertex\"\nmodel = \"your-model-id\"\napi_key_env = \"VERTEX_ACCESS_TOKEN\"\n\n[llms.options]\nproject = \"your-project-id\"\nlocation = \"us-central1\"\n```\n\n`options.project` 必填，地区默认 `us-central1`，默认根地址为\n`https://aiplatform.googleapis.com`。`api_key`／`api_key_env` 填短期 OAuth 访问令牌，\n或配置 `options.service_account_file` 并在宿主安装 `google-auth`。\n普通 API 密钥不等同于访问令牌，服务账号文件需要保密。\n\n可设置生成长度、温度、思考预算，以及共享请求头、查询、额外请求体、超时和重试。\n模型和地区必须在项目中可用，插件不提供额外访问权限；凭据或能力错误会明确报告。\n"
+  },
+  "names": {
+    "zh-CN": "Google Vertex AI 模型"
   }
 }

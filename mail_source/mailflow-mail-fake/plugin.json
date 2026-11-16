@@ -17,5 +17,8 @@
   },
   "readmes": {
     "zh-CN": "# 假邮件源\n\n用于本地开发和演示，不连接真实邮箱。组件标识为 `fake`。\n\n```toml\n[[accounts]]\naccount_id = \"demo\"\nprovider = \"fake\"\nemail = \"demo@local.test\"\n\n[accounts.options]\nbase_time = \"2026-01-01T08:00:00+00:00\"\nmails = [{ message_id = \"welcome\", subject = \"欢迎使用\", sender = \"team@example.com\", body = \"工作区已就绪。\" }]\n```\n\n邮件支持标识、主题、发件人、显示名、纯文本、HTML 和可选重要程度提示。\n同一邮件保持相同标识以验证重试去重；时间按基础时间和序号分钟数生成。\n`fail = true` 模拟读取失败，`delay` 设置延迟秒数。本插件不发送真实邮件。\n"
+  },
+  "names": {
+    "zh-CN": "本地演示邮箱"
   }
 }

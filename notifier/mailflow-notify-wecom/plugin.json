@@ -17,5 +17,8 @@
   },
   "readmes": {
     "zh-CN": "# 企业微信 通知器\n\n组件标识为 `wecom`，通过配置的 企业微信 地址发送邮件摘要。\n本插件提供邮件推送，不提供接收聊天命令、任意文字提醒、图片或文件收发。\n\n```toml\n[[notifiers]]\nnotifier_id = \"wecom-alerts\"\nprovider = \"wecom\"\nenabled = true\nminimum_urgency = \"important\"\n\n[notifiers.options]\nwebhook_url = \"${WECOM_WEBHOOK}\"\ntimeout_seconds = 10\n```\n\n`webhook_url` 为必填群机器人地址，发送文字摘要。\n`timeout_seconds` 默认 10 秒。环境变量由 MailFlow 展开，地址中的令牌需要保密。\n\n缺少必要配置、HTTP 错误或可识别的平台拒绝均视为投递失败。\n运行时保留已存邮件并记录失败，修正地址和访问设置后重试对应通知。\n不能只因 HTTP 成功就把平台业务失败当成发送成功。\n"
+  },
+  "names": {
+    "zh-CN": "企业微信通知"
   }
 }

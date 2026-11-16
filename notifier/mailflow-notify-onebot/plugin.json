@@ -17,5 +17,8 @@
   },
   "readmes": {
     "zh-CN": "# OneBot／QQ 通知与聊天连接\n\n组件标识为 `onebot`，支持邮件推送及共享文字提醒、命令；图片和受管文件由渠道能力\n提供，并受平台限制。\n\n```toml\n[[notifiers]]\nnotifier_id = \"onebot-main\"\nprovider = \"onebot\"\nminimum_urgency = \"important\"\n\n[notifiers.options]\nhttp_url = \"http://127.0.0.1:3000\"\naccess_token = \"${ONEBOT_ACCESS_TOKEN}\"\ntargets = [\"user:123456\"]\nadmins = [\"123456\"]\n```\n\n可连接已有 OneBot v11 HTTP 服务，或使用对应受管网关。安装、启动、QQ 登录和投递就绪是不同步骤，按检测出的前置条件安装并完成登录。\n\n`http_url` 必填，令牌需与网关一致。目标使用 `user:<ID>`／`group:<ID>`，管理员填写稳定平台用户标识；HTTP 200 但 retcode 失败仍算失败。\n\n管理员身份控制修改、发信、配置和插件操作，不必为了允许普通查询而将所有人设为管理员。\n自然语言管理使用共享助手并需要模型，修改和发信仍需确认。\n\n固定目标与聊天订阅不同，取消订阅会说明是否还存在独立固定推送。\n全局、渠道、聊天开关、重要程度及免打扰共同决定是否发送。\n`notification_images`、`summary_cards`、`send_interval_seconds` 使用共享通知设置，\n不支持的输出明确回退文字。\n\n配置、HTTP 或平台错误会报告投递失败，按目标保留凭据，重试不重复发送成功目标。\n登录后单独测试投递；进程存在并不代表可用。\n"
+  },
+  "names": {
+    "zh-CN": "QQ 通知（OneBot）"
   }
 }

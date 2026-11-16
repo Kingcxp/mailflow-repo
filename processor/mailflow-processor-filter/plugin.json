@@ -13,9 +13,12 @@
   "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/processor/mailflow-processor-filter",
   "readme": "# Content filter processor\n\nComponent ID: `filter`. Marks a match as `ad` while keeping the original mail.\n\n```toml\n[[processors]]\nprocessor_id = \"content-filter\"\nprovider = \"filter\"\npriority = 5\n\n[processors.options]\nsenders = [\"ads@example.com\"]\nsubjects = [\"Promotion\"]\nkeywords = [\"unsubscribe\"]\n```\n\nThe lists default to empty. Matching is case-insensitive: sender addresses are\nexact, while subjects and plain-text bodies use substrings. Any match contributes\nan analysis result. This does not delete mail or stop later processors; a later\nanalysis may replace the classification. Notification thresholds are configured\non notifiers, separately from filtering.\n",
   "descriptions": {
-    "zh-CN": "Marks mail matching sender/subject/keyword rules as junk (gray)"
+    "zh-CN": "按发件人、主题和正文关键词匹配，将命中的邮件标为广告。"
   },
   "readmes": {
     "zh-CN": "# 内容过滤处理器\n\n组件标识为 `filter`，匹配时标为 `ad`，保留原始邮件。\n\n```toml\n[[processors]]\nprocessor_id = \"content-filter\"\nprovider = \"filter\"\npriority = 5\n\n[processors.options]\nsenders = [\"ads@example.com\"]\nsubjects = [\"促销\"]\nkeywords = [\"退订\"]\n```\n\n列表默认为空。匹配不区分大小写：发件地址精确匹配，主题与纯文本正文按子串匹配。\n任一条件命中即提供分析结果，但不删除邮件、不终止后续处理，后面的分析可以更新分类。\n是否推送还取决于通知器的重要程度阈值。\n"
+  },
+  "names": {
+    "zh-CN": "内容过滤"
   }
 }

@@ -1,6 +1,6 @@
 {
   "id": "mailflow-notify-telegram",
-  "name": "Telegram Notifier (auto-deploy)",
+  "name": "Telegram Notifier",
   "version": "0.2.0",
   "description": "Delivers mail alerts to Telegram chats and answers MailFlow commands there",
   "categories": [
@@ -17,5 +17,8 @@
   },
   "readmes": {
     "zh-CN": "# Telegram 通知与聊天连接\n\n组件标识为 `telegram`，支持邮件推送及共享文字提醒、命令；图片和受管文件由渠道能力\n提供，并受平台限制。\n\n```toml\n[[notifiers]]\nnotifier_id = \"telegram-main\"\nprovider = \"telegram\"\nminimum_urgency = \"important\"\n\n[notifiers.options]\nbot_token = \"${TELEGRAM_BOT_TOKEN}\"\nchat_id = \"123456789\"\nadmins = [\"123456789\"]\n```\n\n提供机器人令牌，通过进程内 Telegram 桥接收命令，无需额外网关进程。用户先与机器人私聊，或将其加入目标群并授予必要权限；长轮询需要能够访问配置的 API。\n\n令牌必填，`chat_id` 是可选固定目标，也可使用订阅或 `targets`。群聊使用稳定聊天标识，`api_base` 默认 `https://api.telegram.org`，管理员填写数字用户标识，不填显示名。\n\n管理员身份控制修改、发信、配置和插件操作，不必为了允许普通查询而将所有人设为管理员。\n自然语言管理使用共享助手并需要模型，修改和发信仍需确认。\n\n固定目标与聊天订阅不同，取消订阅会说明是否还存在独立固定推送。\n全局、渠道、聊天开关、重要程度及免打扰共同决定是否发送。\n`notification_images`、`summary_cards`、`send_interval_seconds` 使用共享通知设置，\n不支持的输出明确回退文字。\n\n配置、HTTP 或平台错误会报告投递失败，按目标保留凭据，重试不重复发送成功目标。\n登录后单独测试投递；进程存在并不代表可用。\n"
+  },
+  "names": {
+    "zh-CN": "Telegram 通知"
   }
 }

@@ -17,5 +17,8 @@
   },
   "readmes": {
     "zh-CN": "# RSS/Atom 邮件源\n\n将订阅条目放入 MailFlow，作为只读邮件查看。组件标识为 `rss`。\n\n```toml\n[[accounts]]\naccount_id = \"feeds\"\nprovider = \"rss\"\n\n[accounts.options]\nfeeds = [\"https://example.com/feed.xml\"]\ninterval_seconds = 900\n```\n\n`feeds` 填写订阅地址列表，轮询默认每 900 秒执行。\n标题和摘要分别作为主题与正文；标识结合订阅地址和 guid/id/link，缺失时使用内容摘要。\n成功交给运行时后才记录进度，单个订阅失败不阻止其他订阅。\n\n首次读取订阅当前公开的条目，同次运行去重；重启后由稳定标识帮助存储去重。\n本插件不提供 IMAP 游标、历史存档、发信或原邮箱状态修改能力。\n"
+  },
+  "names": {
+    "zh-CN": "RSS 订阅"
   }
 }

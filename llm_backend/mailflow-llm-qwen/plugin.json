@@ -17,5 +17,8 @@
   },
   "readmes": {
     "zh-CN": "# 通义千问 模型预设\n\n组件标识为 `qwen`，复用 OpenAI 兼容的 Chat Completions 传输，安装时处理所需依赖。\n\n```toml\n[[llms]]\nllm_id = \"primary\"\nprovider = \"qwen\"\nmodel = \"your-model-id\"\napi_key_env = \"DASHSCOPE_API_KEY\"\n```\n\n代码默认地址为 `https://dashscope.aliyuncs.com/compatible-mode/v1`，默认模型为\n`qwen-plus`；这仅说明实现默认值，不保证服务仍提供该模型。\n请明确填写实际可用模型，显式 `base_url` 可覆盖地址。\n\n凭据、超时、重试、请求覆盖和工具调用见[共享后端说明](../mailflow-llm-openai-compatible/README.md)。\n真实模型和端点也必须支持相应工具能力，主模型与后备遵守共享模型默认值和处理器绑定。\n"
+  },
+  "names": {
+    "zh-CN": "通义千问模型"
   }
 }
