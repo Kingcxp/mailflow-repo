@@ -33,6 +33,10 @@
     {
       "id": "gateway",
       "path": "gateway"
+    },
+    {
+      "id": "theme",
+      "path": "theme"
     }
   ]
 }

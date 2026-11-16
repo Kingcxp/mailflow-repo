@@ -28,6 +28,7 @@ CATEGORIES = (
     "storage",
     "bot_exporter",
     "gateway",
+    "theme",
 )
 ROOT = Path(__file__).resolve().parent.parent
 CORE_SOURCE = (
