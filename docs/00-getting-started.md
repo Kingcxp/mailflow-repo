@@ -14,6 +14,11 @@ Use MailFlow's TUI Market → New wizard to choose a category and generate a
 loadable package. Put the result in `<category>/<plugin-id>/` in this repository.
 The categories are listed in [index.json](../index.json).
 
+Color-scheme packages belong in `theme/`. Register a zero-argument factory with
+`@PLUGIN.theme("unique-theme-id")`, returning `mailflow.themes.ColorScheme`.
+The core fills omitted colors from a Catppuccin base; no Textual dependency is
+needed. See the core plugin guide for palette roles and the shared contract.
+
 ```text
 notifier/mailflow-notify-example/
     plugin.json
@@ -80,6 +85,10 @@ credentials, caches or diagnostic reports.
 目录中包含 `plugin.json`、生成的 README、`pyproject.toml` 和实现代码。
 安装包名、目录名和入口名保持一致，配置 `provider` 对应注册的组件标识。
 所有运行依赖写入包配置，不复制另一套核心接口。
+
+配色包放在 `theme/`，用 `@PLUGIN.theme("唯一配色标识")` 注册无参数工厂，返回
+`mailflow.themes.ColorScheme`。未指定的颜色继承 Catppuccin 基础配色，不需要依赖
+Textual；颜色角色和完整契约见主仓库插件说明。
 
 先修改中英文元数据，再运行生成和离线验证命令。使用主仓库已同步依赖的 Python 环境；
 离线验证不会安装依赖或连接服务。本地安装方法见上方，可用 `--python` 明确选择宿主解释器。

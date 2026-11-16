@@ -21,6 +21,7 @@ contract; plugins shipped in both places must behave identically.
 | [Notifiers](notifier) | Console, SMTP, webhooks and supported chat-platform delivery |
 | [Storage](storage) | SQLite persistence and recovery |
 | [Framework exporters](bot_exporter) | NoneBot and AstrBot hosts |
+| [Color schemes](theme) | Extension category; the four built-in Catppuccin palettes ship with MailFlow |
 | [Enhancer category](llm_enhancer) / [Gateway category](gateway) | Extension slots; inspect their indexes for packaged entries |
 
 Open a plugin folder for its provider ID, options, example and limitations.
@@ -79,7 +80,8 @@ their own licenses and service requirements.
 
 本仓库提供 [MailFlow](https://github.com/Kingcxp/mailflow/tree/dev) 插件和市场元数据。
 插件独立安装，与主仓库共用唯一核心接口；两边同名实现需要同步维护。
-上表按邮件源、模型、处理器、通知器、存储和导出器分类，进入插件目录查看具体选项。
+上表按邮件源、模型、处理器、通知器、存储、导出器和配色方案分类，进入插件目录查看具体选项。
+Catppuccin 四套配色由 MailFlow 内置；配色插件安装启用后，可直接在设置中选择，无需重启连接。
 通知器能力不同，不能把普通推送当成聊天机器人、待办提醒或图片文件传输。
 Gmail/Outlook 是 IMAP/SMTP 预设，不提供原生 OAuth。
 
