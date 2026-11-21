@@ -17,7 +17,11 @@ The categories are listed in [index.json](../index.json).
 Color-scheme packages belong in `theme/`. Register a zero-argument factory with
 `@PLUGIN.theme("unique-theme-id")`, returning `mailflow.themes.ColorScheme`.
 The core fills omitted colors from a Catppuccin base; no Textual dependency is
-needed. See the core plugin guide for palette roles and the shared contract.
+needed. Optional `buttons` entries use `mailflow.themes.ButtonColors` to override
+background and text for `default`, `primary`, `success`, `warning`, and `error`
+buttons, including hover/focus, pressed and disabled states. Omitted entries
+inherit readable colors from the palette; older themes remain compatible. See
+the core plugin guide for the complete fields and shared contract.
 
 ```text
 notifier/mailflow-notify-example/
@@ -88,7 +92,10 @@ credentials, caches or diagnostic reports.
 
 配色包放在 `theme/`，用 `@PLUGIN.theme("唯一配色标识")` 注册无参数工厂，返回
 `mailflow.themes.ColorScheme`。未指定的颜色继承 Catppuccin 基础配色，不需要依赖
-Textual；颜色角色和完整契约见主仓库插件说明。
+Textual。可选的 `buttons` 使用 `mailflow.themes.ButtonColors`，分别覆盖次要、主要、
+保存确认、警告和删除按钮（`default`、`primary`、`success`、`warning`、`error`）
+的背景、文字，以及悬停／聚焦、按下、禁用状态。未填写的部分自动从主题继承清晰可读的
+颜色，旧主题继续兼容；完整字段和契约见主仓库插件说明。
 
 先修改中英文元数据，再运行生成和离线验证命令。使用主仓库已同步依赖的 Python 环境；
 离线验证不会安装依赖或连接服务。本地安装方法见上方，可用 `--python` 明确选择宿主解释器。
