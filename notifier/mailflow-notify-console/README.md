@@ -1,9 +1,8 @@
 <!-- Generated from plugin.json by tools/gen_plugin_readmes.py. Edit plugin.json. -->
 
-# Console notifier
+# Console notifications
 
-Component ID: `console`. Writes mail notifications to the MailFlow logger,
-useful for local development without an external delivery service.
+The `console` channel delivers mail notifications, task reminders and summaries to the TUI **Console** tab. No external account, gateway or login is required.
 
 ```toml
 [[notifiers]]
@@ -12,17 +11,19 @@ provider = "console"
 minimum_urgency = "important"
 ```
 
-There are no plugin-specific options. Enable console/file logging as needed to
-see the output. The configured urgency threshold still applies. This is not a
-chat platform: it has no subscriptions, incoming commands, image or file transport.
+The Console tab accepts existing MailFlow commands. Use `@MailFlow` or quote a message to request an intelligent operation. Changes and sending still require chat confirmation. Ordinary text does not invoke a model.
+
+Messages remain in memory for the current service run. Detach and reconnect keep them; stopping the service clears them. Notification switches, quiet hours and delivery receipts still apply.
+
+Outside the TUI, console logging remains available when enabled. Images fall back to text.
 
 ---
 
 <!-- zh-CN -->
 
-# 控制台通知器
+# 控制台通知
 
-组件标识为 `console`，将邮件通知写入 MailFlow 日志，适合本地开发，无需外部服务。
+`console` 渠道将邮件通知、待办提醒和摘要发送到 TUI 的**控制台**标签页，无需外部账号、网关或扫码登录。
 
 ```toml
 [[notifiers]]
@@ -31,8 +32,11 @@ provider = "console"
 minimum_urgency = "important"
 ```
 
-没有额外配置项，请按需开启控制台或文件日志查看输出，重要程度阈值仍然生效。
-本插件不是聊天平台，不提供订阅、接收命令或图片文件传输。
+控制台支持已有 MailFlow 命令。使用 `@MailFlow` 或引用消息提出智能操作需求；修改和发送仍须通过聊天确认，普通文字不会调用模型。
+
+消息只保留在本次服务运行的内存中。退到后台、重新连接仍可查看，停止服务后清空。通知开关、免打扰和投递去重继续生效。
+
+TUI 以外的宿主仍可按配置输出控制台日志。图片回退为文字。
 
 ---
 
