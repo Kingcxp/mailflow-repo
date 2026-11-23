@@ -6,7 +6,7 @@ Component ID: `onebot`. Supports mail delivery and shared text-based
 reminders/commands; images and managed files are available through the channel's
 rich-message capabilities and platform limits.
 
-Automatic deployment uses the pinned [XingYunStar/NapCatQQ archive, v4.18.42](https://github.com/XingYunStar/NapCatQQ/releases/tag/v4.18.42), with SHA-256 verification. Windows installs the Shell ZIP and requires a local QQ client. Linux imports the archived QQ + NapCat Docker image for amd64 or arm64; Docker Engine must be installed, running and accessible to the current user. The container uses host networking with loopback-only HTTP and separate configuration, login data and QR cache per instance. Existing installations are reused without downloading again. Advanced settings still accept `napcat_package_url` (Windows Shell ZIP) or `napcat_appimage_url` (Linux AppImage). You can also connect your own OneBot v11 HTTP service. The original upstream has ended; this archive is a fixed historical release, not an automatically updated continuation.
+Automatic deployment uses the pinned [XingYunStar/NapCatQQ archive, v4.18.42](https://github.com/XingYunStar/NapCatQQ/releases/tag/v4.18.42), with SHA-256 verification. Windows installs the Shell ZIP and requires a local QQ client. Linux imports the archived QQ + NapCat Docker image for amd64 or arm64; Docker Engine must be installed, running and accessible to the current user. The container uses host networking with loopback-only HTTP and separate configuration, login data and QR cache per instance. Existing installations are reused without downloading again. For an existing managed QQ channel, choose **More → Reinstall and start** to download and install again for the same instance, keeping notification settings and saved login data. Advanced settings still accept `napcat_package_url` (Windows Shell ZIP) or `napcat_appimage_url` (Linux AppImage). You can also connect your own OneBot v11 HTTP service. The original upstream has ended; this archive is a fixed historical release, not an automatically updated continuation.
 
 ```toml
 [[notifiers]]
@@ -49,7 +49,7 @@ test after login; process existence alone does not prove the connection works.
 组件标识为 `onebot`，支持邮件推送及共享文字提醒、命令；图片和受管文件由渠道能力
 提供，并受平台限制。
 
-自动部署使用固定版本的 [XingYunStar/NapCatQQ 归档 v4.18.42](https://github.com/XingYunStar/NapCatQQ/releases/tag/v4.18.42)，并校验 SHA-256。Windows 安装 Shell ZIP，需要本机已安装 QQ；Linux 导入包含 QQ 和 NapCat 的 amd64／arm64 Docker 镜像，需要事先安装、启动 Docker Engine，并允许当前用户访问。容器使用主机网络，HTTP 仅监听本机；各实例独立保存配置、登录数据和二维码缓存。已有安装直接复用，不重复下载。高级设置仍可填写 `napcat_package_url`（Windows Shell ZIP）或 `napcat_appimage_url`（Linux AppImage），也可连接自行部署的 OneBot v11 HTTP 服务。原上游已停止维护，此来源是固定历史归档，不会自动跟进其他分支。
+自动部署使用固定版本的 [XingYunStar/NapCatQQ 归档 v4.18.42](https://github.com/XingYunStar/NapCatQQ/releases/tag/v4.18.42)，并校验 SHA-256。Windows 安装 Shell ZIP，需要本机已安装 QQ；Linux 导入包含 QQ 和 NapCat 的 amd64／arm64 Docker 镜像，需要事先安装、启动 Docker Engine，并允许当前用户访问。容器使用主机网络，HTTP 仅监听本机；各实例独立保存配置、登录数据和二维码缓存。已有安装直接复用，不重复下载。 已配置的受管 QQ 渠道可选择**更多操作 → 重新安装并启动**，为原实例重新下载并安装程序，保留通知设置和已保存的登录数据。高级设置仍可填写 `napcat_package_url`（Windows Shell ZIP）或 `napcat_appimage_url`（Linux AppImage），也可连接自行部署的 OneBot v11 HTTP 服务。原上游已停止维护，此来源是固定历史归档，不会自动跟进其他分支。
 
 ```toml
 [[notifiers]]
