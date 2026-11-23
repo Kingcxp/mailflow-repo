@@ -6,7 +6,7 @@ Component ID: `onebot`. Supports mail delivery and shared text-based
 reminders/commands; images and managed files are available through the channel's
 rich-message capabilities and platform limits.
 
-NapCat has ended and its official releases and installers have been removed. New automatic downloads are unavailable. Existing managed installations remain supported; otherwise connect your own OneBot v11 HTTP service. Advanced setup accepts a trusted `napcat_package_url` (Windows Shell ZIP) or `napcat_appimage_url` (Linux). MailFlow never selects an unofficial mirror. See [upstream status](https://github.com/NapNeko/NapCatQQ).
+Automatic deployment uses the pinned [XingYunStar/NapCatQQ archive, v4.18.42](https://github.com/XingYunStar/NapCatQQ/releases/tag/v4.18.42), with SHA-256 verification. Windows installs the Shell ZIP and requires a local QQ client. Linux imports the archived QQ + NapCat Docker image for amd64 or arm64; Docker Engine must be installed, running and accessible to the current user. The container uses host networking with loopback-only HTTP and separate configuration, login data and QR cache per instance. Existing installations are reused without downloading again. Advanced settings still accept `napcat_package_url` (Windows Shell ZIP) or `napcat_appimage_url` (Linux AppImage). You can also connect your own OneBot v11 HTTP service. The original upstream has ended; this archive is a fixed historical release, not an automatically updated continuation.
 
 ```toml
 [[notifiers]]
@@ -21,7 +21,7 @@ targets = ["user:123456"]
 admins = ["123456"]
 ```
 
-Use an existing OneBot v11 HTTP service or reuse an already installed managed gateway. Installation, process startup, QQ login and delivery readiness are separate steps; follow detected prerequisites and scan/login when requested.
+Choose automatic deployment without entering a package URL, reuse an existing managed installation, or connect your own OneBot v11 HTTP service. Installation, process startup, QQ login and delivery readiness are separate steps; scan/login when requested and then test delivery.
 
 `http_url` is required. `access_token` must match the gateway. Targets use `user:<id>` or `group:<id>`; administrators use stable platform user IDs. HTTP 200 with a failing OneBot retcode is a failure.
 
@@ -49,7 +49,7 @@ test after login; process existence alone does not prove the connection works.
 组件标识为 `onebot`，支持邮件推送及共享文字提醒、命令；图片和受管文件由渠道能力
 提供，并受平台限制。
 
-NapCat 已结束维护，官方发布和安装器已移除，无法再自动下载安装。已有受管实例仍可复用；也可以连接自行部署的 OneBot v11 HTTP 服务。高级设置可填写可信的 `napcat_package_url`（Windows Shell ZIP）或 `napcat_appimage_url`（Linux）。MailFlow 不会自行选择第三方镜像。[上游状态](https://github.com/NapNeko/NapCatQQ)。
+自动部署使用固定版本的 [XingYunStar/NapCatQQ 归档 v4.18.42](https://github.com/XingYunStar/NapCatQQ/releases/tag/v4.18.42)，并校验 SHA-256。Windows 安装 Shell ZIP，需要本机已安装 QQ；Linux 导入包含 QQ 和 NapCat 的 amd64／arm64 Docker 镜像，需要事先安装、启动 Docker Engine，并允许当前用户访问。容器使用主机网络，HTTP 仅监听本机；各实例独立保存配置、登录数据和二维码缓存。已有安装直接复用，不重复下载。高级设置仍可填写 `napcat_package_url`（Windows Shell ZIP）或 `napcat_appimage_url`（Linux AppImage），也可连接自行部署的 OneBot v11 HTTP 服务。原上游已停止维护，此来源是固定历史归档，不会自动跟进其他分支。
 
 ```toml
 [[notifiers]]
@@ -64,7 +64,7 @@ targets = ["user:123456"]
 admins = ["123456"]
 ```
 
-可连接已有 OneBot v11 HTTP 服务，或复用已安装的受管网关。安装、启动、QQ 登录和投递就绪是不同步骤，按检测出的前置条件安装并完成登录。
+选择自动部署即可，无需填写安装包地址；也可复用已有受管安装，或连接自行部署的 OneBot v11 HTTP 服务。安装、启动、QQ 登录和投递就绪是不同步骤，按提示完成登录后再测试投递。
 
 `http_url` 必填，令牌需与网关一致。目标使用 `user:<ID>`／`group:<ID>`，管理员填写稳定平台用户标识；HTTP 200 但 retcode 失败仍算失败。
 
