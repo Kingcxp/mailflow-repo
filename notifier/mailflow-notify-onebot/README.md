@@ -6,6 +6,8 @@ Component ID: `onebot`. Supports mail delivery and shared text-based
 reminders/commands; images and managed files are available through the channel's
 rich-message capabilities and platform limits.
 
+NapCat has ended and its official releases and installers have been removed. New automatic downloads are unavailable. Existing managed installations remain supported; otherwise connect your own OneBot v11 HTTP service. Advanced setup accepts a trusted `napcat_package_url` (Windows Shell ZIP) or `napcat_appimage_url` (Linux). MailFlow never selects an unofficial mirror. See [upstream status](https://github.com/NapNeko/NapCatQQ).
+
 ```toml
 [[notifiers]]
 notifier_id = "onebot-main"
@@ -19,7 +21,7 @@ targets = ["user:123456"]
 admins = ["123456"]
 ```
 
-Use an existing OneBot v11 HTTP service or the matching managed gateway. Installation, process startup, QQ login and delivery readiness are separate steps; follow detected prerequisites and scan/login when requested.
+Use an existing OneBot v11 HTTP service or reuse an already installed managed gateway. Installation, process startup, QQ login and delivery readiness are separate steps; follow detected prerequisites and scan/login when requested.
 
 `http_url` is required. `access_token` must match the gateway. Targets use `user:<id>` or `group:<id>`; administrators use stable platform user IDs. HTTP 200 with a failing OneBot retcode is a failure.
 
@@ -47,6 +49,8 @@ test after login; process existence alone does not prove the connection works.
 组件标识为 `onebot`，支持邮件推送及共享文字提醒、命令；图片和受管文件由渠道能力
 提供，并受平台限制。
 
+NapCat 已结束维护，官方发布和安装器已移除，无法再自动下载安装。已有受管实例仍可复用；也可以连接自行部署的 OneBot v11 HTTP 服务。高级设置可填写可信的 `napcat_package_url`（Windows Shell ZIP）或 `napcat_appimage_url`（Linux）。MailFlow 不会自行选择第三方镜像。[上游状态](https://github.com/NapNeko/NapCatQQ)。
+
 ```toml
 [[notifiers]]
 notifier_id = "onebot-main"
@@ -60,7 +64,7 @@ targets = ["user:123456"]
 admins = ["123456"]
 ```
 
-可连接已有 OneBot v11 HTTP 服务，或使用对应受管网关。安装、启动、QQ 登录和投递就绪是不同步骤，按检测出的前置条件安装并完成登录。
+可连接已有 OneBot v11 HTTP 服务，或复用已安装的受管网关。安装、启动、QQ 登录和投递就绪是不同步骤，按检测出的前置条件安装并完成登录。
 
 `http_url` 必填，令牌需与网关一致。目标使用 `user:<ID>`／`group:<ID>`，管理员填写稳定平台用户标识；HTTP 200 但 retcode 失败仍算失败。
 

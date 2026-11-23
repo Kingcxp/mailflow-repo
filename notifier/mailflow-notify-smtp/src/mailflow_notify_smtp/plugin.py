@@ -16,7 +16,7 @@ from typing import Any
 from mailflow.config import NotifierConfig
 from mailflow.domain import ComponentKind, MailRecord
 from mailflow.forms import FormField
-from mailflow.notifications import DeliveryError
+from mailflow.notifications import DeliveryError, option_enabled
 from mailflow.plugins import PluginInfo
 from mailflow.registry import PluginRegistrar
 
@@ -36,7 +36,7 @@ class SmtpNotifier:
         options = config.options
         self._host = str(options.get("host", ""))
         self._port = int(options.get("port", 587))
-        self._use_tls = bool(options.get("use_tls", True))
+        self._use_tls = option_enabled(options, "use_tls", True)
         self._username = str(options.get("username", ""))
         self._password = str(options.get("password", ""))
         self._from_addr = str(options.get("from_addr", ""))

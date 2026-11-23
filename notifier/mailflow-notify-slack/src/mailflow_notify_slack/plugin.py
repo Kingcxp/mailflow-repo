@@ -42,11 +42,8 @@ class SlackNotifier:
         return str(self._options.get("webhook_url", ""))
 
     def _payload(self, record: MailRecord) -> dict[str, Any]:
-        payload = {"text": self._summary_text(record)}
-        channel = str(self._options.get("channel", ""))
-        if channel:
-            payload["channel"] = channel
-        return payload
+        # Incoming webhooks always use the channel chosen when installed.
+        return {"text": self._summary_text(record)}
 
     @staticmethod
     def _summary_text(record: MailRecord) -> str:
@@ -79,7 +76,6 @@ class SlackNotifierPlugin:
             "slack",
             (
                 FormField("webhook_url", required=True, secret=True),
-                FormField("channel"),
                 FormField("timeout_seconds", kind="number", default=10),
             ),
         )

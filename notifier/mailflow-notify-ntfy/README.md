@@ -6,6 +6,8 @@ Component ID: `ntfy`. Delivers mail summaries through the configured
 ntfy endpoint. This package implements mail notification, not incoming chat
 commands, arbitrary-text reminders, images or file exchange.
 
+JSON notifications are posted to the configured server root with `topic` in the body, as required by the [ntfy publishing API](https://docs.ntfy.sh/publish/#publish-as-json). No ntfy server is installed automatically.
+
 ```toml
 [[notifiers]]
 notifier_id = "ntfy-alerts"
@@ -36,6 +38,8 @@ HTTP response is not enough if the platform reports a business error.
 
 组件标识为 `ntfy`，通过配置的 ntfy 地址发送邮件摘要。
 本插件提供邮件推送，不提供接收聊天命令、任意文字提醒、图片或文件收发。
+
+JSON 通知发送到所配置服务器的根路径，主题通过请求体的 `topic` 指定，遵循 [ntfy 接口说明](https://docs.ntfy.sh/publish/#publish-as-json)。MailFlow 不会自动安装 ntfy 服务器。
 
 ```toml
 [[notifiers]]

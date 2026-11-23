@@ -12,6 +12,7 @@ import json
 import logging
 import urllib.request
 from typing import Any
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from mailflow.config import NotifierConfig
 from mailflow.domain import ComponentKind, MailRecord
@@ -39,10 +40,16 @@ class DiscordNotifier:
         self._timeout = float(self._options.get("timeout_seconds", 10))
 
     def _target_url(self) -> str:
-        return str(self._options.get("webhook_url", ""))
+        url = str(self._options.get("webhook_url", ""))
+        if not url:
+            return ""
+        parts = urlsplit(url)
+        query = dict(parse_qsl(parts.query))
+        query["wait"] = "true"
+        return urlunsplit(parts._replace(query=urlencode(query)))
 
     def _payload(self, record: MailRecord) -> dict[str, Any]:
-        payload = {"content": self._summary_text(record)}
+        payload = {"content": self._summary_text(record)[:2000]}
         username = str(self._options.get("username", ""))
         if username:
             payload["username"] = username

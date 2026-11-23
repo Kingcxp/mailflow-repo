@@ -6,6 +6,8 @@ Component ID: `discord`. Delivers mail summaries through the configured
 Discord endpoint. This package implements mail notification, not incoming chat
 commands, arbitrary-text reminders, images or file exchange.
 
+Delivery uses `wait=true` to obtain server confirmation, retains any configured thread parameters, and limits notification text to Discord's 2,000-character content limit. See [webhook API](https://docs.discord.com/developers/resources/webhook#execute-webhook).
+
 ```toml
 [[notifiers]]
 notifier_id = "discord-alerts"
@@ -35,6 +37,8 @@ HTTP response is not enough if the platform reports a business error.
 
 组件标识为 `discord`，通过配置的 Discord 地址发送邮件摘要。
 本插件提供邮件推送，不提供接收聊天命令、任意文字提醒、图片或文件收发。
+
+投递使用 `wait=true` 等待服务端确认，保留地址中的帖子等参数，并按 Discord 限制发送最多 2,000 字符的通知文字。[官方接口](https://docs.discord.com/developers/resources/webhook#execute-webhook)。
 
 ```toml
 [[notifiers]]

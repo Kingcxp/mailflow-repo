@@ -18,7 +18,7 @@ webhook_url = "${SLACK_WEBHOOK}"
 timeout_seconds = 10
 ```
 
-`webhook_url` is required. Optional `channel` is sent as a request override; the webhook must permit it.
+`webhook_url` is required. The destination channel is selected when creating the Slack webhook; it cannot be overridden here. Existing `channel` options are ignored. See [Slack's webhook rules](https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks/).
 `timeout_seconds` defaults to 10 seconds. Environment placeholders are resolved
 by MailFlow; keep endpoint tokens private.
 
@@ -48,7 +48,7 @@ webhook_url = "${SLACK_WEBHOOK}"
 timeout_seconds = 10
 ```
 
-`webhook_url` 必填；可选 `channel` 作为请求覆盖传递，是否允许由实际 webhook 决定。
+`webhook_url` 必填；频道在创建 Slack webhook 时确定，不能在此覆盖；旧配置中的 `channel` 会忽略。[官方说明](https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks/)。
 `timeout_seconds` 默认 10 秒。环境变量由 MailFlow 展开，地址中的令牌需要保密。
 
 缺少必要配置、HTTP 错误或可识别的平台拒绝均视为投递失败。

@@ -6,6 +6,8 @@ Component ID: `telegram`. Supports mail delivery and shared text-based
 reminders/commands; images and managed files are available through the channel's
 rich-message capabilities and platform limits.
 
+Long polling and a webhook cannot receive updates simultaneously. Setup checks `getWebhookInfo` and explains an existing webhook conflict without removing it or dropping pending messages. Disable the webhook in the application that owns it or use a separate bot. A custom `api_base` is used for connection checks and polling. See [Bot API update rules](https://core.telegram.org/bots/api#getting-updates).
+
 ```toml
 [[notifiers]]
 notifier_id = "telegram-main"
@@ -45,6 +47,8 @@ test after login; process existence alone does not prove the connection works.
 
 组件标识为 `telegram`，支持邮件推送及共享文字提醒、命令；图片和受管文件由渠道能力
 提供，并受平台限制。
+
+轮询与 webhook 不能同时接收更新。接入时会检查 `getWebhookInfo`，发现冲突后说明处理方式，不会移除现有 webhook 或丢弃待处理消息。请在原应用停用 webhook，或使用另一个机器人。自定义 `api_base` 同样用于连接检查和轮询。[官方说明](https://core.telegram.org/bots/api#getting-updates)。
 
 ```toml
 [[notifiers]]

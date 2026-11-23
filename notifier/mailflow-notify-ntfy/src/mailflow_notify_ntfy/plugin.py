@@ -49,7 +49,8 @@ class NtfyNotifier:
     async def notify(self, record: MailRecord) -> None:
         if not self._topic:
             raise DeliveryError("configuration")
-        url = f"{self._base_url}/{self._topic}"
+        # JSON publishing goes to the server root, with the topic in the body.
+        url = f"{self._base_url}/"
         headers = {"Content-Type": "application/json"}
         if self._token:
             headers["Authorization"] = f"Bearer {self._token}"

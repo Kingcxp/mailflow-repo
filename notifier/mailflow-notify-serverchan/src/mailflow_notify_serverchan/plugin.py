@@ -10,6 +10,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import re
 import urllib.request
 from typing import Any
 
@@ -40,6 +41,11 @@ class ServerChanNotifier:
 
     def _target_url(self) -> str:
         key = str(self._options.get("send_key", ""))
+        if key.startswith("sctp"):
+            match = re.match(r"^sctp(\d+)t", key)
+            if match is None:
+                raise DeliveryError("configuration")
+            return f"https://{match[1]}.push.ft07.com/send/{key}.send"
         return f"https://sctapi.ftqq.com/{key}.send" if key else ""
 
     def _payload(self, record: MailRecord) -> dict[str, Any]:

@@ -6,6 +6,8 @@ Component ID: `whatsapp`. Supports mail delivery and shared text-based
 reminders/commands; images and managed files are available through the channel's
 rich-message capabilities and platform limits.
 
+Managed installation requires Node.js >= 20, npm and Git: the pinned Baileys 6.7.24 package declares Node >= 20 and a Git dependency. Windows runs npm through Node directly. Interrupted dependency installs can be retried without clearing paired credentials. Baileys is an unofficial WhatsApp protocol client; installation does not guarantee account pairing. See [Baileys](https://github.com/WhiskeySockets/Baileys).
+
 ```toml
 [[notifiers]]
 notifier_id = "whatsapp-main"
@@ -45,6 +47,8 @@ test after login; process existence alone does not prove the connection works.
 
 组件标识为 `whatsapp`，支持邮件推送及共享文字提醒、命令；图片和受管文件由渠道能力
 提供，并受平台限制。
+
+受管安装需要 Node.js 20 或更新版本、npm 和 Git：固定的 Baileys 6.7.24 明确要求 Node 20，并通过 Git 获取一项依赖。Windows 直接通过 Node 运行 npm。依赖下载中断后可以重试，已保存的配对信息会保留。Baileys 使用非官方 WhatsApp 协议，安装成功不代表账户一定能够配对。[上游项目](https://github.com/WhiskeySockets/Baileys)。
 
 ```toml
 [[notifiers]]
