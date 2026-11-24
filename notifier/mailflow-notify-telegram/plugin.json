@@ -2,18 +2,18 @@
   "id": "mailflow-notify-telegram",
   "name": "Telegram Notifier",
   "version": "0.2.0",
-  "description": "Delivers mail alerts to Telegram chats and answers MailFlow commands there",
+  "description": "Delivers mail alerts to Telegram chats and answers Waymark Mail commands there",
   "categories": [
     "notifier"
   ],
   "package": "mailflow-notify-telegram",
-  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=notifier/mailflow-notify-telegram",
-  "author": "MailFlow community",
+  "source": "git+https://github.com/Kingcxp/waymark-mail-plugins.git#subdirectory=notifier/mailflow-notify-telegram",
+  "author": "Waymark Mail community",
   "license": "MIT",
-  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-telegram",
+  "homepage": "https://github.com/Kingcxp/waymark-mail-plugins/tree/main/notifier/mailflow-notify-telegram",
   "readme": "# Telegram notifier and chat connection\n\nComponent ID: `telegram`. Supports mail delivery and shared text-based\nreminders/commands; images and managed files are available through the channel's\nrich-message capabilities and platform limits.\n\nLong polling and a webhook cannot receive updates simultaneously. Setup checks `getWebhookInfo` and explains an existing webhook conflict without removing it or dropping pending messages. Disable the webhook in the application that owns it or use a separate bot. A custom `api_base` is used for connection checks and polling. See [Bot API update rules](https://core.telegram.org/bots/api#getting-updates).\n\n```toml\n[[notifiers]]\nnotifier_id = \"telegram-main\"\nprovider = \"telegram\"\nminimum_urgency = \"important\"\n\n[notifiers.options]\nbot_token = \"${TELEGRAM_BOT_TOKEN}\"\nchat_id = \"123456789\"\nadmins = [\"123456789\"]\n```\n\nProvide a bot token and enable the in-process Telegram bridge for commands. No external gateway process is required. The user must start a private chat with the bot, or add it to the intended group with the required permissions. Long polling needs a working API connection.\n\n`bot_token` is required. `chat_id` is an optional fixed target; subscriptions or `targets` may supply destinations instead. Groups use their stable chat ID. `api_base` defaults to `https://api.telegram.org`; administrators use numeric sender IDs, not display names.\n\nAdministrator identity controls mutations, sending, configuration and plugin\nmanagement. Ordinary allowed read commands do not require making everyone an\nadministrator. Natural-language management uses the shared assistant and requires\na configured model; changes and outbound mail retain confirmation checks.\n\nFixed targets and chat subscriptions are distinct. Unsubscribing reports whether\na separately configured fixed target still receives pushes. Global, channel and\nchat switches, urgency and quiet hours determine actual delivery. Optional\n`notification_images`, `summary_cards` and `send_interval_seconds` use the shared\nnotification settings; text is the fallback on unsupported output.\n\nConfiguration, HTTP and platform errors fail delivery visibly. Per-target\nreceipts prevent retries from repeating successful destinations. Run a delivery\ntest after login; process existence alone does not prove the connection works.\n",
   "descriptions": {
-    "zh-CN": "通过 Bot API 把邮件提醒推送到 Telegram 会话，并可在会话内运行 MailFlow 命令"
+    "zh-CN": "通过 Bot API 把邮件提醒推送到 Telegram 会话，并可在会话内运行 Waymark Mail 命令"
   },
   "readmes": {
     "zh-CN": "# Telegram 通知与聊天连接\n\n组件标识为 `telegram`，支持邮件推送及共享文字提醒、命令；图片和受管文件由渠道能力\n提供，并受平台限制。\n\n轮询与 webhook 不能同时接收更新。接入时会检查 `getWebhookInfo`，发现冲突后说明处理方式，不会移除现有 webhook 或丢弃待处理消息。请在原应用停用 webhook，或使用另一个机器人。自定义 `api_base` 同样用于连接检查和轮询。[官方说明](https://core.telegram.org/bots/api#getting-updates)。\n\n```toml\n[[notifiers]]\nnotifier_id = \"telegram-main\"\nprovider = \"telegram\"\nminimum_urgency = \"important\"\n\n[notifiers.options]\nbot_token = \"${TELEGRAM_BOT_TOKEN}\"\nchat_id = \"123456789\"\nadmins = [\"123456789\"]\n```\n\n提供机器人令牌，通过进程内 Telegram 桥接收命令，无需额外网关进程。用户先与机器人私聊，或将其加入目标群并授予必要权限；长轮询需要能够访问配置的 API。\n\n令牌必填，`chat_id` 是可选固定目标，也可使用订阅或 `targets`。群聊使用稳定聊天标识，`api_base` 默认 `https://api.telegram.org`，管理员填写数字用户标识，不填显示名。\n\n管理员身份控制修改、发信、配置和插件操作，不必为了允许普通查询而将所有人设为管理员。\n自然语言管理使用共享助手并需要模型，修改和发信仍需确认。\n\n固定目标与聊天订阅不同，取消订阅会说明是否还存在独立固定推送。\n全局、渠道、聊天开关、重要程度及免打扰共同决定是否发送。\n`notification_images`、`summary_cards`、`send_interval_seconds` 使用共享通知设置，\n不支持的输出明确回退文字。\n\n配置、HTTP 或平台错误会报告投递失败，按目标保留凭据，重试不重复发送成功目标。\n登录后单独测试投递；进程存在并不代表可用。\n"

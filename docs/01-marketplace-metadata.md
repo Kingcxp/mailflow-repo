@@ -2,7 +2,7 @@
 
 [Home](../README.md) · [简体中文](#简体中文)
 
-Each plugin's `plugin.json` is the source for the description shown in MailFlow
+Each plugin's `plugin.json` is the source for the description shown in Waymark Mail
 and the generated README shown on GitHub. Root/category indexes locate folders;
 they do not duplicate the plugin's metadata.
 
@@ -34,7 +34,7 @@ package and core contracts; see [validation](06-validation.md).
   "description": "Delivers analyzed mail to an example endpoint",
   "categories": ["notifier"],
   "package": "mailflow-notify-example",
-  "source": "git+https://github.com/you/mailflow-repo.git#subdirectory=notifier/mailflow-notify-example",
+  "source": "git+https://github.com/you/waymark-mail-plugins.git#subdirectory=notifier/mailflow-notify-example",
   "license": "MIT",
   "readme": "## Example notifier\n\nConfigure the endpoint and token in notifier options.",
   "descriptions": {"zh-CN": "向指定地址推送邮件分析结果"},
@@ -47,7 +47,7 @@ a fork's unpublished changes are not available from the official repository URL.
 
 ## Localization and concise usage
 
-MailFlow selects the current locale's translated description/README, falling
+Waymark Mail selects the current locale's translated description/README, falling
 back to the English fields. Search also matches translated descriptions.
 Keep both languages aligned when behavior or options change.
 

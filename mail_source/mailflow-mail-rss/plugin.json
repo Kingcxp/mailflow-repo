@@ -7,16 +7,16 @@
     "mail_source"
   ],
   "package": "mailflow-mail-rss",
-  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=mail_source/mailflow-mail-rss",
-  "author": "MailFlow community",
+  "source": "git+https://github.com/Kingcxp/waymark-mail-plugins.git#subdirectory=mail_source/mailflow-mail-rss",
+  "author": "Waymark Mail community",
   "license": "MIT",
-  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/mail_source/mailflow-mail-rss",
-  "readme": "# RSS/Atom mail source\n\nBrings feed entries into MailFlow as read-only mail. Component ID: `rss`.\n\n```toml\n[[accounts]]\naccount_id = \"feeds\"\nprovider = \"rss\"\n\n[accounts.options]\nfeeds = [\"https://example.com/feed.xml\"]\ninterval_seconds = 900\n```\n\n`feeds` is the required URL list; `interval_seconds` defaults to 900 seconds.\nTitles become subjects and summaries/descriptions become bodies. Entry identity\nuses the feed URL plus guid/id/link, with a content fallback when none exists.\nProgress is marked after successful runtime handoff. One failing feed is reported\nwithout preventing other feeds from running.\n\nThe first poll reads entries currently exposed by the feed. In-process repeats\nare suppressed; after restart, stable IDs let storage deduplicate old entries.\nThis is not an IMAP cursor, historical archive or sending account: replies,\nmailbox-state synchronization and source trash/restore are unsupported.\n",
+  "homepage": "https://github.com/Kingcxp/waymark-mail-plugins/tree/main/mail_source/mailflow-mail-rss",
+  "readme": "# RSS/Atom mail source\n\nBrings feed entries into Waymark Mail as read-only mail. Component ID: `rss`.\n\n```toml\n[[accounts]]\naccount_id = \"feeds\"\nprovider = \"rss\"\n\n[accounts.options]\nfeeds = [\"https://example.com/feed.xml\"]\ninterval_seconds = 900\n```\n\n`feeds` is the required URL list; `interval_seconds` defaults to 900 seconds.\nTitles become subjects and summaries/descriptions become bodies. Entry identity\nuses the feed URL plus guid/id/link, with a content fallback when none exists.\nProgress is marked after successful runtime handoff. One failing feed is reported\nwithout preventing other feeds from running.\n\nThe first poll reads entries currently exposed by the feed. In-process repeats\nare suppressed; after restart, stable IDs let storage deduplicate old entries.\nThis is not an IMAP cursor, historical archive or sending account: replies,\nmailbox-state synchronization and source trash/restore are unsupported.\n",
   "descriptions": {
     "zh-CN": "把 RSS/Atom 订阅源转成邮件进入收件箱（新闻通讯、博客等）"
   },
   "readmes": {
-    "zh-CN": "# RSS/Atom 邮件源\n\n将订阅条目放入 MailFlow，作为只读邮件查看。组件标识为 `rss`。\n\n```toml\n[[accounts]]\naccount_id = \"feeds\"\nprovider = \"rss\"\n\n[accounts.options]\nfeeds = [\"https://example.com/feed.xml\"]\ninterval_seconds = 900\n```\n\n`feeds` 填写订阅地址列表，轮询默认每 900 秒执行。\n标题和摘要分别作为主题与正文；标识结合订阅地址和 guid/id/link，缺失时使用内容摘要。\n成功交给运行时后才记录进度，单个订阅失败不阻止其他订阅。\n\n首次读取订阅当前公开的条目，同次运行去重；重启后由稳定标识帮助存储去重。\n本插件不提供 IMAP 游标、历史存档、发信或原邮箱状态修改能力。\n"
+    "zh-CN": "# RSS/Atom 邮件源\n\n将订阅条目放入 Waymark Mail，作为只读邮件查看。组件标识为 `rss`。\n\n```toml\n[[accounts]]\naccount_id = \"feeds\"\nprovider = \"rss\"\n\n[accounts.options]\nfeeds = [\"https://example.com/feed.xml\"]\ninterval_seconds = 900\n```\n\n`feeds` 填写订阅地址列表，轮询默认每 900 秒执行。\n标题和摘要分别作为主题与正文；标识结合订阅地址和 guid/id/link，缺失时使用内容摘要。\n成功交给运行时后才记录进度，单个订阅失败不阻止其他订阅。\n\n首次读取订阅当前公开的条目，同次运行去重；重启后由稳定标识帮助存储去重。\n本插件不提供 IMAP 游标、历史存档、发信或原邮箱状态修改能力。\n"
   },
   "names": {
     "zh-CN": "RSS 订阅"

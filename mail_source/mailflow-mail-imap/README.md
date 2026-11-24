@@ -45,7 +45,7 @@ service; presets do not implement native OAuth.
 Optional account `state_sync` enables supported read/star/archive synchronization.
 Source trash/restore requires confirmation and a reliable move capability; unknown
 results are checked before retry. Local permanent deletion never expunges source
-mail. See the [operation guide](https://github.com/Kingcxp/mailflow/blob/dev/docs/configuration/overview.md).
+mail. See the [operation guide](https://github.com/Kingcxp/waymark-mail/blob/dev/docs/configuration/overview.md).
 
 ---
 
@@ -94,4 +94,4 @@ catch_up_missed = false
 
 ---
 
-[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/mailflow-repo/tree/main/mail_source/mailflow-mail-imap)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-plugins/tree/main/mail_source/mailflow-mail-imap)

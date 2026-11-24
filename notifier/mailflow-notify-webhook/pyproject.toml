@@ -1,7 +1,7 @@
 [project]
 name = "mailflow-notify-webhook"
 version = "0.1.0"
-description = "MailFlow webhook notifier: POST computed analyses to an HTTP endpoint"
+description = "Waymark Mail webhook notifier: POST computed analyses to an HTTP endpoint"
 requires-python = ">=3.11"
 dependencies = ["mailflow-core"]
 

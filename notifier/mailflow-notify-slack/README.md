@@ -20,7 +20,7 @@ timeout_seconds = 10
 
 `webhook_url` is required. The destination channel is selected when creating the Slack webhook; it cannot be overridden here. Existing `channel` options are ignored. See [Slack's webhook rules](https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks/).
 `timeout_seconds` defaults to 10 seconds. Environment placeholders are resolved
-by MailFlow; keep endpoint tokens private.
+by Waymark Mail; keep endpoint tokens private.
 
 Missing required configuration, HTTP errors and recognized platform rejection
 fail delivery. The runtime records the failure without losing the stored mail;
@@ -49,7 +49,7 @@ timeout_seconds = 10
 ```
 
 `webhook_url` 必填；频道在创建 Slack webhook 时确定，不能在此覆盖；旧配置中的 `channel` 会忽略。[官方说明](https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks/)。
-`timeout_seconds` 默认 10 秒。环境变量由 MailFlow 展开，地址中的令牌需要保密。
+`timeout_seconds` 默认 10 秒。环境变量由 Waymark Mail 展开，地址中的令牌需要保密。
 
 缺少必要配置、HTTP 错误或可识别的平台拒绝均视为投递失败。
 运行时保留已存邮件并记录失败，修正地址和访问设置后重试对应通知。
@@ -57,4 +57,4 @@ timeout_seconds = 10
 
 ---
 
-[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-slack)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-plugins/tree/main/notifier/mailflow-notify-slack)

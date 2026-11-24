@@ -5,7 +5,7 @@
 `readme` (and `readmes.<lang>`) in `plugin market show` and in the TUI detail
 view. A separate hand-written README.md drifts from it — this script derives
 the file instead, so browsing the repository on GitHub and browsing it from
-inside MailFlow show the same text.
+inside Waymark Mail show the same text.
 
 Usage:
     python tools/gen_plugin_readmes.py          # write/refresh every README

@@ -2,7 +2,7 @@
 
 # RSS/Atom mail source
 
-Brings feed entries into MailFlow as read-only mail. Component ID: `rss`.
+Brings feed entries into Waymark Mail as read-only mail. Component ID: `rss`.
 
 ```toml
 [[accounts]]
@@ -31,7 +31,7 @@ mailbox-state synchronization and source trash/restore are unsupported.
 
 # RSS/Atom 邮件源
 
-将订阅条目放入 MailFlow，作为只读邮件查看。组件标识为 `rss`。
+将订阅条目放入 Waymark Mail，作为只读邮件查看。组件标识为 `rss`。
 
 ```toml
 [[accounts]]
@@ -52,4 +52,4 @@ interval_seconds = 900
 
 ---
 
-[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/mailflow-repo/tree/main/mail_source/mailflow-mail-rss)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-plugins/tree/main/mail_source/mailflow-mail-rss)

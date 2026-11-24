@@ -26,7 +26,7 @@ Standard timeout, retry, headers, query and extra-body configuration applies.
 The backend accepts temperature, per-call options and tools; the selected model
 must support the requested features. Choose a currently available model ID and
 check credentials/endpoint on failure. Do not put real keys in configuration
-examples or logs. Model ordering and fallback use the shared MailFlow settings.
+examples or logs. Model ordering and fallback use the shared Waymark Mail settings.
 
 ---
 
@@ -54,8 +54,8 @@ max_tokens = 2048
 
 支持共享超时、重试、请求头、查询和额外请求体配置，传递温度、单次选项和工具。
 模型本身也需支持所用能力，请填写实际可用模型名，失败时检查凭据与端点。
-主模型和后备使用 MailFlow 的统一设置，不在示例或日志中填写真实密钥。
+主模型和后备使用 Waymark Mail 的统一设置，不在示例或日志中填写真实密钥。
 
 ---
 
-[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/mailflow-repo/tree/main/llm_backend/mailflow-llm-anthropic)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-plugins/tree/main/llm_backend/mailflow-llm-anthropic)

@@ -7,10 +7,10 @@
     "processor"
   ],
   "package": "mailflow-processor-rules",
-  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=processor/mailflow-processor-rules",
-  "author": "MailFlow community",
+  "source": "git+https://github.com/Kingcxp/waymark-mail-plugins.git#subdirectory=processor/mailflow-processor-rules",
+  "author": "Waymark Mail community",
   "license": "MIT",
-  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/processor/mailflow-processor-rules",
+  "homepage": "https://github.com/Kingcxp/waymark-mail-plugins/tree/main/processor/mailflow-processor-rules",
   "readme": "# Rule-template processor\n\nComponent ID: `rule-templates`, separate from the core `rules` processor.\nApplies the first matching configured template.\n\n```toml\n[[processors]]\nprocessor_id = \"templates\"\nprovider = \"rule-templates\"\npriority = 15\n\n[processors.options]\nrules = [{ match = { field = \"subject\", contains = \"invoice\" }, action = { urgency = \"important\", summary = \"Review the invoice.\" } }]\n```\n\nEach rule has `match.field` (`sender`, `subject` or `body`), a nonempty `contains`\nsubstring, and `action.urgency`/`summary`. Matching is case-insensitive; empty\nconditions are skipped. The first match contributes an analysis overlay and\nlater processors may still run. Supported urgency values are `ad`, `info`,\n`important` and `urgent`. No match leaves the current processing result unchanged.\n",
   "descriptions": {
     "zh-CN": "按顺序匹配规则，用首条匹配规则设置邮件分析结果。"

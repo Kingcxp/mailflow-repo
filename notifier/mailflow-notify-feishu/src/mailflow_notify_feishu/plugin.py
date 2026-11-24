@@ -64,7 +64,7 @@ class FeishuNotifier:
     @staticmethod
     def _summary_text(record: MailRecord) -> str:
         return (
-            f"[MailFlow] {record.effective_urgency.value.upper()} "
+            f"[Waymark Mail] {record.effective_urgency.value.upper()} "
             f"{record.mail.subject}\n{record.summary}"
         )
 

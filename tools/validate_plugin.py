@@ -32,9 +32,9 @@ CATEGORIES = (
 )
 ROOT = Path(__file__).resolve().parent.parent
 CORE_SOURCE = (
-    "mailflow-core@git+https://github.com/Kingcxp/mailflow.git#subdirectory=packages/mailflow-core"
+    "mailflow-core@git+https://github.com/Kingcxp/waymark-mail.git#subdirectory=packages/mailflow-core"
 )
-TESTKIT_SOURCE = "mailflow-testkit@git+https://github.com/Kingcxp/mailflow.git#subdirectory=packages/mailflow-testkit"
+TESTKIT_SOURCE = "mailflow-testkit@git+https://github.com/Kingcxp/waymark-mail.git#subdirectory=packages/mailflow-testkit"
 
 
 def _failures(folder: Path) -> list[str]:

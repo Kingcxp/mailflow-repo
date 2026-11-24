@@ -885,7 +885,9 @@ def account_form(preset: str = "qq") -> tuple[FormField, ...]:
             choices=("new", "recent", "all"),
             label_key="ux.initial_sync",
         ),
-        FormField("initial_days", kind="number", default=30, label_key="ux.initial_days", advanced=True),
+        FormField(
+            "initial_days", kind="number", default=30, label_key="ux.initial_days", advanced=True
+        ),
         FormField(
             "catch_up_missed",
             kind="boolean",

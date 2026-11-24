@@ -9,15 +9,15 @@ Instantiating a component alone does not prove compatibility.
 
 ## Offline checks
 
-From this repository, use the paired MailFlow development interpreter. For a
+From this repository, use the paired Waymark Mail development interpreter. For a
 standard environment layout, replace `python` below with
-`../mailflow/.venv/Scripts/python.exe` on Windows or
-`../mailflow/.venv/bin/python` on Linux/macOS.
+`../waymark-mail/.venv/Scripts/python.exe` on Windows or
+`../waymark-mail/.venv/bin/python` on Linux/macOS.
 
 ```bash
 python tools/gen_plugin_readmes.py --check
 python -m unittest discover -s tests -q
-python tools/validate_plugin.py --all --offline --core ../mailflow/packages/mailflow-core
+python tools/validate_plugin.py --all --offline --core ../waymark-mail/packages/mailflow-core
 ```
 
 A single folder may replace `--all`, for example
@@ -32,7 +32,7 @@ launching platform processes.
 
 Omit `--offline` to use `uv` to install core, testkit and the plugin with declared
 dependencies into a disposable environment, then run `pip check` and the shared
-samples. Shared MailFlow plugin dependencies use this checkout through dependency
+samples. Shared Waymark Mail plugin dependencies use this checkout through dependency
 overrides, so a dev plugin is not tested against an older shared plugin from main.
 Other dependencies are installed normally; no dependency checks are bypassed.
 `--core` selects core and testkit from one local checkout; without it, the script

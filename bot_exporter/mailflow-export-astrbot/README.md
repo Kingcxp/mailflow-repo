@@ -2,16 +2,16 @@
 
 # AstrBot exporter
 
-Exporter ID: `astrbot`. Creates a framework host from the current MailFlow
+Exporter ID: `astrbot`. Creates a framework host from the current Waymark Mail
 configuration without starting a mail runtime during export.
 
 ```bash
-uv run mailflow export --framework astrbot --output dist/astrbot_plugin_mailflow -c configs/local.toml
+uv run --no-sync waymark export --framework astrbot --output dist/astrbot_plugin_mailflow -c configs/local.toml
 ```
 
-Install the generated folder through your AstrBot plugin workflow and enable it. Configure MailFlow administrators through the matching enabled notifier binding described in the generated README; framework administrator flags are not imported automatically.
+Install the generated folder through your AstrBot plugin workflow and enable it. Configure Waymark Mail administrators through the matching enabled notifier binding described in the generated README; framework administrator flags are not imported automatically.
 The generated README describes its file layout and command prefix. Its host
-starts/stops the MailFlow service with the framework and forwards sender/chat identity to the shared layer.
+starts/stops the Waymark Mail service with the framework and forwards sender/chat identity to the shared layer.
 Administration is resolved from a unique enabled notifier matching the platform
 and instance, with the sender in options.admins; unmatched providers remain read-only.
 
@@ -35,7 +35,7 @@ adapter does not imply an extra automatic broadcast to every framework chat.
 导出器标识为 `astrbot`，按当前配置生成框架宿主；导出过程不启动邮件运行时。
 
 ```bash
-uv run mailflow export --framework astrbot --output dist/astrbot_plugin_mailflow -c configs/local.toml
+uv run --no-sync waymark export --framework astrbot --output dist/astrbot_plugin_mailflow -c configs/local.toml
 ```
 
 按 AstrBot 插件流程安装并启用生成目录，按生成说明配置匹配通知器的管理员，框架管理员不会自动导入。
@@ -51,4 +51,4 @@ uv run mailflow export --framework astrbot --output dist/astrbot_plugin_mailflow
 
 ---
 
-[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/mailflow-repo/tree/main/bot_exporter/mailflow-export-astrbot)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-plugins/tree/main/bot_exporter/mailflow-export-astrbot)

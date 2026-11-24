@@ -1,7 +1,7 @@
 [project]
 name = "mailflow-notify-ntfy"
 version = "0.1.0"
-description = "MailFlow ntfy notifier: push mail alerts to ntfy topics"
+description = "Waymark Mail ntfy notifier: push mail alerts to ntfy topics"
 requires-python = ">=3.11"
 dependencies = ["mailflow-core"]
 

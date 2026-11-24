@@ -1,7 +1,7 @@
 [project]
 name = "mailflow-notify-smtp"
 version = "0.1.0"
-description = "MailFlow SMTP notifier: forward mail alerts via any SMTP server"
+description = "Waymark Mail SMTP notifier: forward mail alerts via any SMTP server"
 requires-python = ">=3.11"
 dependencies = ["mailflow-core"]
 

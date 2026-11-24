@@ -7,10 +7,10 @@
     "mail_source"
   ],
   "package": "mailflow-mail-gmail",
-  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=mail_source/mailflow-mail-gmail",
-  "author": "MailFlow community",
+  "source": "git+https://github.com/Kingcxp/waymark-mail-plugins.git#subdirectory=mail_source/mailflow-mail-gmail",
+  "author": "Waymark Mail community",
   "license": "MIT",
-  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/mail_source/mailflow-mail-gmail",
+  "homepage": "https://github.com/Kingcxp/waymark-mail-plugins/tree/main/mail_source/mailflow-mail-gmail",
   "readme": "# Gmail mail source\n\nComponent ID: `gmail`. Reuses the shared IMAP/SMTP source with the Gmail\nserver preset. It does not implement native OAuth; use credentials and access\nsettings accepted by your mailbox service.\n\n```toml\n[[accounts]]\naccount_id = \"gmail-personal\"\nprovider = \"gmail\"\nemail = \"you@example.com\"\n\n[accounts.options]\npassword = \"${MAIL_PASSWORD}\"\ninitial_sync = \"new\"\ncatch_up_missed = false\n```\n\nSee [IMAP options and behavior](../mailflow-mail-imap/README.md) for server\noverrides, sending, history, catch-up, attachments and opt-in source-state sync.\nThe default receives new mail only; account IDs remain part of mail identity.\n",
   "descriptions": {
     "zh-CN": "通过应用专用密码接入 Gmail，使用 IMAP 收信、SMTP 发信。"

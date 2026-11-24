@@ -20,7 +20,7 @@ timeout_seconds = 10
 
 `url` is required. The JSON body contains `mail_id`, `urgency`, `subject`, `summary`, `from` and `reply_required`. This plugin has no custom-auth-header option.
 `timeout_seconds` defaults to 10 seconds. Environment placeholders are resolved
-by MailFlow; keep endpoint tokens private.
+by Waymark Mail; keep endpoint tokens private.
 
 Missing required configuration, HTTP errors and recognized platform rejection
 fail delivery. The runtime records the failure without losing the stored mail;
@@ -49,7 +49,7 @@ timeout_seconds = 10
 ```
 
 `url` 必填，JSON 包含 `mail_id`、`urgency`、`subject`、`summary`、`from`、`reply_required`，目前没有自定义认证头选项。
-`timeout_seconds` 默认 10 秒。环境变量由 MailFlow 展开，地址中的令牌需要保密。
+`timeout_seconds` 默认 10 秒。环境变量由 Waymark Mail 展开，地址中的令牌需要保密。
 
 缺少必要配置、HTTP 错误或可识别的平台拒绝均视为投递失败。
 运行时保留已存邮件并记录失败，修正地址和访问设置后重试对应通知。
@@ -57,4 +57,4 @@ timeout_seconds = 10
 
 ---
 
-[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-webhook)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-plugins/tree/main/notifier/mailflow-notify-webhook)

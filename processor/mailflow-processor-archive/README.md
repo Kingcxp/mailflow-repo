@@ -2,7 +2,7 @@
 
 # Local auto-archive processor
 
-Component ID: `archive`. Archives matching mail inside MailFlow while retaining
+Component ID: `archive`. Archives matching mail inside Waymark Mail while retaining
 its priority, analysis and original content. It does not move source mailbox mail.
 
 ```toml
@@ -27,7 +27,7 @@ priority filtering and the account's optional source-state synchronization.
 
 # 本地自动归档处理器
 
-组件标识为 `archive`，将匹配邮件归档到 MailFlow，保留重要程度、分析和原文，
+组件标识为 `archive`，将匹配邮件归档到 Waymark Mail，保留重要程度、分析和原文，
 不移动原邮箱邮件。
 
 ```toml
@@ -46,4 +46,4 @@ domains = ["news.example"]
 
 ---
 
-[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/mailflow-repo/tree/main/processor/mailflow-processor-archive)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-plugins/tree/main/processor/mailflow-processor-archive)

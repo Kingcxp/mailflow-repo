@@ -7,10 +7,10 @@
     "llm_backend"
   ],
   "package": "mailflow-llm-deepseek",
-  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=llm_backend/mailflow-llm-deepseek",
-  "author": "MailFlow community",
+  "source": "git+https://github.com/Kingcxp/waymark-mail-plugins.git#subdirectory=llm_backend/mailflow-llm-deepseek",
+  "author": "Waymark Mail community",
   "license": "MIT",
-  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/llm_backend/mailflow-llm-deepseek",
+  "homepage": "https://github.com/Kingcxp/waymark-mail-plugins/tree/main/llm_backend/mailflow-llm-deepseek",
   "readme": "# DeepSeek model preset\n\nComponent ID: `deepseek`. Reuses the OpenAI-compatible Chat Completions\ntransport; its dependency is installed with this package.\n\n```toml\n[[llms]]\nllm_id = \"primary\"\nprovider = \"deepseek\"\nmodel = \"your-model-id\"\napi_key_env = \"DEEPSEEK_API_KEY\"\n```\n\nThe implementation defaults to `https://api.deepseek.com/v1` and\nmodel `deepseek-chat` when those fields are omitted. These are code\ndefaults, not a guarantee that the provider still offers that model. Set your\navailable model explicitly; an explicit `base_url` also overrides the preset.\n\nSee [shared transport options](../mailflow-llm-openai-compatible/README.md) for\ncredentials, timeout/retries, request overrides and tool calls. The model and\nendpoint must support the requested tools. Primary/fallback selection uses\nthe shared model defaults and processor bindings described in that guide.\n",
   "descriptions": {
     "zh-CN": "面向 DeepSeek 的 OpenAI 兼容 Chat Completions 传输层（组件 id: deepseek）"

@@ -1,7 +1,7 @@
 [project]
 name = "mailflow-processor-blocklist"
 version = "0.1.0"
-description = "MailFlow blocklist processor: mark blocked senders/domains as junk"
+description = "Waymark Mail blocklist processor: mark blocked senders/domains as junk"
 requires-python = ">=3.11"
 dependencies = ["mailflow-core"]
 

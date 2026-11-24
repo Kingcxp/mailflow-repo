@@ -7,10 +7,10 @@
     "mail_source"
   ],
   "package": "mailflow-mail-outlook",
-  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=mail_source/mailflow-mail-outlook",
-  "author": "MailFlow community",
+  "source": "git+https://github.com/Kingcxp/waymark-mail-plugins.git#subdirectory=mail_source/mailflow-mail-outlook",
+  "author": "Waymark Mail community",
   "license": "MIT",
-  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/mail_source/mailflow-mail-outlook",
+  "homepage": "https://github.com/Kingcxp/waymark-mail-plugins/tree/main/mail_source/mailflow-mail-outlook",
   "readme": "# Outlook mail source\n\nComponent ID: `outlook`. Reuses the shared IMAP/SMTP source with the Outlook\nserver preset. It does not implement native OAuth; use credentials and access\nsettings accepted by your mailbox service.\n\n```toml\n[[accounts]]\naccount_id = \"outlook-personal\"\nprovider = \"outlook\"\nemail = \"you@example.com\"\n\n[accounts.options]\npassword = \"${MAIL_PASSWORD}\"\ninitial_sync = \"new\"\ncatch_up_missed = false\n```\n\nSee [IMAP options and behavior](../mailflow-mail-imap/README.md) for server\noverrides, sending, history, catch-up, attachments and opt-in source-state sync.\nThe default receives new mail only; account IDs remain part of mail identity.\n",
   "descriptions": {
     "zh-CN": "通过应用专用密码接入 Outlook 或 Office 365 邮箱。"

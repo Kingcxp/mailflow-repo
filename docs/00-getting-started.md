@@ -3,14 +3,14 @@
 [Home](../README.md) · [简体中文](#简体中文)
 
 Implement against the main repository's
-[plugin guide](https://github.com/Kingcxp/mailflow/blob/dev/docs/plugin-development/overview.md)
-and [core contracts](https://github.com/Kingcxp/mailflow/blob/dev/packages/mailflow-core/src/mailflow/contracts.py).
+[plugin guide](https://github.com/Kingcxp/waymark-mail/blob/dev/docs/plugin-development/overview.md)
+and [core contracts](https://github.com/Kingcxp/waymark-mail/blob/dev/packages/mailflow-core/src/mailflow/contracts.py).
 The same interfaces cover bundled and marketplace plugins; category-specific
 copies are intentionally not maintained here.
 
 ## Create a plugin
 
-Use MailFlow's TUI Market → New wizard to choose a category and generate a
+Use Waymark Mail's TUI Market → New wizard to choose a category and generate a
 loadable package. Put the result in `<category>/<plugin-id>/` in this repository.
 The categories are listed in [index.json](../index.json).
 
@@ -53,19 +53,19 @@ real credentials, and describe current behavior rather than future plans.
 ```bash
 python tools/gen_plugin_readmes.py
 python tools/gen_plugin_readmes.py --check
-python tools/validate_plugin.py notifier/mailflow-notify-example --offline --core ../mailflow/packages/mailflow-core
+python tools/validate_plugin.py notifier/mailflow-notify-example --offline --core ../waymark-mail/packages/mailflow-core
 ```
 
-Run offline validation using the paired MailFlow development interpreter; the
+Run offline validation using the paired Waymark Mail development interpreter; the
 [validation guide](06-validation.md) explains dependency-install checks and CI.
-For manual local installation, install the plugin into MailFlow's Python
+For manual local installation, install the plugin into Waymark Mail's Python
 environment and use `plugin list` in its shell, then restart when requested.
 
 Use paired `dev` checkouts for unreleased changes. From the main checkout,
-`uv pip install -e ../mailflow-repo/<category>/<plugin-id>` installs a local
+`uv pip install -e ../waymark-mail-plugins/<category>/<plugin-id>` installs a local
 plugin into its environment; use `--python` to select the host interpreter if
 needed. In the standard workspace environment, start it with
-`uv run --no-sync mailflow tui -c configs/local.toml`, then check `plugin list`.
+`uv run --no-sync waymark tui -c configs/local.toml`, then check `plugin list`.
 `make tui` also uses the selected environment directly and preserves this local
 installation. An explicit `make sync` or `uv sync --all-packages` restores locked
 workspace sources, including a same-name plugin from the main checkout.

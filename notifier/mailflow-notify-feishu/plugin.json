@@ -7,16 +7,16 @@
     "notifier"
   ],
   "package": "mailflow-notify-feishu",
-  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=notifier/mailflow-notify-feishu",
-  "author": "MailFlow community",
+  "source": "git+https://github.com/Kingcxp/waymark-mail-plugins.git#subdirectory=notifier/mailflow-notify-feishu",
+  "author": "Waymark Mail community",
   "license": "MIT",
-  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-feishu",
-  "readme": "# Feishu notifier\n\nComponent ID: `feishu`. Delivers mail summaries through the configured\nFeishu endpoint. This package implements mail notification, not incoming chat\ncommands, arbitrary-text reminders, images or file exchange.\n\n```toml\n[[notifiers]]\nnotifier_id = \"feishu-alerts\"\nprovider = \"feishu\"\nenabled = true\nminimum_urgency = \"important\"\n\n[notifiers.options]\nwebhook_url = \"${FEISHU_WEBHOOK}\"\ntimeout_seconds = 10\n```\n\n`webhook_url` is required; configure `secret` when the robot requires signed requests.\n`timeout_seconds` defaults to 10 seconds. Environment placeholders are resolved\nby MailFlow; keep endpoint tokens private.\n\nMissing required configuration, HTTP errors and recognized platform rejection\nfail delivery. The runtime records the failure without losing the stored mail;\nfix the endpoint/access settings and retry the failed notification. A successful\nHTTP response is not enough if the platform reports a business error.\n",
+  "homepage": "https://github.com/Kingcxp/waymark-mail-plugins/tree/main/notifier/mailflow-notify-feishu",
+  "readme": "# Feishu notifier\n\nComponent ID: `feishu`. Delivers mail summaries through the configured\nFeishu endpoint. This package implements mail notification, not incoming chat\ncommands, arbitrary-text reminders, images or file exchange.\n\n```toml\n[[notifiers]]\nnotifier_id = \"feishu-alerts\"\nprovider = \"feishu\"\nenabled = true\nminimum_urgency = \"important\"\n\n[notifiers.options]\nwebhook_url = \"${FEISHU_WEBHOOK}\"\ntimeout_seconds = 10\n```\n\n`webhook_url` is required; configure `secret` when the robot requires signed requests.\n`timeout_seconds` defaults to 10 seconds. Environment placeholders are resolved\nby Waymark Mail; keep endpoint tokens private.\n\nMissing required configuration, HTTP errors and recognized platform rejection\nfail delivery. The runtime records the failure without losing the stored mail;\nfix the endpoint/access settings and retry the failed notification. A successful\nHTTP response is not enough if the platform reports a business error.\n",
   "descriptions": {
     "zh-CN": "通过 飞书 发送邮件摘要"
   },
   "readmes": {
-    "zh-CN": "# 飞书 通知器\n\n组件标识为 `feishu`，通过配置的 飞书 地址发送邮件摘要。\n本插件提供邮件推送，不提供接收聊天命令、任意文字提醒、图片或文件收发。\n\n```toml\n[[notifiers]]\nnotifier_id = \"feishu-alerts\"\nprovider = \"feishu\"\nenabled = true\nminimum_urgency = \"important\"\n\n[notifiers.options]\nwebhook_url = \"${FEISHU_WEBHOOK}\"\ntimeout_seconds = 10\n```\n\n`webhook_url` 必填；机器人要求签名时填写 `secret`。\n`timeout_seconds` 默认 10 秒。环境变量由 MailFlow 展开，地址中的令牌需要保密。\n\n缺少必要配置、HTTP 错误或可识别的平台拒绝均视为投递失败。\n运行时保留已存邮件并记录失败，修正地址和访问设置后重试对应通知。\n不能只因 HTTP 成功就把平台业务失败当成发送成功。\n"
+    "zh-CN": "# 飞书 通知器\n\n组件标识为 `feishu`，通过配置的 飞书 地址发送邮件摘要。\n本插件提供邮件推送，不提供接收聊天命令、任意文字提醒、图片或文件收发。\n\n```toml\n[[notifiers]]\nnotifier_id = \"feishu-alerts\"\nprovider = \"feishu\"\nenabled = true\nminimum_urgency = \"important\"\n\n[notifiers.options]\nwebhook_url = \"${FEISHU_WEBHOOK}\"\ntimeout_seconds = 10\n```\n\n`webhook_url` 必填；机器人要求签名时填写 `secret`。\n`timeout_seconds` 默认 10 秒。环境变量由 Waymark Mail 展开，地址中的令牌需要保密。\n\n缺少必要配置、HTTP 错误或可识别的平台拒绝均视为投递失败。\n运行时保留已存邮件并记录失败，修正地址和访问设置后重试对应通知。\n不能只因 HTTP 成功就把平台业务失败当成发送成功。\n"
   },
   "names": {
     "zh-CN": "飞书通知"

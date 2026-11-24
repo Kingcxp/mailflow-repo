@@ -2,21 +2,21 @@
   "id": "mailflow-export-astrbot",
   "name": "AstrBot Exporter",
   "version": "0.1.0",
-  "description": "Exports a configured MailFlow instance as an AstrBot plugin",
+  "description": "Exports a configured Waymark Mail instance as an AstrBot plugin",
   "categories": [
     "bot_exporter"
   ],
   "package": "mailflow-export-astrbot",
-  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=bot_exporter/mailflow-export-astrbot",
-  "author": "MailFlow community",
+  "source": "git+https://github.com/Kingcxp/waymark-mail-plugins.git#subdirectory=bot_exporter/mailflow-export-astrbot",
+  "author": "Waymark Mail community",
   "license": "MIT",
-  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/bot_exporter/mailflow-export-astrbot",
-  "readme": "# AstrBot exporter\n\nExporter ID: `astrbot`. Creates a framework host from the current MailFlow\nconfiguration without starting a mail runtime during export.\n\n```bash\nuv run mailflow export --framework astrbot --output dist/astrbot_plugin_mailflow -c configs/local.toml\n```\n\nInstall the generated folder through your AstrBot plugin workflow and enable it. Configure MailFlow administrators through the matching enabled notifier binding described in the generated README; framework administrator flags are not imported automatically.\nThe generated README describes its file layout and command prefix. Its host\nstarts/stops the MailFlow service with the framework and forwards sender/chat identity to the shared layer.\nAdministration is resolved from a unique enabled notifier matching the platform\nand instance, with the sender in options.admins; unmatched providers remain read-only.\n\nSupported framework file events can upload managed files, and supported adapters\ncan send selected files back. Availability depends on the actual platform adapter;\nexporting/importing Python successfully does not prove file delivery. Mutations\nand sending keep their permission and confirmation rules.\n\nThe exported configuration is a snapshot, not a live link. Environment-backed\nsecrets remain references; literal credentials may still be present. Review the\noutput, supply needed environment variables in the bot host and regenerate after\nconfiguration changes. Configured notifiers deliver notifications: the export\nadapter does not imply an extra automatic broadcast to every framework chat.\n",
+  "homepage": "https://github.com/Kingcxp/waymark-mail-plugins/tree/main/bot_exporter/mailflow-export-astrbot",
+  "readme": "# AstrBot exporter\n\nExporter ID: `astrbot`. Creates a framework host from the current Waymark Mail\nconfiguration without starting a mail runtime during export.\n\n```bash\nuv run --no-sync waymark export --framework astrbot --output dist/astrbot_plugin_mailflow -c configs/local.toml\n```\n\nInstall the generated folder through your AstrBot plugin workflow and enable it. Configure Waymark Mail administrators through the matching enabled notifier binding described in the generated README; framework administrator flags are not imported automatically.\nThe generated README describes its file layout and command prefix. Its host\nstarts/stops the Waymark Mail service with the framework and forwards sender/chat identity to the shared layer.\nAdministration is resolved from a unique enabled notifier matching the platform\nand instance, with the sender in options.admins; unmatched providers remain read-only.\n\nSupported framework file events can upload managed files, and supported adapters\ncan send selected files back. Availability depends on the actual platform adapter;\nexporting/importing Python successfully does not prove file delivery. Mutations\nand sending keep their permission and confirmation rules.\n\nThe exported configuration is a snapshot, not a live link. Environment-backed\nsecrets remain references; literal credentials may still be present. Review the\noutput, supply needed environment variables in the bot host and regenerate after\nconfiguration changes. Configured notifiers deliver notifications: the export\nadapter does not imply an extra automatic broadcast to every framework chat.\n",
   "descriptions": {
-    "zh-CN": "将配置好的 MailFlow 实例导出为 AstrBot 插件"
+    "zh-CN": "将配置好的 Waymark Mail 实例导出为 AstrBot 插件"
   },
   "readmes": {
-    "zh-CN": "# AstrBot 导出器\n\n导出器标识为 `astrbot`，按当前配置生成框架宿主；导出过程不启动邮件运行时。\n\n```bash\nuv run mailflow export --framework astrbot --output dist/astrbot_plugin_mailflow -c configs/local.toml\n```\n\n按 AstrBot 插件流程安装并启用生成目录，按生成说明配置匹配通知器的管理员，框架管理员不会自动导入。\n生成的 README 说明目录和命令前缀。宿主随框架启动／停止核心服务，\n将发起人和会话传给共享层；管理员由唯一匹配平台、实例的启用通知器中 options.admins 决定，未匹配平台保留普通权限。\n\n支持的框架文件事件可上传受管文件，适配器支持时可发送选中文件；具体能力取决于实际平台。\n不能因为导出成功或代码能导入就声称真实文件收发已验证，修改和发信仍受权限与确认限制。\n\n导出配置是快照，环境变量引用会保留，直接填写的凭据可能仍在文件中。\n检查输出、在机器人宿主提供所需环境变量，配置变化后重新导出。\n通知仍由已配置通知器投递，导出适配器不代表自动向所有框架会话额外广播。\n"
+    "zh-CN": "# AstrBot 导出器\n\n导出器标识为 `astrbot`，按当前配置生成框架宿主；导出过程不启动邮件运行时。\n\n```bash\nuv run --no-sync waymark export --framework astrbot --output dist/astrbot_plugin_mailflow -c configs/local.toml\n```\n\n按 AstrBot 插件流程安装并启用生成目录，按生成说明配置匹配通知器的管理员，框架管理员不会自动导入。\n生成的 README 说明目录和命令前缀。宿主随框架启动／停止核心服务，\n将发起人和会话传给共享层；管理员由唯一匹配平台、实例的启用通知器中 options.admins 决定，未匹配平台保留普通权限。\n\n支持的框架文件事件可上传受管文件，适配器支持时可发送选中文件；具体能力取决于实际平台。\n不能因为导出成功或代码能导入就声称真实文件收发已验证，修改和发信仍受权限与确认限制。\n\n导出配置是快照，环境变量引用会保留，直接填写的凭据可能仍在文件中。\n检查输出、在机器人宿主提供所需环境变量，配置变化后重新导出。\n通知仍由已配置通知器投递，导出适配器不代表自动向所有框架会话额外广播。\n"
   },
   "names": {
     "zh-CN": "AstrBot 导出"

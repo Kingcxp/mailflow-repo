@@ -1,4 +1,4 @@
-"""Archive matching senders in MailFlow while preserving analysis and source mail."""
+"""Archive matching senders in Waymark Mail while preserving analysis and source mail."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ PLUGIN_INFO = PluginInfo(
     plugin_id="mailflow-processor-archive",
     name="Auto-Archive Processor",
     version="0.1.0",
-    description="Archives matching senders/domains in MailFlow; source mail and priority are preserved",
+    description="Archives matching senders/domains in Waymark Mail; source mail and priority are preserved",
     kinds=[ComponentKind.MAIL_PROCESSOR],
 )
 

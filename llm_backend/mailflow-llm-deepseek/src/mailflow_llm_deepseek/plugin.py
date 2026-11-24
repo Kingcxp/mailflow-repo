@@ -1,4 +1,4 @@
-"""Provider preset using MailFlow's shared OpenAI transport."""
+"""Provider preset using Waymark Mail's shared OpenAI transport."""
 
 from __future__ import annotations
 

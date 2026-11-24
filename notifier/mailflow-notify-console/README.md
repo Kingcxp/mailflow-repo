@@ -11,7 +11,7 @@ provider = "console"
 minimum_urgency = "important"
 ```
 
-The Console tab accepts existing MailFlow commands. Use `@MailFlow` or quote a message to request an intelligent operation. Changes and sending still require chat confirmation. Ordinary text does not invoke a model.
+The Console tab accepts existing Waymark Mail commands. Use `@Waymark` or quote a message to request an intelligent operation. Changes and sending still require chat confirmation. Ordinary text does not invoke a model.
 
 Messages remain in memory for the current service run. Detach and reconnect keep them; stopping the service clears them. Notification switches, quiet hours and delivery receipts still apply.
 
@@ -32,7 +32,7 @@ provider = "console"
 minimum_urgency = "important"
 ```
 
-控制台支持已有 MailFlow 命令。使用 `@MailFlow` 或引用消息提出智能操作需求；修改和发送仍须通过聊天确认，普通文字不会调用模型。
+控制台支持已有 Waymark Mail 命令。使用 `@Waymark` 或引用消息提出智能操作需求；修改和发送仍须通过聊天确认，普通文字不会调用模型。
 
 消息只保留在本次服务运行的内存中。退到后台、重新连接仍可查看，停止服务后清空。通知开关、免打扰和投递去重继续生效。
 
@@ -40,4 +40,4 @@ TUI 以外的宿主仍可按配置输出控制台日志。图片回退为文字�
 
 ---
 
-[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/mailflow-repo/tree/main/notifier/mailflow-notify-console)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-plugins/tree/main/notifier/mailflow-notify-console)

@@ -1,7 +1,7 @@
 [project]
 name = "mailflow-mail-rss"
 version = "0.1.0"
-description = "MailFlow RSS/Atom source: feed entries as mail items"
+description = "Waymark Mail RSS/Atom source: feed entries as mail items"
 requires-python = ">=3.11"
 dependencies = ["mailflow-core"]
 

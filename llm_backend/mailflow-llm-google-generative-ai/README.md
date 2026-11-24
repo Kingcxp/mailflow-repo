@@ -3,7 +3,7 @@
 # Google Generative AI backend
 
 Component ID: `google-generative-ai`. Uses Gemini `generateContent`, translating
-system messages and structured tool calls from the shared MailFlow contract.
+system messages and structured tool calls from the shared Waymark Mail contract.
 
 ```toml
 [[llms]]
@@ -51,4 +51,4 @@ api_key_env = "GEMINI_API_KEY"
 
 ---
 
-[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/mailflow-repo/tree/main/llm_backend/mailflow-llm-google-generative-ai)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-plugins/tree/main/llm_backend/mailflow-llm-google-generative-ai)

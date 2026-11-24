@@ -1,4 +1,4 @@
-"""Compatibility entry point for the shared MailFlow offline plugin validator."""
+"""Compatibility entry point for the shared Waymark Mail offline plugin validator."""
 
 from mailflow_testkit.plugin_smoke import main
 

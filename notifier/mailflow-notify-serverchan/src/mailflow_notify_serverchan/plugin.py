@@ -50,7 +50,7 @@ class ServerChanNotifier:
 
     def _payload(self, record: MailRecord) -> dict[str, Any]:
         return {
-            "title": str(self._options.get("title") or f"[MailFlow] {record.mail.subject}"),
+            "title": str(self._options.get("title") or f"[Waymark Mail] {record.mail.subject}"),
             "desp": f"{record.effective_urgency.value.upper()} {record.summary}",
         }
 

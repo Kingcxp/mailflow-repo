@@ -7,10 +7,10 @@
     "processor"
   ],
   "package": "mailflow-processor-filter",
-  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=processor/mailflow-processor-filter",
-  "author": "MailFlow community",
+  "source": "git+https://github.com/Kingcxp/waymark-mail-plugins.git#subdirectory=processor/mailflow-processor-filter",
+  "author": "Waymark Mail community",
   "license": "MIT",
-  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/processor/mailflow-processor-filter",
+  "homepage": "https://github.com/Kingcxp/waymark-mail-plugins/tree/main/processor/mailflow-processor-filter",
   "readme": "# Content filter processor\n\nComponent ID: `filter`. Marks a match as `ad` while keeping the original mail.\n\n```toml\n[[processors]]\nprocessor_id = \"content-filter\"\nprovider = \"filter\"\npriority = 5\n\n[processors.options]\nsenders = [\"ads@example.com\"]\nsubjects = [\"Promotion\"]\nkeywords = [\"unsubscribe\"]\n```\n\nThe lists default to empty. Matching is case-insensitive: sender addresses are\nexact, while subjects and plain-text bodies use substrings. Any match contributes\nan analysis result. This does not delete mail or stop later processors; a later\nanalysis may replace the classification. Notification thresholds are configured\non notifiers, separately from filtering.\n",
   "descriptions": {
     "zh-CN": "按发件人、主题和正文关键词匹配，将命中的邮件标为广告。"

@@ -7,10 +7,10 @@
     "mail_source"
   ],
   "package": "mailflow-mail-fake",
-  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=mail_source/mailflow-mail-fake",
-  "author": "MailFlow community",
+  "source": "git+https://github.com/Kingcxp/waymark-mail-plugins.git#subdirectory=mail_source/mailflow-mail-fake",
+  "author": "Waymark Mail community",
   "license": "MIT",
-  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/mail_source/mailflow-mail-fake",
+  "homepage": "https://github.com/Kingcxp/waymark-mail-plugins/tree/main/mail_source/mailflow-mail-fake",
   "readme": "# Fake mail source\n\nProvides deterministic messages for local development and demonstrations without\nconnecting to a mailbox. Component ID: `fake`.\n\n```toml\n[[accounts]]\naccount_id = \"demo\"\nprovider = \"fake\"\nemail = \"demo@local.test\"\n\n[accounts.options]\nbase_time = \"2026-01-01T08:00:00+00:00\"\nmails = [{ message_id = \"welcome\", subject = \"Welcome\", sender = \"team@example.com\", body = \"Your workspace is ready.\" }]\n```\n\n`mails` accepts `message_id`, `subject`, `sender`, `sender_name`, `body`,\n`body_html` and an optional `urgency` hint. Keep message IDs stable to exercise\nretry deduplication. Timestamps use `base_time` plus the message index in minutes.\n`fail = true` and `delay` (seconds) simulate source failures and slow handoff.\nThis is a development source, not a way to send real email.\n",
   "descriptions": {
     "zh-CN": "面向开发与演示的确定性本地邮件源"

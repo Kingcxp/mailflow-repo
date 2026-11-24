@@ -31,7 +31,7 @@ jobs:
       - name: Check out the matching core and shared validator
         uses: actions/checkout@v5
         with:
-          repository: Kingcxp/mailflow
+          repository: Kingcxp/waymark-mail
           ref: ${{ (github.base_ref || github.ref_name) == 'dev' && 'dev' || 'main' }}
           path: _mailflow
 

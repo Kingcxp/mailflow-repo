@@ -7,17 +7,17 @@
     "llm_backend"
   ],
   "package": "mailflow-llm-anthropic",
-  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=llm_backend/mailflow-llm-anthropic",
-  "author": "MailFlow community",
+  "source": "git+https://github.com/Kingcxp/waymark-mail-plugins.git#subdirectory=llm_backend/mailflow-llm-anthropic",
+  "author": "Waymark Mail community",
   "license": "MIT",
-  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/llm_backend/mailflow-llm-anthropic",
+  "homepage": "https://github.com/Kingcxp/waymark-mail-plugins/tree/main/llm_backend/mailflow-llm-anthropic",
   "updated": "2026-08-16",
-  "readme": "# Anthropic Messages backend\n\nComponent IDs: `anthropic-messages` and compatible alias `anthropic`. Translates\nthe shared chat/tool format into Messages requests and returns structured tool calls.\n\n```toml\n[[llms]]\nllm_id = \"primary\"\nprovider = \"anthropic\"\nmodel = \"your-model-id\"\napi_key_env = \"ANTHROPIC_API_KEY\"\n\n[llms.options]\nmax_tokens = 2048\n```\n\nThe default endpoint is `https://api.anthropic.com/v1/messages`. A top-level\n`base_url` may name a proxy root, `/v1` prefix or complete `/messages` endpoint;\nlegacy `options.base_url` is a complete endpoint override. `options.max_tokens`\ndefaults to 1024. Optional `thinking_budget` requests a budget supported by the\nselected model and raises the output cap as needed.\n\nStandard timeout, retry, headers, query and extra-body configuration applies.\nThe backend accepts temperature, per-call options and tools; the selected model\nmust support the requested features. Choose a currently available model ID and\ncheck credentials/endpoint on failure. Do not put real keys in configuration\nexamples or logs. Model ordering and fallback use the shared MailFlow settings.\n",
+  "readme": "# Anthropic Messages backend\n\nComponent IDs: `anthropic-messages` and compatible alias `anthropic`. Translates\nthe shared chat/tool format into Messages requests and returns structured tool calls.\n\n```toml\n[[llms]]\nllm_id = \"primary\"\nprovider = \"anthropic\"\nmodel = \"your-model-id\"\napi_key_env = \"ANTHROPIC_API_KEY\"\n\n[llms.options]\nmax_tokens = 2048\n```\n\nThe default endpoint is `https://api.anthropic.com/v1/messages`. A top-level\n`base_url` may name a proxy root, `/v1` prefix or complete `/messages` endpoint;\nlegacy `options.base_url` is a complete endpoint override. `options.max_tokens`\ndefaults to 1024. Optional `thinking_budget` requests a budget supported by the\nselected model and raises the output cap as needed.\n\nStandard timeout, retry, headers, query and extra-body configuration applies.\nThe backend accepts temperature, per-call options and tools; the selected model\nmust support the requested features. Choose a currently available model ID and\ncheck credentials/endpoint on failure. Do not put real keys in configuration\nexamples or logs. Model ordering and fallback use the shared Waymark Mail settings.\n",
   "descriptions": {
     "zh-CN": "内置 Anthropic Messages API 后端（Claude）"
   },
   "readmes": {
-    "zh-CN": "# Anthropic Messages 后端\n\n组件标识为 `anthropic-messages`，兼容旧标识 `anthropic`。\n将共享对话和工具格式转换为 Messages 请求，并返回结构化工具调用。\n\n```toml\n[[llms]]\nllm_id = \"primary\"\nprovider = \"anthropic\"\nmodel = \"your-model-id\"\napi_key_env = \"ANTHROPIC_API_KEY\"\n\n[llms.options]\nmax_tokens = 2048\n```\n\n默认端点为 `https://api.anthropic.com/v1/messages`。\n顶层 `base_url` 可填写代理根地址、`/v1` 前缀或完整端点；兼容的 `options.base_url`\n按完整端点覆盖。`max_tokens` 默认 1024，按需设置模型支持的 `thinking_budget`。\n\n支持共享超时、重试、请求头、查询和额外请求体配置，传递温度、单次选项和工具。\n模型本身也需支持所用能力，请填写实际可用模型名，失败时检查凭据与端点。\n主模型和后备使用 MailFlow 的统一设置，不在示例或日志中填写真实密钥。\n"
+    "zh-CN": "# Anthropic Messages 后端\n\n组件标识为 `anthropic-messages`，兼容旧标识 `anthropic`。\n将共享对话和工具格式转换为 Messages 请求，并返回结构化工具调用。\n\n```toml\n[[llms]]\nllm_id = \"primary\"\nprovider = \"anthropic\"\nmodel = \"your-model-id\"\napi_key_env = \"ANTHROPIC_API_KEY\"\n\n[llms.options]\nmax_tokens = 2048\n```\n\n默认端点为 `https://api.anthropic.com/v1/messages`。\n顶层 `base_url` 可填写代理根地址、`/v1` 前缀或完整端点；兼容的 `options.base_url`\n按完整端点覆盖。`max_tokens` 默认 1024，按需设置模型支持的 `thinking_budget`。\n\n支持共享超时、重试、请求头、查询和额外请求体配置，传递温度、单次选项和工具。\n模型本身也需支持所用能力，请填写实际可用模型名，失败时检查凭据与端点。\n主模型和后备使用 Waymark Mail 的统一设置，不在示例或日志中填写真实密钥。\n"
   },
   "names": {
     "zh-CN": "Anthropic 模型"

@@ -7,16 +7,16 @@
     "storage"
   ],
   "package": "mailflow-storage-sqlite",
-  "source": "git+https://github.com/Kingcxp/mailflow-repo.git#subdirectory=storage/mailflow-storage-sqlite",
-  "author": "MailFlow community",
+  "source": "git+https://github.com/Kingcxp/waymark-mail-plugins.git#subdirectory=storage/mailflow-storage-sqlite",
+  "author": "Waymark Mail community",
   "license": "MIT",
-  "homepage": "https://github.com/Kingcxp/mailflow-repo/tree/main/storage/mailflow-storage-sqlite",
-  "readme": "# SQLite storage\n\nComponent ID: `sqlite`. Stores mail, analysis, tasks, drafts, preferences and\nrecoverable trash in one local database, with compatible incremental migrations.\n\n```toml\n[storage]\nprovider = \"sqlite\"\npath = \"data/mailflow.db\"\n```\n\nParent directories are created as needed. `:memory:` is temporary and disappears\nwhen closed. Retention is controlled by `[general]`, not fixed by this plugin;\nmail defaults to indefinite retention and trash to seven days. Trash restore\npreserves stored mail state and ingestion origin. Receipt-date filtering uses\nthe source mail timestamp. Reanalysis retains manual priority and local state.\n\nMail records keep text/HTML, attachment metadata and OCR text. Managed uploads\nand fetched attachment caches are stored separately from those records and are\nincluded by the service backup workflow when available. Uncached attachments\nstill need source access.\n\nUse MailFlow backup/restore for a consistent portable archive and recovery\npreview. If manually copying a database, stop its writer first; copying only\nthe main file while WAL is active is not a consistent backup.\n",
+  "homepage": "https://github.com/Kingcxp/waymark-mail-plugins/tree/main/storage/mailflow-storage-sqlite",
+  "readme": "# SQLite storage\n\nComponent ID: `sqlite`. Stores mail, analysis, tasks, drafts, preferences and\nrecoverable trash in one local database, with compatible incremental migrations.\n\n```toml\n[storage]\nprovider = \"sqlite\"\npath = \"data/mailflow.db\"\n```\n\nParent directories are created as needed. `:memory:` is temporary and disappears\nwhen closed. Retention is controlled by `[general]`, not fixed by this plugin;\nmail defaults to indefinite retention and trash to seven days. Trash restore\npreserves stored mail state and ingestion origin. Receipt-date filtering uses\nthe source mail timestamp. Reanalysis retains manual priority and local state.\n\nMail records keep text/HTML, attachment metadata and OCR text. Managed uploads\nand fetched attachment caches are stored separately from those records and are\nincluded by the service backup workflow when available. Uncached attachments\nstill need source access.\n\nUse Waymark Mail backup/restore for a consistent portable archive and recovery\npreview. If manually copying a database, stop its writer first; copying only\nthe main file while WAL is active is not a consistent backup.\n",
   "descriptions": {
     "zh-CN": "使用 SQLite 保存本地数据，支持回收站与兼容备份"
   },
   "readmes": {
-    "zh-CN": "# SQLite 存储\n\n组件标识为 `sqlite`，保存邮件、分析、待办、草稿、偏好和可恢复回收站，兼容增量迁移。\n\n```toml\n[storage]\nprovider = \"sqlite\"\npath = \"data/mailflow.db\"\n```\n\n父目录按需创建，`:memory:` 关闭即丢失。保留策略由 `[general]` 控制，\n不是插件内固定天数；默认长期保留邮件、回收站七天。恢复保留邮件状态和导入来源，\n日期筛选使用真实收件时间，重析保留人工优先级及本地状态。\n\n邮件记录保存正文、HTML、附件信息和识别文字；受管上传与下载缓存另行保存，\n服务备份会纳入已有文件。未缓存附件仍需访问原邮箱。\n\n建议通过 MailFlow 创建一致备份并预览恢复。手工复制数据库前先停止写入，\n运行中只复制主文件而忽略活动 WAL 不能保证备份一致。\n"
+    "zh-CN": "# SQLite 存储\n\n组件标识为 `sqlite`，保存邮件、分析、待办、草稿、偏好和可恢复回收站，兼容增量迁移。\n\n```toml\n[storage]\nprovider = \"sqlite\"\npath = \"data/mailflow.db\"\n```\n\n父目录按需创建，`:memory:` 关闭即丢失。保留策略由 `[general]` 控制，\n不是插件内固定天数；默认长期保留邮件、回收站七天。恢复保留邮件状态和导入来源，\n日期筛选使用真实收件时间，重析保留人工优先级及本地状态。\n\n邮件记录保存正文、HTML、附件信息和识别文字；受管上传与下载缓存另行保存，\n服务备份会纳入已有文件。未缓存附件仍需访问原邮箱。\n\n建议通过 Waymark Mail 创建一致备份并预览恢复。手工复制数据库前先停止写入，\n运行中只复制主文件而忽略活动 WAL 不能保证备份一致。\n"
   },
   "names": {
     "zh-CN": "本地存储（SQLite）"

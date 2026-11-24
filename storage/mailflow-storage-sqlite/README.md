@@ -22,7 +22,7 @@ and fetched attachment caches are stored separately from those records and are
 included by the service backup workflow when available. Uncached attachments
 still need source access.
 
-Use MailFlow backup/restore for a consistent portable archive and recovery
+Use Waymark Mail backup/restore for a consistent portable archive and recovery
 preview. If manually copying a database, stop its writer first; copying only
 the main file while WAL is active is not a consistent backup.
 
@@ -47,9 +47,9 @@ path = "data/mailflow.db"
 邮件记录保存正文、HTML、附件信息和识别文字；受管上传与下载缓存另行保存，
 服务备份会纳入已有文件。未缓存附件仍需访问原邮箱。
 
-建议通过 MailFlow 创建一致备份并预览恢复。手工复制数据库前先停止写入，
+建议通过 Waymark Mail 创建一致备份并预览恢复。手工复制数据库前先停止写入，
 运行中只复制主文件而忽略活动 WAL 不能保证备份一致。
 
 ---
 
-[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/mailflow-repo/tree/main/storage/mailflow-storage-sqlite)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-plugins/tree/main/storage/mailflow-storage-sqlite)
