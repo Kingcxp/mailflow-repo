@@ -52,4 +52,4 @@ interval_seconds = 900
 
 ---
 
-[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-plugins/tree/main/mail_source/mailflow-mail-rss)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-repo/tree/main/mail_source/mailflow-mail-rss)

@@ -72,4 +72,4 @@ Azure 的 `model` 填部署名，`base_url` 填资源地址，`options.api_versi
 
 ---
 
-[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-plugins/tree/main/llm_backend/mailflow-llm-openai-compatible)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-repo/tree/main/llm_backend/mailflow-llm-openai-compatible)

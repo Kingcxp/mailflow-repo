@@ -7,10 +7,10 @@
     "llm_backend"
   ],
   "package": "mailflow-llm-google-generative-ai",
-  "source": "git+https://github.com/Kingcxp/waymark-mail-plugins.git#subdirectory=llm_backend/mailflow-llm-google-generative-ai",
+  "source": "git+https://github.com/Kingcxp/waymark-mail-repo.git#subdirectory=llm_backend/mailflow-llm-google-generative-ai",
   "author": "Waymark Mail community",
   "license": "MIT",
-  "homepage": "https://github.com/Kingcxp/waymark-mail-plugins/tree/main/llm_backend/mailflow-llm-google-generative-ai",
+  "homepage": "https://github.com/Kingcxp/waymark-mail-repo/tree/main/llm_backend/mailflow-llm-google-generative-ai",
   "readme": "# Google Generative AI backend\n\nComponent ID: `google-generative-ai`. Uses Gemini `generateContent`, translating\nsystem messages and structured tool calls from the shared Waymark Mail contract.\n\n```toml\n[[llms]]\nllm_id = \"primary\"\nprovider = \"google-generative-ai\"\nmodel = \"your-model-id\"\napi_key_env = \"GEMINI_API_KEY\"\n```\n\nThe default root is `https://generativelanguage.googleapis.com`; `base_url`\noverrides it for a compatible proxy. Requests use\n`/v1beta/models/{model}:generateContent` and the `x-goog-api-key` header.\n`options.max_tokens`, `temperature` and `thinking_budget` set optional generation\ndefaults. Standard headers/query, `extra_body`, timeout and retry settings apply.\n\nUse a model available to your account. Tool and generation capabilities depend\non that model; connection/parameter failures remain visible and can fall back\nthrough the configured model chain. This plugin is an API transport, not a\nbrowser-login integration.\n",
   "descriptions": {
     "zh-CN": "Google Gemini API 传输层(组件 id:google-generative-ai)"

@@ -2,29 +2,25 @@
 
 # NoneBot exporter
 
-Exporter ID: `nonebot`. Creates a framework host from the current Waymark Mail
-configuration without starting a mail runtime during export.
+Export the current Waymark Mail configuration as a NoneBot plugin. Exporter ID: `nonebot`.
 
 ```bash
 uv run --no-sync waymark export --framework nonebot --output dist/nonebot_plugin_mailflow -c configs/local.toml
 ```
 
-Install the generated folder into your NoneBot environment, then load `nonebot_plugin_mailflow` with the framework plugin loader. Configure Waymark Mail administrators through the matching enabled notifier binding described in the generated README; framework administrator flags are not imported automatically.
-The generated README describes its file layout and command prefix. Its host
-starts/stops the Waymark Mail service with the framework and forwards sender/chat identity to the shared layer.
-Administration is resolved from a unique enabled notifier matching the platform
-and instance, with the sender in options.admins; unmatched providers remain read-only.
+## Setup
 
-Supported framework file events can upload managed files, and supported adapters
-can send selected files back. Availability depends on the actual platform adapter;
-exporting/importing Python successfully does not prove file delivery. Mutations
-and sending keep their permission and confirmation rules.
+Install the folder in your NoneBot environment and load `nonebot_plugin_mailflow`. The generated README describes the files and command prefix. Waymark Mail starts and stops with the framework; exporting alone does not start the mail service.
 
-The exported configuration is a snapshot, not a live link. Environment-backed
-secrets remain references; literal credentials may still be present. Review the
-output, supply needed environment variables in the bot host and regenerate after
-configuration changes. Configured notifiers deliver notifications: the export
-adapter does not imply an extra automatic broadcast to every framework chat.
+For administrator commands, add the platform account to `options.admins` in the enabled notifier matching that platform and instance. Framework administrator settings are separate. If no notifier matches, the user has read-only access.
+
+## Messages and files
+
+Notifications go to the targets configured in Waymark Mail. File upload and sending are available where the platform adapter supports them. Changes and mail sending require the usual permissions and confirmation.
+
+## Configuration
+
+The export contains a copy of the current configuration. Provide its environment variables on the bot host, check for literal credentials before sharing, and export again after changing settings.
 
 ---
 
@@ -32,23 +28,26 @@ adapter does not imply an extra automatic broadcast to every framework chat.
 
 # NoneBot 导出器
 
-导出器标识为 `nonebot`，按当前配置生成框架宿主；导出过程不启动邮件运行时。
+将当前 Waymark Mail 配置导出为 NoneBot 插件，导出器标识为 `nonebot`。
 
 ```bash
 uv run --no-sync waymark export --framework nonebot --output dist/nonebot_plugin_mailflow -c configs/local.toml
 ```
 
-将生成目录安装到 NoneBot 使用的环境，再通过框架加载 `nonebot_plugin_mailflow`，按生成说明配置匹配通知器的管理员，框架管理员不会自动导入。
-生成的 README 说明目录和命令前缀。宿主随框架启动／停止核心服务，
-将发起人和会话传给共享层；管理员由唯一匹配平台、实例的启用通知器中 options.admins 决定，未匹配平台保留普通权限。
+## 安装
 
-支持的框架文件事件可上传受管文件，适配器支持时可发送选中文件；具体能力取决于实际平台。
-不能因为导出成功或代码能导入就声称真实文件收发已验证，修改和发信仍受权限与确认限制。
+将生成目录安装到 NoneBot 环境，再加载 `nonebot_plugin_mailflow`。生成的 README 说明了文件和命令前缀。邮件服务随框架启动和停止，导出时不会启动服务。
 
-导出配置是快照，环境变量引用会保留，直接填写的凭据可能仍在文件中。
-检查输出、在机器人宿主提供所需环境变量，配置变化后重新导出。
-通知仍由已配置通知器投递，导出适配器不代表自动向所有框架会话额外广播。
+需要管理员操作时，在匹配平台和实例的启用通知器中，将平台账号加入 `options.admins`。框架自身的管理员设置单独管理；没有匹配通知器时，只能查询。
+
+## 消息与文件
+
+通知发送到 Waymark Mail 中配置的目标。平台适配器支持时，可以上传和发送文件。修改数据和发信仍需权限及确认。
+
+## 配置
+
+导出文件保存的是当时的配置。请在机器人所在机器上设置所需环境变量，分享前检查文件中是否含有凭据；修改设置后需要重新导出。
 
 ---
 
-[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-plugins/tree/main/bot_exporter/mailflow-export-nonebot)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-repo/tree/main/bot_exporter/mailflow-export-nonebot)

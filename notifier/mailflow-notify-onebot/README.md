@@ -81,4 +81,4 @@ admins = ["123456"]
 
 ---
 
-[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-plugins/tree/main/notifier/mailflow-notify-onebot)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-repo/tree/main/notifier/mailflow-notify-onebot)

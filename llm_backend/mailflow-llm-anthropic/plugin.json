@@ -7,10 +7,10 @@
     "llm_backend"
   ],
   "package": "mailflow-llm-anthropic",
-  "source": "git+https://github.com/Kingcxp/waymark-mail-plugins.git#subdirectory=llm_backend/mailflow-llm-anthropic",
+  "source": "git+https://github.com/Kingcxp/waymark-mail-repo.git#subdirectory=llm_backend/mailflow-llm-anthropic",
   "author": "Waymark Mail community",
   "license": "MIT",
-  "homepage": "https://github.com/Kingcxp/waymark-mail-plugins/tree/main/llm_backend/mailflow-llm-anthropic",
+  "homepage": "https://github.com/Kingcxp/waymark-mail-repo/tree/main/llm_backend/mailflow-llm-anthropic",
   "updated": "2026-08-16",
   "readme": "# Anthropic Messages backend\n\nComponent IDs: `anthropic-messages` and compatible alias `anthropic`. Translates\nthe shared chat/tool format into Messages requests and returns structured tool calls.\n\n```toml\n[[llms]]\nllm_id = \"primary\"\nprovider = \"anthropic\"\nmodel = \"your-model-id\"\napi_key_env = \"ANTHROPIC_API_KEY\"\n\n[llms.options]\nmax_tokens = 2048\n```\n\nThe default endpoint is `https://api.anthropic.com/v1/messages`. A top-level\n`base_url` may name a proxy root, `/v1` prefix or complete `/messages` endpoint;\nlegacy `options.base_url` is a complete endpoint override. `options.max_tokens`\ndefaults to 1024. Optional `thinking_budget` requests a budget supported by the\nselected model and raises the output cap as needed.\n\nStandard timeout, retry, headers, query and extra-body configuration applies.\nThe backend accepts temperature, per-call options and tools; the selected model\nmust support the requested features. Choose a currently available model ID and\ncheck credentials/endpoint on failure. Do not put real keys in configuration\nexamples or logs. Model ordering and fallback use the shared Waymark Mail settings.\n",
   "descriptions": {

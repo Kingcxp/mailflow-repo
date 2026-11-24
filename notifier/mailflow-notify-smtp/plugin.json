@@ -7,10 +7,10 @@
     "notifier"
   ],
   "package": "mailflow-notify-smtp",
-  "source": "git+https://github.com/Kingcxp/waymark-mail-plugins.git#subdirectory=notifier/mailflow-notify-smtp",
+  "source": "git+https://github.com/Kingcxp/waymark-mail-repo.git#subdirectory=notifier/mailflow-notify-smtp",
   "author": "Waymark Mail community",
   "license": "MIT",
-  "homepage": "https://github.com/Kingcxp/waymark-mail-plugins/tree/main/notifier/mailflow-notify-smtp",
+  "homepage": "https://github.com/Kingcxp/waymark-mail-repo/tree/main/notifier/mailflow-notify-smtp",
   "readme": "# SMTP notifier\n\nComponent ID: `smtp`. Sends mail summaries as notification emails, separate\nfrom composing or replying through a source account.\n\n```toml\n[[notifiers]]\nnotifier_id = \"email-alerts\"\nprovider = \"smtp\"\nminimum_urgency = \"important\"\n\n[notifiers.options]\nhost = \"smtp.example.com\"\nport = 587\nuse_tls = true\nusername = \"alerts@example.com\"\npassword = \"${SMTP_PASSWORD}\"\nfrom_addr = \"alerts@example.com\"\nto = [\"you@example.com\"]\n```\n\n`host`, `from_addr` and a nonempty recipient list `to` are required.\n`use_tls = true` uses STARTTLS (default port 587); false selects implicit TLS,\nso also set the correct port, usually 465. Username/password are optional for\nservers permitting unauthenticated submission. No plaintext-only mode is exposed.\n\nThe notification contains the subject/priority, summary and available plain-text\nbody; it does not forward source attachments. Per-target mail delivery lets the\nruntime retain successful recipient receipts. Missing configuration, rejected\nrecipients or SMTP/network failures are failures, not successful sends. This\nplugin provides no incoming chat commands or managed file exchange.\n",
   "descriptions": {
     "zh-CN": "通过任意 SMTP 服务器把重要邮件提醒转发为邮件"

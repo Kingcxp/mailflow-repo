@@ -7,10 +7,10 @@
     "llm_backend"
   ],
   "package": "mailflow-llm-qwen",
-  "source": "git+https://github.com/Kingcxp/waymark-mail-plugins.git#subdirectory=llm_backend/mailflow-llm-qwen",
+  "source": "git+https://github.com/Kingcxp/waymark-mail-repo.git#subdirectory=llm_backend/mailflow-llm-qwen",
   "author": "Waymark Mail community",
   "license": "MIT",
-  "homepage": "https://github.com/Kingcxp/waymark-mail-plugins/tree/main/llm_backend/mailflow-llm-qwen",
+  "homepage": "https://github.com/Kingcxp/waymark-mail-repo/tree/main/llm_backend/mailflow-llm-qwen",
   "readme": "# Qwen model preset\n\nComponent ID: `qwen`. Reuses the OpenAI-compatible Chat Completions\ntransport; its dependency is installed with this package.\n\n```toml\n[[llms]]\nllm_id = \"primary\"\nprovider = \"qwen\"\nmodel = \"your-model-id\"\napi_key_env = \"DASHSCOPE_API_KEY\"\n```\n\nThe implementation defaults to `https://dashscope.aliyuncs.com/compatible-mode/v1` and\nmodel `qwen-plus` when those fields are omitted. These are code\ndefaults, not a guarantee that the provider still offers that model. Set your\navailable model explicitly; an explicit `base_url` also overrides the preset.\n\nSee [shared transport options](../mailflow-llm-openai-compatible/README.md) for\ncredentials, timeout/retries, request overrides and tool calls. The model and\nendpoint must support the requested tools. Primary/fallback selection uses\nthe shared model defaults and processor bindings described in that guide.\n",
   "descriptions": {
     "zh-CN": "面向阿里云通义千问（DashScope）的 OpenAI 兼容 Chat Completions 传输层（组件 id: qwen）"

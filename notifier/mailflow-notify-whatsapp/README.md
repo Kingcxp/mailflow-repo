@@ -79,4 +79,4 @@ admins = ["15550001111"]
 
 ---
 
-[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-plugins/tree/main/notifier/mailflow-notify-whatsapp)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-repo/tree/main/notifier/mailflow-notify-whatsapp)

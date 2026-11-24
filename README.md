@@ -1,42 +1,37 @@
-# <img src="https://raw.githubusercontent.com/Kingcxp/waymark-mail/dev/assets/icon.svg" width="36" alt=""> Waymark Mail plugins
-
-[![Plugin validation](https://github.com/Kingcxp/waymark-mail-plugins/actions/workflows/validate-plugins.yml/badge.svg?branch=dev)](https://github.com/Kingcxp/waymark-mail-plugins/actions/workflows/validate-plugins.yml?query=branch%3Adev)
-
-Plugins and marketplace metadata for [Waymark Mail](https://github.com/Kingcxp/waymark-mail/tree/dev).
-Each plugin is an independently installable Python package with English and
-Chinese instructions. This repository and the main workspace share one core
-contract; plugins shipped in both places must behave identically.
+# <img src="https://raw.githubusercontent.com/Kingcxp/waymark-mail/dev/assets/icon.svg" width="36" alt=""> Waymark Mail Plugin Repository
 
 [简体中文](#简体中文) · [Install](#using-a-plugin) ·
-[Contribute](docs/00-getting-started.md) · [Validation](docs/06-validation.md) ·
-[Issues](https://github.com/Kingcxp/waymark-mail-plugins/issues)
+[Contribute](docs/00-getting-started.md) · [Issues](https://github.com/Kingcxp/waymark-mail-repo/issues)
 
-The project was previously named MailFlow. Plugin IDs and Python package names
-retain the `mailflow-*` prefix for compatibility; existing installations do not
-need to be removed or recreated.
+[![Plugin validation](https://github.com/Kingcxp/waymark-mail-repo/actions/workflows/validate-plugins.yml/badge.svg?branch=dev)](https://github.com/Kingcxp/waymark-mail-repo/actions/workflows/validate-plugins.yml?query=branch%3Adev)
+
+The plugin repository for [Waymark Mail](https://github.com/Kingcxp/waymark-mail/tree/dev).
+It contains installable Python packages and the metadata used by the in-app
+marketplace. Each plugin has English and Chinese setup instructions.
 
 ## Catalog
 
-| Category | Available plugins |
+| Category | Contents |
 | --- | --- |
 | [Mail sources](mail_source) | IMAP/SMTP, Gmail and Outlook presets, RSS/Atom and fake mail |
 | [Model backends](llm_backend) | OpenAI-compatible, Anthropic, Google and provider presets |
 | [Processors](processor) | Sender blocklists, content filters, local archiving and rule templates |
-| [Notifiers](notifier) | Console, SMTP, webhooks and supported chat-platform delivery |
-| [Storage](storage) | SQLite persistence and recovery |
-| [Framework exporters](bot_exporter) | NoneBot and AstrBot hosts |
-| [Color schemes](theme) | Extension category; the four built-in Catppuccin palettes ship with Waymark Mail |
-| [Enhancer category](llm_enhancer) / [Gateway category](gateway) | Extension slots; inspect their indexes for packaged entries |
+| [Notifiers](notifier) | Console, SMTP, webhooks and chat-platform delivery |
+| [Storage](storage) | SQLite |
+| [Framework exporters](bot_exporter) | NoneBot and AstrBot |
 
-Open a plugin folder for its provider ID, options, example and limitations.
-Capabilities differ: a webhook mail notifier is not automatically a chatbot,
-reminder channel or image/file transport. Model presets reuse their declared
-transport dependency; Gmail/Outlook adapters use IMAP/SMTP, not native OAuth.
+Open a plugin folder for its provider ID, options and configuration example.
+Gmail and Outlook use IMAP/SMTP rather than native OAuth. Notification plugins
+list whether they support reminders, images, files or incoming commands.
+
+The index also reserves categories for [themes](theme), [model enhancers](llm_enhancer)
+and [gateways](gateway). Built-in color schemes ship with Waymark Mail itself.
 
 ## Using a plugin
 
-Start with the [Waymark Mail quickstart](https://github.com/Kingcxp/waymark-mail/blob/dev/README.md#quickstart).
-The official marketplace is registered by default. In Waymark Mail's command shell:
+Start Waymark Mail using its [quickstart](https://github.com/Kingcxp/waymark-mail/blob/dev/README.md#quickstart).
+The official repository is available in the Market tab by default. You can also
+inspect and install a plugin from the command shell:
 
 ```text
 plugin repo list
@@ -45,63 +40,58 @@ plugin market show mailflow-notify-ntfy
 plugin install mailflow-notify-ntfy
 ```
 
-The terminal's plugin management provides the same discovery and installation.
-Plugin installation needs administrator access. Configure the selected provider,
-check the reported capabilities and follow any restart requirement. Install
-only trusted code: Python plugins execute inside the Waymark Mail environment.
+Installation requires administrator access. After installing, configure the
+provider and follow any restart prompt. Plugins run code in Waymark Mail’s Python
+environment, so use sources you trust.
 
-These pages describe `dev`. The built-in official market and the metadata's
-installation sources currently use the default branch. For unreleased changes,
-use paired local `dev` checkouts as described in [development](docs/00-getting-started.md);
-viewing a different index alone does not change a plugin's installation source.
+These pages describe `dev`; the default marketplace installs from the default
+branch specified by the metadata. To try unreleased changes, use matching local
+`dev` checkouts as described in [development](docs/00-getting-started.md).
 
 ## Contributing
 
-| Guide | Purpose |
+| Guide | Contents |
 | --- | --- |
-| [Getting started](docs/00-getting-started.md) | Layout, registration, dependencies and submitting changes |
-| [Marketplace metadata](docs/01-marketplace-metadata.md) | Bilingual descriptions, install source and usage content |
-| [Validation](docs/06-validation.md) | Generated README checks, offline contracts and dependency checks |
-| [Core plugin guide](https://github.com/Kingcxp/waymark-mail/blob/dev/docs/plugin-development/overview.md) | Authoritative interfaces and optional capabilities |
+| [Getting started](docs/00-getting-started.md) | Package layout, registration, dependencies and local installation |
+| [Marketplace metadata](docs/01-marketplace-metadata.md) | Descriptions, installation sources and usage pages |
+| [Validation](docs/06-validation.md) | README generation, offline checks and CI |
+| [Core plugin guide](https://github.com/Kingcxp/waymark-mail/blob/dev/docs/plugin-development/overview.md) | Interfaces and optional capabilities |
 
-`plugin.json` is the source for the in-app page and generated `README.md`.
-Edit it first, then run `python tools/gen_plugin_readmes.py`. Root `index.json`
-and category `INDEX.json` files support discovery and HTTP mirrors; keep them
-aligned when adding/removing a plugin.
+Edit `plugin.json`, then run `python tools/gen_plugin_readmes.py` to update the
+plugin README. Add or remove plugins in the category’s `INDEX.json`. Submit pull
+requests to `dev`; plugins also bundled in Waymark Mail need both copies updated.
 
-Target changes at `dev`, use focused commits and validate against the matching
-Waymark Mail core. Report reproducible issues with plugin/version, host revision,
-platform and sanitized diagnostics. Never include credentials or private mail.
-Offline checks simulate delivery; real installation, login and file exchange
-need separate platform testing.
+The repository is named `waymark-mail-repo`. Plugin IDs and package names retain
+their `mailflow-*` prefixes so existing configurations continue to work.
 
-## License
-
-[MIT](LICENSE). Third-party platforms, dependencies and gateway runtimes retain
-their own licenses and service requirements.
+Licensed under the [MIT License](LICENSE).
 
 ## 简体中文
 
-项目原名 MailFlow；插件标识和 Python 包名保留 `mailflow-*` 前缀，兼容已有配置。
+这里是 [Waymark Mail](https://github.com/Kingcxp/waymark-mail/tree/dev) 的插件仓库，
+提供独立安装的 Python 插件和应用内市场使用的元数据。
+插件按邮件源、模型、处理器、通知器、存储和框架导出器分类，目录见上表。
+每个插件目录都有中英文说明，包含组件标识、配置示例和使用限制。
 
-本仓库提供 [Waymark Mail](https://github.com/Kingcxp/waymark-mail/tree/dev) 插件和市场元数据。
-插件独立安装，与主仓库共用唯一核心接口；两边同名实现需要同步维护。
-上表按邮件源、模型、处理器、通知器、存储、导出器和配色方案分类，进入插件目录查看具体选项。
-Catppuccin 四套配色由 Waymark Mail 内置；配色插件安装启用后，可直接在设置中选择，无需重启连接。
-通知器能力不同，不能把普通推送当成聊天机器人、待办提醒或图片文件传输。
-Gmail/Outlook 是 IMAP/SMTP 预设，不提供原生 OAuth。
+### 安装插件
 
-按主仓库说明启动 Waymark Mail 后，在命令行或插件管理页面查看、安装和配置插件。
-官方市场默认已注册，不需要重复添加；命令示例见上方。
-安装需要管理员权限，依赖由安装流程处理，是否重启以结果提示为准。
-插件会在宿主中执行代码，请仅使用可信来源。
+按主仓库说明启动后，在“市场”中查看并安装插件，或在命令行中执行上面的命令。
+官方仓库默认已添加。安装需要管理员权限，安装后配置对应服务，并按提示决定是否重启。
 
-本页对应 `dev`，内置市场和现有元数据安装来源仍使用默认分支。
-测试未发布修改时使用两个本地 `dev` 仓库；只切换市场索引不会自动改变安装代码来源。
+Gmail、Outlook 插件使用 IMAP/SMTP，不提供原生 OAuth。
+各通知器支持的提醒、图片、文件和聊天命令不同，安装前可在插件详情中查看。
+插件会在程序所在环境中执行代码，请选择可信来源。
 
-[入门](docs/00-getting-started.md#简体中文)、[元数据](docs/01-marketplace-metadata.md#简体中文)
-和[验证](docs/06-validation.md#简体中文)说明贡献流程。
-插件 README 由 `plugin.json` 生成，修改中英文元数据后统一生成，不单独维护两份内容。
-提交到 `dev`，新增或删除插件时同步索引，共享实现同时更新主仓库。
-反馈包含插件版本、宿主版本、系统和脱敏复现信息，不上传凭据或邮件。
-自动验证使用模拟服务，真实安装、登录和文件收发另行实测。本仓库使用 [MIT 许可](LICENSE)。
+本页对应 `dev`，默认市场按元数据指定的默认分支安装插件。
+试用未发布的修改时，请使用两个本地 `dev` 仓库，方法见[开发入门](docs/00-getting-started.md#简体中文)。
+
+### 参与开发
+
+[开发入门](docs/00-getting-started.md#简体中文)、[元数据说明](docs/01-marketplace-metadata.md#简体中文)
+和[验证方法](docs/06-validation.md#简体中文)介绍了完整流程。
+插件 README 从 `plugin.json` 生成，修改中英文元数据后统一生成即可。
+新增或删除插件时更新分类索引；主仓库也内置的插件需要两边一起维护。修改提交到 `dev`。
+
+仓库名为 `waymark-mail-repo`，插件标识和包名保留 `mailflow-*` 前缀，已有配置可以继续使用。
+反馈问题请附插件版本、系统和复现步骤，日志中不要包含凭据或私人邮件。
+本仓库使用 [MIT 许可](LICENSE)。

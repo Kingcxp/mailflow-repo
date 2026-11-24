@@ -7,10 +7,10 @@
     "llm_backend"
   ],
   "package": "mailflow-llm-google-vertex",
-  "source": "git+https://github.com/Kingcxp/waymark-mail-plugins.git#subdirectory=llm_backend/mailflow-llm-google-vertex",
+  "source": "git+https://github.com/Kingcxp/waymark-mail-repo.git#subdirectory=llm_backend/mailflow-llm-google-vertex",
   "author": "Waymark Mail community",
   "license": "MIT",
-  "homepage": "https://github.com/Kingcxp/waymark-mail-plugins/tree/main/llm_backend/mailflow-llm-google-vertex",
+  "homepage": "https://github.com/Kingcxp/waymark-mail-repo/tree/main/llm_backend/mailflow-llm-google-vertex",
   "readme": "# Google Vertex AI backend\n\nComponent ID: `google-vertex`. Sends shared chat/tool requests to Vertex\n`generateContent`. A project and a valid access credential are required.\n\n```toml\n[[llms]]\nllm_id = \"primary\"\nprovider = \"google-vertex\"\nmodel = \"your-model-id\"\napi_key_env = \"VERTEX_ACCESS_TOKEN\"\n\n[llms.options]\nproject = \"your-project-id\"\nlocation = \"us-central1\"\n```\n\n`options.project` is required; location defaults to `us-central1`. `base_url`\ndefaults to `https://aiplatform.googleapis.com`. Authentication uses a short-lived\nOAuth access token in `api_key`/`api_key_env`, or\n`options.service_account_file` with `google-auth` installed in the host.\nAn ordinary API key is not an OAuth token. Keep service-account files private.\n\nOptional `max_tokens`, `temperature` and `thinking_budget` generation defaults,\nshared headers/query/extra body, timeout and retry are supported. Select a model\nand location available to your project; the transport does not grant project\naccess. Failed credentials or unsupported capabilities are reported normally.\n",
   "descriptions": {
     "zh-CN": "Vertex AI 上的 Gemini 传输层(组件 id:google-vertex)"

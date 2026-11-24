@@ -48,4 +48,4 @@ api_key_env = "ZHIPUAI_API_KEY"
 
 ---
 
-[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-plugins/tree/main/llm_backend/mailflow-llm-zhipu)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-repo/tree/main/llm_backend/mailflow-llm-zhipu)

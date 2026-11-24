@@ -7,10 +7,10 @@
     "notifier"
   ],
   "package": "mailflow-notify-console",
-  "source": "git+https://github.com/Kingcxp/waymark-mail-plugins.git#subdirectory=notifier/mailflow-notify-console",
+  "source": "git+https://github.com/Kingcxp/waymark-mail-repo.git#subdirectory=notifier/mailflow-notify-console",
   "author": "Waymark Mail community",
   "license": "MIT",
-  "homepage": "https://github.com/Kingcxp/waymark-mail-plugins/tree/main/notifier/mailflow-notify-console",
+  "homepage": "https://github.com/Kingcxp/waymark-mail-repo/tree/main/notifier/mailflow-notify-console",
   "readme": "# Console notifications\n\nThe `console` channel delivers mail notifications, task reminders and summaries to the TUI **Console** tab. No external account, gateway or login is required.\n\n```toml\n[[notifiers]]\nnotifier_id = \"console\"\nprovider = \"console\"\nminimum_urgency = \"important\"\n```\n\nThe Console tab accepts existing Waymark Mail commands. Use `@Waymark` or quote a message to request an intelligent operation. Changes and sending still require chat confirmation. Ordinary text does not invoke a model.\n\nMessages remain in memory for the current service run. Detach and reconnect keep them; stopping the service clears them. Notification switches, quiet hours and delivery receipts still apply.\n\nOutside the TUI, console logging remains available when enabled. Images fall back to text.\n",
   "descriptions": {
     "zh-CN": "在控制台中接收邮件、待办提醒与摘要，并与机器人交互"

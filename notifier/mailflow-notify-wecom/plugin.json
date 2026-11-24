@@ -7,10 +7,10 @@
     "notifier"
   ],
   "package": "mailflow-notify-wecom",
-  "source": "git+https://github.com/Kingcxp/waymark-mail-plugins.git#subdirectory=notifier/mailflow-notify-wecom",
+  "source": "git+https://github.com/Kingcxp/waymark-mail-repo.git#subdirectory=notifier/mailflow-notify-wecom",
   "author": "Waymark Mail community",
   "license": "MIT",
-  "homepage": "https://github.com/Kingcxp/waymark-mail-plugins/tree/main/notifier/mailflow-notify-wecom",
+  "homepage": "https://github.com/Kingcxp/waymark-mail-repo/tree/main/notifier/mailflow-notify-wecom",
   "readme": "# WeCom notifier\n\nComponent ID: `wecom`. Delivers mail summaries through the configured\nWeCom endpoint. This package implements mail notification, not incoming chat\ncommands, arbitrary-text reminders, images or file exchange.\n\n```toml\n[[notifiers]]\nnotifier_id = \"wecom-alerts\"\nprovider = \"wecom\"\nenabled = true\nminimum_urgency = \"important\"\n\n[notifiers.options]\nwebhook_url = \"${WECOM_WEBHOOK}\"\ntimeout_seconds = 10\n```\n\n`webhook_url` is the required group-robot endpoint. This plugin sends text summaries.\n`timeout_seconds` defaults to 10 seconds. Environment placeholders are resolved\nby Waymark Mail; keep endpoint tokens private.\n\nMissing required configuration, HTTP errors and recognized platform rejection\nfail delivery. The runtime records the failure without losing the stored mail;\nfix the endpoint/access settings and retry the failed notification. A successful\nHTTP response is not enough if the platform reports a business error.\n",
   "descriptions": {
     "zh-CN": "通过 企业微信 发送邮件摘要"

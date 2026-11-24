@@ -52,4 +52,4 @@ path = "data/mailflow.db"
 
 ---
 
-[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-plugins/tree/main/storage/mailflow-storage-sqlite)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-repo/tree/main/storage/mailflow-storage-sqlite)

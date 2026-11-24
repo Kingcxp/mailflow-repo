@@ -3,7 +3,7 @@ name = "mailflow-llm-moonshot"
 version = "0.1.0"
 description = "Waymark Mail LLM backend: Moonshot AI (OpenAI-compatible chat completions)"
 requires-python = ">=3.11"
-dependencies = ["mailflow-core", "mailflow-llm-openai-compatible @ git+https://github.com/Kingcxp/waymark-mail-plugins.git#subdirectory=llm_backend/mailflow-llm-openai-compatible"]
+dependencies = ["mailflow-core", "mailflow-llm-openai-compatible @ git+https://github.com/Kingcxp/waymark-mail-repo.git#subdirectory=llm_backend/mailflow-llm-openai-compatible"]
 
 [project.entry-points."mailflow.plugins"]
 mailflow-llm-moonshot = "mailflow_llm_moonshot.plugin:plugin"

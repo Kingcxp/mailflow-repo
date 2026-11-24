@@ -7,10 +7,10 @@
     "notifier"
   ],
   "package": "mailflow-notify-feishu",
-  "source": "git+https://github.com/Kingcxp/waymark-mail-plugins.git#subdirectory=notifier/mailflow-notify-feishu",
+  "source": "git+https://github.com/Kingcxp/waymark-mail-repo.git#subdirectory=notifier/mailflow-notify-feishu",
   "author": "Waymark Mail community",
   "license": "MIT",
-  "homepage": "https://github.com/Kingcxp/waymark-mail-plugins/tree/main/notifier/mailflow-notify-feishu",
+  "homepage": "https://github.com/Kingcxp/waymark-mail-repo/tree/main/notifier/mailflow-notify-feishu",
   "readme": "# Feishu notifier\n\nComponent ID: `feishu`. Delivers mail summaries through the configured\nFeishu endpoint. This package implements mail notification, not incoming chat\ncommands, arbitrary-text reminders, images or file exchange.\n\n```toml\n[[notifiers]]\nnotifier_id = \"feishu-alerts\"\nprovider = \"feishu\"\nenabled = true\nminimum_urgency = \"important\"\n\n[notifiers.options]\nwebhook_url = \"${FEISHU_WEBHOOK}\"\ntimeout_seconds = 10\n```\n\n`webhook_url` is required; configure `secret` when the robot requires signed requests.\n`timeout_seconds` defaults to 10 seconds. Environment placeholders are resolved\nby Waymark Mail; keep endpoint tokens private.\n\nMissing required configuration, HTTP errors and recognized platform rejection\nfail delivery. The runtime records the failure without losing the stored mail;\nfix the endpoint/access settings and retry the failed notification. A successful\nHTTP response is not enough if the platform reports a business error.\n",
   "descriptions": {
     "zh-CN": "通过 飞书 发送邮件摘要"

@@ -58,4 +58,4 @@ max_tokens = 2048
 
 ---
 
-[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-plugins/tree/main/llm_backend/mailflow-llm-anthropic)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-repo/tree/main/llm_backend/mailflow-llm-anthropic)

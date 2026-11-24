@@ -7,10 +7,10 @@
     "storage"
   ],
   "package": "mailflow-storage-sqlite",
-  "source": "git+https://github.com/Kingcxp/waymark-mail-plugins.git#subdirectory=storage/mailflow-storage-sqlite",
+  "source": "git+https://github.com/Kingcxp/waymark-mail-repo.git#subdirectory=storage/mailflow-storage-sqlite",
   "author": "Waymark Mail community",
   "license": "MIT",
-  "homepage": "https://github.com/Kingcxp/waymark-mail-plugins/tree/main/storage/mailflow-storage-sqlite",
+  "homepage": "https://github.com/Kingcxp/waymark-mail-repo/tree/main/storage/mailflow-storage-sqlite",
   "readme": "# SQLite storage\n\nComponent ID: `sqlite`. Stores mail, analysis, tasks, drafts, preferences and\nrecoverable trash in one local database, with compatible incremental migrations.\n\n```toml\n[storage]\nprovider = \"sqlite\"\npath = \"data/mailflow.db\"\n```\n\nParent directories are created as needed. `:memory:` is temporary and disappears\nwhen closed. Retention is controlled by `[general]`, not fixed by this plugin;\nmail defaults to indefinite retention and trash to seven days. Trash restore\npreserves stored mail state and ingestion origin. Receipt-date filtering uses\nthe source mail timestamp. Reanalysis retains manual priority and local state.\n\nMail records keep text/HTML, attachment metadata and OCR text. Managed uploads\nand fetched attachment caches are stored separately from those records and are\nincluded by the service backup workflow when available. Uncached attachments\nstill need source access.\n\nUse Waymark Mail backup/restore for a consistent portable archive and recovery\npreview. If manually copying a database, stop its writer first; copying only\nthe main file while WAL is active is not a consistent backup.\n",
   "descriptions": {
     "zh-CN": "使用 SQLite 保存本地数据，支持回收站与兼容备份"

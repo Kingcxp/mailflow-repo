@@ -34,7 +34,7 @@ package and core contracts; see [validation](06-validation.md).
   "description": "Delivers analyzed mail to an example endpoint",
   "categories": ["notifier"],
   "package": "mailflow-notify-example",
-  "source": "git+https://github.com/you/waymark-mail-plugins.git#subdirectory=notifier/mailflow-notify-example",
+  "source": "git+https://github.com/you/waymark-mail-repo.git#subdirectory=notifier/mailflow-notify-example",
   "license": "MIT",
   "readme": "## Example notifier\n\nConfigure the endpoint and token in notifier options.",
   "descriptions": {"zh-CN": "向指定地址推送邮件分析结果"},
@@ -73,10 +73,10 @@ regenerated README with it. CI checks that the two stay identical.
 标识、版本、类别、安装包和来源要与实际代码一致；字段含义和完整示例见上表。
 `readme` 与 `description` 为英文，`readmes.zh-CN`、`descriptions.zh-CN` 提供中文。
 
-说明包含用途、组件标识、必要选项、一份配置示例和真实限制即可。
-不要在每个插件重复核心接口、通用安装流程、开发历史或与功能无关的配色说明。
-示例使用占位符，不写真实令牌；没有实现的提醒、文件或聊天能力不要宣称支持。
-模型名按用户实际可用值填写，不把过期示例当成当前服务推荐。
+说明写清用途、组件标识、必要选项、配置示例和使用限制即可。
+通用安装和开发方法可以链接到对应指南，插件页面专注于自身的用法。
+示例中的令牌使用占位符，提醒、文件和聊天能力按实际支持情况填写；
+模型名由用户按服务中可用的型号选择。
 
 `source` 决定真正安装的代码；不带分支的 Git 来源使用默认分支。
 切换索引、编辑 `homepage` 或本地修改不会自动改变它。发布前确认用户能访问对应版本。

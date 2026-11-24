@@ -7,10 +7,10 @@
     "processor"
   ],
   "package": "mailflow-processor-blocklist",
-  "source": "git+https://github.com/Kingcxp/waymark-mail-plugins.git#subdirectory=processor/mailflow-processor-blocklist",
+  "source": "git+https://github.com/Kingcxp/waymark-mail-repo.git#subdirectory=processor/mailflow-processor-blocklist",
   "author": "Waymark Mail community",
   "license": "MIT",
-  "homepage": "https://github.com/Kingcxp/waymark-mail-plugins/tree/main/processor/mailflow-processor-blocklist",
+  "homepage": "https://github.com/Kingcxp/waymark-mail-repo/tree/main/processor/mailflow-processor-blocklist",
   "readme": "# Sender blocklist processor\n\nComponent ID: `blocklist`. Classifies matching sender addresses or domains as\n`ad` without deleting mail or changing the source mailbox.\n\n```toml\n[[processors]]\nprocessor_id = \"blocklist\"\nprovider = \"blocklist\"\npriority = 5\n\n[processors.options]\nsenders = [\"ads@example.com\"]\ndomains = [\"marketing.example\"]\n```\n\nMatching is case-insensitive. `senders` matches exact addresses; `domains` matches\n`@domain`, not arbitrary subdomains. Empty lists do nothing. The processor does\nnot stop the chain: later processors, including an LLM, may still run and update\nthe analysis. Priority alone does not guarantee zero model calls. Remove a rule\nand reanalyze affected mail to reconsider its automatic classification; a manual\npriority override remains a separate user choice.\n",
   "descriptions": {
     "zh-CN": "把来自黑名单发件人或域名的邮件标记为垃圾（灰色）"

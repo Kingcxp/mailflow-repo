@@ -51,4 +51,4 @@ api_key_env = "GEMINI_API_KEY"
 
 ---
 
-[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-plugins/tree/main/llm_backend/mailflow-llm-google-generative-ai)
+[Catalog](../../README.md) · [Metadata](plugin.json) · [Plugin page](https://github.com/Kingcxp/waymark-mail-repo/tree/main/llm_backend/mailflow-llm-google-generative-ai)
